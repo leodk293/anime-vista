@@ -5,12 +5,8 @@ import Loader from "../../../../../components/loader/Loader";
 import Link from "next/link";
 import Image from "next/image";
 import { nanoid } from "nanoid";
-import {
-  MoveLeft,
-  MoveRight,
-  ArrowRightLeft,
-  ArrowLeftRight,
-} from "lucide-react";
+import { ArrowRightLeft, ArrowLeftRight } from "lucide-react";
+import AnimeStaff from "../../../../../components/AnimeStaff";
 
 export default function AnimePage({ params }) {
   const resolvedParams = use(params);
@@ -330,54 +326,7 @@ export default function AnimePage({ params }) {
 
       <section className="flex flex-col gap-5">
         <h1 className="text-xl sm:text-2xl font-bold">Staff</h1>
-        {animeStaff.loading ? (
-          <Loader />
-        ) : animeStaff.error ? (
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-red-500">{animeStaff.errorMessage}</p>
-            <button
-              onClick={fetchAnimeStaff}
-              className="px-4 py-2 cursor-pointer bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {animeStaff.data?.length > 0 ? (
-              animeStaff.data.slice(0, 4).map((element) => (
-                <div
-                  className="flex flex-row items-center border border-gray-800 w-full justify-between bg-[#151f2e] rounded-lg"
-                  key={element.person.mal_id}
-                >
-                  <div className="flex flex-row items-center gap-2 sm:gap-4">
-                    <div className="relative w-[60px] h-[80px] sm:w-[80px] sm:h-[100px]">
-                      <Image
-                        src={element.person.images.jpg.image_url}
-                        alt={element.person.name}
-                        fill
-                        className="object-cover rounded-tl-md rounded-bl-md"
-                        onError={(e) => {
-                          e.target.src = "/placeholder-image.jpg";
-                        }}
-                      />
-                    </div>
-                    <div className="flex flex-col text-xs sm:text-sm gap-4 sm:gap-10">
-                      <p className="text-white font-semibold line-clamp-1">
-                        {element.person.name}
-                      </p>
-                      <p className="text-gray-400 line-clamp-2">
-                        {element.positions.join(", ")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-400">No staff information available</p>
-            )}
-          </div>
-        )}
+        <AnimeStaff animeId={animeId} slice={4} />
       </section>
 
       <section className="flex flex-col gap-5">

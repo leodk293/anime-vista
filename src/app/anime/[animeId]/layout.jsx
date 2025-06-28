@@ -48,8 +48,7 @@ export default async function layout({ children, params }) {
             <Link href={`/anime/${animeId}/watch`}>Watch</Link>
             <Link href={`/anime/${animeId}/characters`}>Characters</Link>
             <Link href={`/anime/${animeId}/staff`}>Staff</Link>
-            <Link href={`/anime/${animeId}/stats`}>Stats</Link>
-            <Link href={`/anime/${animeId}/social`}>Social</Link>
+            <Link href={`/anime/${animeId}/stats`}>Reviews</Link>
           </div>
         </div>
       </div>
