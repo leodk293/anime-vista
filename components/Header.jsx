@@ -10,7 +10,7 @@ import { LogOut } from "lucide-react";
 export default function Header() {
   const { status, data: session } = useSession();
   return (
-    <div className=" bg-[#151f2e] w-full">
+    <div className=" bg-[#151f2e] border-b border-b-gray-800 w-full">
       <header className=" flex flex-wrap mx-auto py-5 max-w-5xl justify-center gap-5 md:justify-between md:gap-0">
         <Logo />
         <nav className=" self-center flex flex-row gap-10 text-lg font-medium text-gray-200">

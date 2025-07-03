@@ -7,10 +7,11 @@ export default function AnimeList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   //https://api.jikan.moe/v4/anime?genres=41
-  /*async function getAnimeList() {
+  /*const animeName = "Edgerunners";
+  async function getAnimeList() {
     try {
       const response = await fetch(
-        "https://api.jikan.moe/v4/anime?q=Wind%20Breaker&order_by=popularity&sort=asc&sfw"
+        `https://api.jikan.moe/v4/anime?q=${animeName}&order_by=popularity&sort=asc&sfw`
       );
       if (!response.ok) {
         throw new Error(response.message);
@@ -26,6 +27,8 @@ export default function AnimeList() {
       setLoading(false);
     }
   }*/
+
+    //recommended
   async function getAnimeList() {
     try {
       const response = await fetch(

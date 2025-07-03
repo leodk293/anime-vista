@@ -205,35 +205,6 @@ export default function AnimePage({ params }) {
 
   return (
     <div className="text-white flex flex-col gap-10 ">
-      <section className="flex flex-col gap-2">
-        <h1 className="font-semibold text-blue-200 text-xl sm:text-2xl">
-          {animeData.data?.title_english || "Title not available"}
-        </h1>
-        {animeData.data?.streaming?.length > 0 ? (
-          <div className="text-sm font-medium flex flex-col gap-2">
-            <p>Streamed on : {""}</p>
-            <ul className="pl-5 flex flex-col gap-2">
-              {animeData.data?.streaming?.map((element) => (
-                <li
-                  className="text-gray-400 list-disc font-medium"
-                  key={nanoid(10)}
-                >
-                  <Link target="_blank" href={element.url}>
-                    {element.name}
-                  </Link>
-                </li>
-              )) || (
-                <li className="text-gray-400">
-                  No streaming information available
-                </li>
-              )}
-            </ul>
-          </div>
-        ) : (
-          <p className="text-gray-400 text-sm font-medium">No Streamed Yet</p>
-        )}
-      </section>
-
       <section className="flex flex-col gap-5">
         <h1 className="text-xl sm:text-2xl font-bold">Characters</h1>
         {animeCharacters.loading ? (
@@ -333,7 +304,7 @@ export default function AnimePage({ params }) {
         <h1 className="text-xl sm:text-2xl font-bold">Trailer</h1>
         {animeData.data &&
           (animeData.data.trailer ? (
-            <div className="w-full">
+            <div className="w-full bg-gray-900">
               <iframe
                 className="w-full border border-gray-800 rounded-sm h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[30rem]"
                 src={animeData.data.trailer.embed_url}

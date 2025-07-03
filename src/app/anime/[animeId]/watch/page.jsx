@@ -2,6 +2,7 @@
 import React from "react";
 import { useState, useEffect, use } from "react";
 import Loader from "../../../../../components/loader/Loader";
+import Link from "next/link";
 import { nanoid } from "nanoid";
 
 export default function WatchPage({ params }) {
@@ -60,26 +61,36 @@ export default function WatchPage({ params }) {
     <div className=" flex flex-col gap-10 text-white">
       {episodeList.length && (
         <div className=" flex flex-col gap-2">
-            <h1 className="text-xl font-bold">Episode List ({episodeList.length})</h1>
-            <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900"/>
+          <h1 className="text-xl font-bold">
+            Episode List ({episodeList.length})
+          </h1>
+          <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
         </div>
       )}
-      
+
       {episodeList.data && (
         <div className=" flex flex-col gap-5">
           {episodeList.data.map((element, index) => (
-            <div key={nanoid(10)} className=" border-b border-b-gray-600 pb-1 flex flex-row justify-between">
-              <p>Episode {index + 1}</p>
-              <p>
-                {element.title
-                  ? element.title
-                  : element.title_japanese
-                    ? element.title_japanese
-                    : element.title_romanji
-                      ? element.title_romanji
-                      : "No title available"}
-              </p>
-            </div>
+            <Link
+              href={`/anime/${animeId}/watch/${index + 1}/episode`}
+              key={nanoid(10)}
+            >
+              <div
+                key={nanoid(10)}
+                className=" border-b border-b-gray-600 rounded-tl-sm rounded-tr-sm p-2 flex flex-row justify-between md:text-[15px] hover:bg-white/5 duration-200"
+              >
+                <p>Episode {index + 1}</p>
+                <p>
+                  {element.title
+                    ? element.title
+                    : element.title_japanese
+                      ? element.title_japanese
+                      : element.title_romanji
+                        ? element.title_romanji
+                        : "No title available"}
+                </p>
+              </div>
+            </Link>
           ))}
         </div>
       )}
