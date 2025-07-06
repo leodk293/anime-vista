@@ -77,7 +77,7 @@ export default function WatchPage({ params }) {
             >
               <div
                 key={nanoid(10)}
-                className=" border-b border-b-gray-600 rounded-tl-sm rounded-tr-sm p-2 flex flex-row justify-between md:text-[15px] hover:bg-white/5 duration-200"
+                className=" border-b border-b-gray-100 rounded-tl-sm rounded-tr-sm p-2 flex flex-row justify-between md:text-[15px] hover:bg-white/10 duration-200"
               >
                 <p>Episode {index + 1}</p>
                 <p>

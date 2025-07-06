@@ -224,20 +224,24 @@ export default function AnimePage({ params }) {
             {animeCharacters.data?.length > 0 ? (
               animeCharacters.data.slice(0, 8).map((element) => (
                 <div
-                  className="flex flex-row items-center border border-gray-800 w-full justify-between bg-[#151f2e] rounded-lg"
+                  className="flex flex-row items-center border border-gray-200/30 w-full justify-between bg-white/5 rounded-lg"
                   key={element.character.mal_id}
                 >
                   <div className="flex flex-row items-center gap-2 sm:gap-4 w-1/2">
                     <div className="relative w-[60px] h-[80px] sm:w-[80px] sm:h-[100px]">
-                      <Image
-                        src={element.character.images.jpg.image_url}
-                        alt={element.character.name}
-                        fill
-                        className="object-cover rounded-tl-md rounded-bl-md"
-                        onError={(e) => {
-                          e.target.src = "/placeholder-image.jpg";
-                        }}
-                      />
+                      <Link
+                        href={`/${animeId}/character/${element.character.mal_id}`}
+                      >
+                        <Image
+                          src={element.character.images.jpg.image_url}
+                          alt={element.character.name}
+                          fill
+                          className="object-cover rounded-tl-md rounded-bl-md"
+                          onError={(e) => {
+                            e.target.src = "/placeholder-image.jpg";
+                          }}
+                        />
+                      </Link>
                     </div>
                     <div className="flex flex-col text-xs sm:text-sm gap-4 sm:gap-10">
                       <p className="font-semibold line-clamp-1">
@@ -307,7 +311,14 @@ export default function AnimePage({ params }) {
             <div className="w-full bg-gray-900">
               <iframe
                 className="w-full border border-gray-800 rounded-sm h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[30rem]"
-                src={animeData.data.trailer.embed_url}
+                src={
+                  animeData.data?.trailer?.embed_url
+                    ? animeData.data?.trailer?.embed_url.replace(
+                        "autoplay=1",
+                        "autoplay=0"
+                      )
+                    : undefined
+                }
                 title={`${animeData.data?.title_english} trailer`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen

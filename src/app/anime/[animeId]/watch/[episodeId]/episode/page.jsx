@@ -164,7 +164,7 @@ export default function EpisodePage({ params }) {
             </Link>
           </section>
 
-          <p className=" mt-5 w-[85%] leading-8 text-gray-200/65 text-[16px] md:text-lg">
+          <p className=" mt-5 w-[85%] leading-8 text-gray-200/100 text-[16px] md:text-lg">
             {episodeData.data.synopsis}
           </p>
         </div>

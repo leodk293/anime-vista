@@ -222,7 +222,7 @@ const Home = () => {
                 : selectedAnimeType}
             </h1>
             <Link
-              className="text-gray-500 font-medium text-sm sm:text-base hover:text-gray-400 transition-colors duration-200"
+              className="text-gray-200 font-medium text-sm sm:text-base hover:text-gray-400 transition-colors duration-200"
               href={animeTypeLink}
             >
               <div className=" flex flex-row gap-2 justify-center items-center">
@@ -299,7 +299,7 @@ const Home = () => {
             <form
               onSubmit={(event) => event.preventDefault()}
               id="search"
-              className="flex flex-row border px-1.5 sm:px-2 rounded-[5px] border-transparent bg-gray-800 justify-center items-center gap-1.5 sm:gap-2"
+              className="flex flex-row border px-1.5 sm:px-2 rounded-[5px] border-transparent bg-white/5 justify-center items-center gap-1.5 sm:gap-2"
               action=""
             >
               <Search size={16} color="#d6d6d6" strokeWidth={2.5} />
@@ -330,7 +330,7 @@ const Home = () => {
             </label>
             <select
               onChange={(event) => setSelectedGenre(event.target.value)}
-              className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-gray-800 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
+              className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-white/5 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
               name="anime-genres"
               id="genres"
             >
@@ -357,7 +357,7 @@ const Home = () => {
             </label>
             <select
               onChange={(event) => setSelectedYear(event.target.value)}
-              className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-gray-800 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
+              className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-white/5 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
               name="anime-years"
               id="years"
             >
@@ -384,7 +384,7 @@ const Home = () => {
             </label>
             <select
               onChange={(event) => setSelectedSeason(event.target.value)}
-              className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-gray-800 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
+              className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-white/5 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
               name="anime-seasons"
               id="seasons"
             >

@@ -66,7 +66,7 @@ export default function AnimeStaff({ animeId, slice }) {
               .slice(0, slice !== 0 ? slice : animeStaff.data.length)
               .map((element) => (
                 <div
-                  className="flex flex-row items-center border border-gray-800 w-full justify-between bg-[#151f2e] rounded-lg"
+                  className="flex flex-row items-center border border-gray-200/30 w-full justify-between bg-white/5 rounded-lg"
                   key={element.person.mal_id}
                 >
                   <div className="flex flex-row items-center gap-2 sm:gap-4">

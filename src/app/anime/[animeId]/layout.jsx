@@ -45,8 +45,7 @@ export default async function layout({ children, params }) {
   const string = animeData.data.aired.string || "";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950">
-      
+    <div className="min-h-screen">
       <div className="fixed inset-0 -z-10 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/80 to-slate-900" />
         <Image
@@ -107,10 +106,7 @@ export default async function layout({ children, params }) {
 
                     <div className="flex items-center justify-center gap-1 bg-blue-500/20 px-3 py-1 rounded-full border border-blue-500/30">
                       <span className=" text-blue-400">
-                        <Calendar
-                          size={16}
-                          strokeWidth={2.25}
-                        />
+                        <Calendar size={16} strokeWidth={2.25} />
                       </span>
                       <span className="text-blue-300 font-medium">
                         {string}
@@ -262,6 +258,13 @@ export default async function layout({ children, params }) {
                   className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
                 >
                   Reviews
+                </Link>
+
+                <Link
+                  href={`/anime/${animeId}/trailers-themes`}
+                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                >
+                  Trailers & Themes
                 </Link>
               </nav>
             </div>
