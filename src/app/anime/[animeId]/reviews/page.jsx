@@ -219,7 +219,7 @@ export default function ReviewsPage({ params }) {
               {/* Review Content */}
               <div className="space-y-3">
                 <div className="prose prose-invert max-w-none">
-                  <ReadMore text={review.review} maxLength={1000} />
+                  <ReadMore text={review.review} textSize={'text-sm'} maxLength={1000} />
                 </div>
 
                 {/* Review Actions */}

@@ -3,7 +3,7 @@ import fetchAnimeData from "../../../../utils/fetchAnimeData";
 import Image from "next/image";
 import Link from "next/link";
 import { nanoid } from "nanoid";
-import { Tv, Calendar } from "lucide-react";
+import { Tv, Calendar, Clock } from "lucide-react";
 
 export default async function layout({ children, params }) {
   const { animeId } = params;
@@ -43,6 +43,7 @@ export default async function layout({ children, params }) {
   const hasStreaming = animeData.data?.streaming?.length > 0;
   const isNotYetAired = animeData.data.status === "Not yet aired";
   const string = animeData.data.aired.string || "";
+  const broadCastDays = animeData.data.broadcast.string || "";
 
   return (
     <div className="min-h-screen">
@@ -110,6 +111,15 @@ export default async function layout({ children, params }) {
                       </span>
                       <span className="text-blue-300 font-medium">
                         {string}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-1 bg-violet-500/20 px-3 py-1 rounded-full border border-violet-500/30">
+                      <span className=" text-violet-400">
+                        <Clock size={16} strokeWidth={2.25} />
+                      </span>
+                      <span className="text-violet-300 font-medium">
+                        {broadCastDays}
                       </span>
                     </div>
 

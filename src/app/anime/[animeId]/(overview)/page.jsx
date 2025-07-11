@@ -274,17 +274,19 @@ export default function AnimePage({ params }) {
                               </p>
                               <p className="text-gray-400">{va.language}</p>
                             </div>
-                            <div className="relative w-[60px] h-[80px] sm:w-[80px] sm:h-[100px]">
-                              <Image
-                                src={va.person.images.jpg.image_url}
-                                alt={va.person.name}
-                                fill
-                                className="object-cover rounded-tr-md rounded-br-md"
-                                onError={(e) => {
-                                  e.target.src = "/placeholder-image.jpg";
-                                }}
-                              />
-                            </div>
+                            <Link href={`/voice-actor/${va.person.mal_id}`}>
+                              <div className="relative w-[60px] h-[80px] sm:w-[80px] sm:h-[100px]">
+                                <Image
+                                  src={va.person.images.jpg.image_url}
+                                  alt={va.person.name}
+                                  fill
+                                  className="object-cover rounded-tr-md rounded-br-md"
+                                  onError={(e) => {
+                                    e.target.src = "/placeholder-image.jpg";
+                                  }}
+                                />
+                              </div>
+                            </Link>
                           </div>
                         ))
                     : null}

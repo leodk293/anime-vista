@@ -6,9 +6,10 @@ export default function AnimeList() {
   const [animeList, setAnimeList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   //https://api.jikan.moe/v4/anime?genres=41
   //const animeName = "Edgerunners";
-  async function getAnimeList() {
+  /*async function getAnimeList() {
     try {
       const response = await fetch(
         `https://api.jikan.moe/v4/seasons/upcoming`
@@ -26,10 +27,10 @@ export default function AnimeList() {
     } finally {
       setLoading(false);
     }
-  }
+  }*/
 
     //recommended
-  /*async function getAnimeList() {
+  async function getAnimeList() {
     try {
       const response = await fetch(
         "https://api.jikan.moe/v4/recommendations/anime"
@@ -47,7 +48,7 @@ export default function AnimeList() {
     } finally {
       setLoading(false);
     }
-  }*/
+  }
 
   async function storeAnimeById(animeId) {
     try {
