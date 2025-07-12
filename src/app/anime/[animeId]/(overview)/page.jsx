@@ -206,7 +206,9 @@ export default function AnimePage({ params }) {
   return (
     <div className="text-white flex flex-col gap-10 ">
       <section className="flex flex-col gap-5">
-        <h1 className="text-xl sm:text-2xl font-bold">Characters</h1>
+        <Link href={`/anime/${animeId}/characters`}>
+          <h1 className="text-xl sm:text-2xl font-bold">Characters</h1>
+        </Link>
         {animeCharacters.loading ? (
           <Loader />
         ) : animeCharacters.error ? (
@@ -302,7 +304,9 @@ export default function AnimePage({ params }) {
       </section>
 
       <section className="flex flex-col gap-5">
-        <h1 className="text-xl sm:text-2xl font-bold">Staff</h1>
+        <Link href={`/anime/${animeId}/staff`}>
+          <h1 className="text-xl sm:text-2xl font-bold">Staff</h1>
+        </Link>
         <AnimeStaff animeId={animeId} slice={4} />
       </section>
 
@@ -340,7 +344,7 @@ export default function AnimePage({ params }) {
             {animeRecommendations.data.length >= 6 && (
               <button
                 onClick={handleRecommendationDisplay}
-                className="text-gray-400 flex flex-row justify-center items-center gap-2 cursor-pointer font-medium capitalize text-sm sm:text-base"
+                className="text-gray-200 flex flex-row justify-center items-center gap-2 cursor-pointer font-medium capitalize text-sm sm:text-base"
               >
                 {moreRecommended === 6 ? (
                   <ArrowRightLeft className=" hidden md:block" size={18} />

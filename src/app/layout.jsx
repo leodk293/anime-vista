@@ -3,6 +3,7 @@ import "./globals.css";
 import { NextAuthProvider } from "../../Providers";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
           <Header />
           <div className=" mx-auto px-3 md:px-0 ">{children}</div>
           <Footer />
+          <ToastContainer />
         </body>
       </html>
     </NextAuthProvider>

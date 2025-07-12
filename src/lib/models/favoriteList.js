@@ -6,6 +6,14 @@ const favoriteListSchema = new Schema(
             type: String,
             required: true
         },
+        animeTitle: {
+            type: String,
+            required: true
+        },
+        animePoster: {
+            type: String,
+            required: true
+        },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

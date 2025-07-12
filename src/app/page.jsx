@@ -200,13 +200,8 @@ const Home = () => {
           Filter :{" "}
           <select
             onChange={(e) => setSelectedAnimeType(e.target.value)}
-            className=" cursor-pointer bg-gray-950 border border-transparent rounded-md text-sm sm:text-base md:text-lg text-gray-300 p-1 sm:p-2 md:p-3"
+            className=" cursor-pointer bg-gray-900 outline-none border border-gray-700 rounded-md text-sm sm:text-base md:text-lg text-gray-300 p-1 sm:p-2 md:p-3"
           >
-            {/* {types.map((type) => (
-              <option value={type} className=" cursor-pointer" key={nanoid(10)}>
-                {type}
-              </option>
-            ))} */}
             <option value="recent">recent</option>
             <option value="popular">popular</option>
             <option value="upcoming">upcoming</option>
@@ -472,15 +467,23 @@ const Home = () => {
             <p className=" text-center text-white">No anime found...</p>
           ) : (
             <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-              {anime.data.map((anime) => (
-                <div key={anime.animeId}>
-                  <AnimeBox
-                    animeId={anime.animeId}
-                    animeImage={anime.animeImage}
-                    animeName={anime.animeName}
-                  />
-                </div>
-              ))}
+              {anime.data
+                .filter(
+                  (anime) =>
+                    anime &&
+                    anime.animeId &&
+                    anime.animeImage &&
+                    anime.animeName
+                )
+                .map((anime) => (
+                  <div key={anime.animeId}>
+                    <AnimeBox
+                      animeId={anime.animeId}
+                      animeImage={anime.animeImage}
+                      animeName={anime.animeName}
+                    />
+                  </div>
+                ))}
             </div>
           ))
         )}

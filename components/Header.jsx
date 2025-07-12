@@ -51,7 +51,7 @@ export default function Header() {
 
             <button
               onClick={() => signOut()}
-              className=" border border-transparent text-lg bg-blue-950 text-white rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-2 justify-center items-center"
+              className=" border border-transparent text-lg bg-white/20 text-white rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-2 justify-center items-center"
             >
               <LogOut
                 className=" self-center"
