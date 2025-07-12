@@ -179,7 +179,7 @@ export default function AnimePage({ params }) {
 
   if (!animeId) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center min-h-screen">
         <h1 className="text-xl text-red-500">Invalid anime ID provided.</h1>
       </div>
     );

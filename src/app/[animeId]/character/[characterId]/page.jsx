@@ -6,7 +6,6 @@ import { nanoid } from "nanoid";
 import Image from "next/image";
 import Loader from "../../../../../components/loader/Loader";
 import ReadMore from "../../../../../components/readMore";
-import AnimeBox from "../../../../../components/AnimeBox";
 
 export default function CharacterPage({ params }) {
   const resolvedParams = use(params);
@@ -72,7 +71,7 @@ export default function CharacterPage({ params }) {
 
   if (!animeId || !characterId) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center min-h-screen">
         <h1 className="text-xl text-red-500">Invalid ID provided.</h1>
       </div>
     );
@@ -84,7 +83,7 @@ export default function CharacterPage({ params }) {
 
   if (animeCharacterData.error) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center min-h-screen">
         <h1 className="text-xl text-red-500">
           Failed to load character data. Please try again later.
         </h1>
@@ -153,12 +152,6 @@ export default function CharacterPage({ params }) {
           <div className=" flex flex-col gap-2">
             <h1 className=" text-2xl font-bold">Present in :</h1>
             <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
-            {/* <div className=" flex flex-col gap-2">
-          <h1 className="text-xl font-bold">
-            Episode List ({episodeList.length})
-          </h1>
-          <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
-        </div> */}
           </div>
           <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
             {animeCharacterData?.data?.anime &&
@@ -169,14 +162,17 @@ export default function CharacterPage({ params }) {
                   className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
                 >
                   <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
-                    <Image
-                      key={element?.anime?.mal_id}
-                      width={200}
-                      height={300}
-                      src={element?.anime?.images?.jpg?.large_image_url}
-                      alt={element?.anime?.title}
-                      className="rounded-lg border border-gray-300 object-cover"
-                    />
+                    {element?.anime?.images?.jpg?.large_image_url && (
+                      <Image
+                        key={element?.anime?.mal_id}
+                        width={200}
+                        height={300}
+                        src={element?.anime?.images?.jpg?.large_image_url}
+                        alt={element?.anime?.title}
+                        className="rounded-lg border border-gray-300 object-cover"
+                      />
+                    )}
+
                     <p className="text-gray-300 max-w-[200px] text-xs sm:text-sm font-medium line-clamp-2">
                       {element?.anime?.title}
                     </p>
