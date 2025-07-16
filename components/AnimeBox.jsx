@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 export default function AnimeBox({ animeId, animeImage, animeName }) {
   const { data: session, status } = useSession();
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const success = () => {
     toast.success("Added to favorite list", {
@@ -34,48 +35,13 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
   const loginAlert = () => {
     toast.error("Login first to add anime to your favorite list.", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
     });
   };
-
-  /*const handleAddToFavorite = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (status === "unauthenticated") {
-      loginAlert();
-      return;
-    }
-
-    try {
-      const res = fetch("/api/add-to-favorite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          animeId,
-          animeTitle: animeName,
-          animePoster: animeImage,
-          userId: session?.user?.id,
-        }),
-      });
-      if (res.ok) {
-        success();
-      } 
-      if(res.status === 409) {
-        alreadyAdded();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    console.log(`Added ${animeName} to favorites`);
-  };*/
 
   const handleAddToFavorite = async (e) => {
     e.preventDefault();
@@ -86,31 +52,80 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
       return;
     }
 
+    if (status === "loading") {
+      toast.info("Please wait for authentication...");
+      return;
+    }
+
+    // Validate required data
+    if (!animeId || !animeName || !animeImage) {
+      toast.error("Missing anime information");
+      return;
+    }
+
+    if (!session?.user?.id || !session?.user?.name) {
+      toast.error("User session is incomplete. Please login again.");
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      const res = await fetch("/api/add-to-favorite", {
+      console.log("Sending request with data:", {
+        animeId,
+        animeTitle: animeName,
+        animePoster: animeImage,
+        userId: session.user.id,
+        userName: session.user.name,
+      });
+
+      const res = await fetch("/api/favorite-list", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          animeId,
-          animeTitle: animeName,
-          animePoster: animeImage,
-          userId: session?.user?.id,
+          animeId: String(animeId),
+          animeTitle: String(animeName),
+          animePoster: String(animeImage),
+          userId: String(session.user.id),
+          userName: String(session.user.name),
         }),
       });
 
-      if (res.ok) {
-        success();
-      } else if (res.status === 409) {
-        alreadyAdded();
-      } else {
-        // Handle other error cases
-        toast.error("Failed to add anime to favorites");
+      console.log("Response status:", res.status);
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("API Error:", errorData);
+
+        if (res.status === 409) {
+          alreadyAdded();
+        } else if (res.status === 400) {
+          toast.error(`Invalid request: ${errorData.error}`);
+        } else if (res.status === 500) {
+          toast.error("Server error. Please try again later.");
+        } else {
+          toast.error("Failed to add anime to favorites");
+        }
+        return;
       }
+
+      const responseData = await res.json();
+      console.log("Success response:", responseData);
+      success();
     } catch (error) {
-      console.error("Error adding to favorites:", error);
-      toast.error("Network error. Please try again.");
+      console.error("Network error:", error);
+
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        toast.error("Network error. Please check your connection.");
+      } else if (error.name === "SyntaxError") {
+        toast.error("Invalid server response. Please try again.");
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -126,13 +141,15 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
         className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
       >
         <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
-          <Image
-            src={animeImage}
-            width={180}
-            height={200}
-            alt={animeName}
-            className="rounded-lg border border-gray-700 object-cover w-full aspect-[9/13]"
-          />
+          <div className="overflow-hidden rounded-lg border border-gray-700">
+            <Image
+              src={animeImage}
+              width={180}
+              height={200}
+              alt={animeName}
+              className="object-cover w-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
+            />
+          </div>
           <h2 className="text-gray-300 text-xs sm:text-sm font-medium line-clamp-2">
             {animeName}
           </h2>
@@ -144,9 +161,12 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
           <button
             title="Add to favorite"
             onClick={handleAddToFavorite}
-            className="bg-black/80 cursor-pointer text-white px-3 py-1.5 rounded-md text-[16px] font-medium hover:bg-gray-900 transition-colors duration-200 backdrop-blur-sm border border-gray-600"
+            disabled={isLoading}
+            className={`bg-black/80 border border-gray-600 text-white px-3 py-1.5 rounded-md text-[16px] font-medium hover:translate-x-[-5px] duration-200 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
-            Add to favorite
+            {isLoading ? "Adding..." : "Add to favorite"}
           </button>
         </div>
       )}

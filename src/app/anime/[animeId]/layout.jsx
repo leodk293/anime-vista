@@ -41,9 +41,12 @@ export default async function layout({ children, params }) {
 
   const title = animeData.data.title_english || animeData.data.title;
   const hasStreaming = animeData.data?.streaming?.length > 0;
-  const isNotYetAired = animeData.data.status === "Not yet aired";
+
   const string = animeData.data.aired.string || "";
   const broadCastDays = animeData.data.broadcast.string || "";
+  const isMovie = animeData.data.type === "Movie";
+
+  const isNotYetAired = animeData.data.status === "Not yet aired";
 
   return (
     <div className="min-h-screen">
@@ -212,8 +215,8 @@ export default async function layout({ children, params }) {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-slate-400 text-sm">
-                        No streaming platforms available
+                      <p className="text-slate-200 text-sm">
+                        No streaming platforms found
                       </p>
                     )}
                   </div>
@@ -232,7 +235,7 @@ export default async function layout({ children, params }) {
                 >
                   Overview
                 </Link>
-                {!isNotYetAired && (
+                {!isNotYetAired && !isMovie && (
                   <Link
                     href={`/anime/${animeId}/watch`}
                     className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white flex items-center gap-2"

@@ -1,10 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ChevronRight, Search } from "lucide-react";
+import {
+  ChevronRight,
+  Search,
+  CircleX,
+  MoveRight,
+  RefreshCw,
+} from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import { CircleX, MoveRight, RefreshCw } from "lucide-react";
 import Image from "next/image";
 import AnimeBox from "../../components/AnimeBox";
 import Loader from "../../components/loader/Loader";
@@ -179,20 +184,41 @@ const Home = () => {
         </p>
       </div>
 
-      {status === "unauthenticated" ? (
-        <button
-          onClick={() => signIn("google")}
-          className="text-sm sm:text-base md:text-lg font-medium rounded-full flex flex-row px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-3 justify-center items-center cursor-pointer gap-2 sm:gap-3 md:gap-4 bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
-        >
-          <p className="text-white capitalize">join now</p>
-          <ChevronRight
-            className="border border-transparent text-blue-500 bg-white rounded-full p-0.5 sm:p-1"
-            size={24}
-            strokeWidth={1.75}
-          />
+      <form className=" flex flex-row" action="">
+        <input
+          className=" text-gray-100 font-medium px-4 py-2 self-center border border-gray-500 border-r-transparent rounded-tl-lg outline-none rounded-bl-lg text-lg"
+          placeholder="Search for an anime..."
+          type="text"
+        />
+        <button className=" cursor-pointer px-4 py-2 border border-gray-500 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
+          <Search size={28} color="#ffffff" strokeWidth={1.75} />
         </button>
+      </form>
+
+      {status === "unauthenticated" ? (
+        <div className=" text-white flex flex-col items-center gap-2">
+          <p className="font-medium italic text-gray-300">
+            Login and make your favorite AnimeList
+          </p>
+          <button
+            onClick={() => signIn("google")}
+            className="text-sm sm:text-base md:text-lg font-medium rounded-full flex flex-row px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-3 justify-center items-center cursor-pointer gap-2 sm:gap-3 md:gap-4 bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
+          >
+            <p className="text-white capitalize">Login</p>
+            <ChevronRight
+              className="border border-transparent text-blue-500 bg-white rounded-full p-0.5 sm:p-1"
+              size={24}
+              strokeWidth={1.75}
+            />
+          </button>
+        </div>
       ) : (
-        <></>
+        <Link
+          href={"/favorite-animeList"}
+          className=" border border-gray-200 bg-transparent px-5 py-3 rounded-full text-lg text-white hover:translate-x-3 duration-200"
+        >
+          Favorite AnimeList ➡️
+        </Link>
       )}
 
       <section className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
@@ -275,6 +301,17 @@ const Home = () => {
                         </h2>
                       </div>
                     </Link>
+                    // <AnimeBox
+                    //   animeId={anime.mal_id}
+                    //   animeImage={
+                    //     anime.images.jpg.large_image_url
+                    //       ? anime.images.jpg.large_image_url
+                    //       : anime.images.jpg.image_url
+                    //   }
+                    //   animeName={
+                    //     anime.title_english ? anime.title_english : anime.title
+                    //   }
+                    // />
                   ))}
               </div>
             )

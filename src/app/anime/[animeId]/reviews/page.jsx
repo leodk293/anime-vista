@@ -130,7 +130,7 @@ export default function ReviewsPage({ params }) {
             <h1 className="text-2xl font-bold text-white">
               MyAnimeList User Reviews
             </h1>
-            <p className="text-slate-400">
+            <p className="text-slate-100">
               {reviews.data?.length > 0
                 ? `${reviews.data.length} review${
                     reviews.data.length !== 1 ? "s" : ""
@@ -196,7 +196,7 @@ export default function ReviewsPage({ params }) {
                   </div>
 
                   {review.date && (
-                    <p className="text-slate-400 text-sm flex items-center gap-1">
+                    <p className="text-slate-100 text-sm flex items-center gap-1">
                       <svg
                         className="w-3 h-3"
                         fill="none"
@@ -219,11 +219,11 @@ export default function ReviewsPage({ params }) {
               {/* Review Content */}
               <div className="space-y-3">
                 <div className="prose prose-invert max-w-none">
-                  <ReadMore text={review.review} textSize={'text-sm'} maxLength={1000} />
+                  <ReadMore text={review.review} textSize={'text-[16px]'} maxLength={1000} />
                 </div>
 
                 {/* Review Actions */}
-                <div className="flex items-center gap-4 text-xs text-slate-400">
+                <div className="flex items-center gap-4 text-xs text-slate-200">
                   {review.reactions && (
                     <div className="flex items-center gap-3">
                       {review.reactions.overall > 0 && (
@@ -272,9 +272,7 @@ export default function ReviewsPage({ params }) {
             <h3 className="text-xl font-semibold text-slate-300 mb-2">
               No Reviews Yet
             </h3>
-            <p className="text-slate-400">
-              Be the first to share your thoughts about this anime!
-            </p>
+            
           </div>
         </div>
       )}

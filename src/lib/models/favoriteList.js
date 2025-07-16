@@ -19,8 +19,10 @@ const favoriteListSchema = new Schema(
             ref: "User",
             required: true
         },
-
-
+        userName: {
+            type: String,
+            required: true
+        }
     },
     { timestamps: true }
 );

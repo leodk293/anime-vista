@@ -18,7 +18,58 @@ export default function Header() {
           <Link href={""}>Twitter/X</Link>
           <Link href={""}>Facebook</Link>
         </nav>
+
         {status === "unauthenticated" ? (
+          <button
+            onClick={() => signIn("google")}
+            className=" border border-transparent text-lg bg-gray-100 rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-1 justify-center items-center"
+          >
+            <Image
+              src={googleLogo}
+              alt="Google"
+              width={25}
+              height={25}
+              className=" self-center object-contain"
+            />
+            <span className=" self-center font-medium">Login</span>
+          </button>
+        ) : status === "loading" ? (
+          <p className=" text-white text-2xl font-medium self-center">
+            Loading...
+          </p>
+        ) : (
+          <div className=" flex flx-row gap-2">
+            {session?.user && (
+              <div className=" border border-gray-300 rounded-full px-3 py-1 flex flex-row gap-2">
+                <Image
+                  src={session?.user?.image}
+                  alt={session?.user?.name}
+                  width={30}
+                  height={30}
+                  className=" self-center rounded-full object-cover"
+                />
+                <p className=" text-white self-center">
+                  {session?.user?.name?.split(" ")[0]}
+                </p>
+              </div>
+            )}
+
+            <button
+              onClick={() => signOut()}
+              className=" border border-transparent text-lg bg-white/20 text-white rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-2 justify-center items-center"
+            >
+              <LogOut
+                className=" self-center"
+                size={25}
+                color="#ffffff"
+                strokeWidth={1.75}
+              />
+              <p className=" self-center">Sign out</p>
+            </button>
+          </div>
+        )}
+
+        {/* {status === "unauthenticated" ? (
           <button
             onClick={() => signIn("google")}
             className=" border border-transparent text-lg bg-gray-100 rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-1 justify-center items-center"
@@ -62,7 +113,7 @@ export default function Header() {
               <p className=" self-center">Sign out</p>
             </button>
           </div>
-        )}
+        )} */}
       </header>
     </div>
   );
