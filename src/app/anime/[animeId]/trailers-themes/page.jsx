@@ -66,7 +66,7 @@ export default function TrailerThemePage({ params }) {
         </div>
 
         <div className=" grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4">
-          {animeVideos.trailers &&
+          {animeVideos.trailers && animeVideos.trailers.length > 0 ? (
             animeVideos.trailers.map((element, index) => (
               <div
                 key={nanoid(10)}
@@ -92,7 +92,12 @@ export default function TrailerThemePage({ params }) {
                   </Link>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <p className=" text-gray-300 font-medium text-lg">
+              No trailer available
+            </p>
+          )}
         </div>
       </section>
 
@@ -103,13 +108,12 @@ export default function TrailerThemePage({ params }) {
         </div>
 
         <div className=" grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 gap-4">
-          {animeVideos.musicVideos &&
+          {animeVideos.musicVideos && animeVideos.musicVideos.length > 0 ? (
             animeVideos.musicVideos.map((element, index) => (
               <div
                 key={nanoid(10)}
                 className="bg-white/5 p-5 flex flex-col gap-1 rounded-lg"
               >
-                {/* <p className=" font-medium">{element?.title}</p> */}
                 <iframe
                   className="w-full rounded-sm h-[10rem]"
                   src={element.video.embed_url.replace(
@@ -121,8 +125,6 @@ export default function TrailerThemePage({ params }) {
                   allowFullScreen
                 />
                 <div className=" flex flex-col gap-1">
-                  {/* <p className=" font-medium">{element?.meta?.title}</p>
-                  <p>By : {element?.meta?.author}</p> */}
                   <p className=" font-medium">{element?.title}</p>
                   <Link target="_blank" href={element?.video?.url}>
                     <button className=" border border-white bg-transparent px-4 py-1 rounded-sm cursor-pointer flex flex-row justify-center items-center gap-1 text-white">
@@ -132,11 +134,14 @@ export default function TrailerThemePage({ params }) {
                   </Link>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <p className=" text-gray-300 font-medium text-lg">
+              No opening & ending available
+            </p>
+          )}
         </div>
       </section>
-
-      <section></section>
     </div>
   );
 }

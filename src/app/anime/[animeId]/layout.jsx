@@ -11,21 +11,23 @@ export async function generateMetadata({ params }, parent) {
   const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/full`);
   const result = await res.json();
 
-  return {
-    title: {
-      template: ` ${
-        result.data.title_english
-          ? result.data.title_english
-          : result.data.title
-      } - %s | AnimeVista`,
-      default: `${
-        result.data.title_english
-          ? result.data.title_english
-          : result.data.title
-      }`,
-    },
-    description: `${result.data.synopsis}`,
-  };
+  if (result) {
+    return {
+      title: {
+        template: ` ${
+          result.data.title_english
+            ? result.data.title_english
+            : result.data.title
+        } - %s | AnimeVista`,
+        default: `${
+          result.data.title_english
+            ? result.data.title_english
+            : result.data.title
+        }`,
+      },
+      description: `${result.data.synopsis}`,
+    };
+  }
 }
 
 export default async function layout({ children, params }) {

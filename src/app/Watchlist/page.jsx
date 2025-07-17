@@ -6,21 +6,21 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Loader from "../../../components/loader/Loader";
 
-export default function FavoriteAnimeListPage() {
+export default function WatchListPage() {
   const { status, data: session } = useSession();
 
-  const [favList, setFavList] = useState({
+  const [watchList, setWatchList] = useState({
     error: false,
     loading: false,
     data: [],
   });
 
-  async function getFavList() {
+  async function getWatchList() {
     if (!session?.user?.id) return;
 
-    setFavList((prev) => ({ ...prev, loading: true, error: false }));
+    setWatchList((prev) => ({ ...prev, loading: true, error: false }));
     try {
-      const res = await fetch(`/api/favorite-list?userId=${session?.user?.id}`);
+      const res = await fetch(`/api/watch-list?userId=${session?.user?.id}`);
 
       if (!res.ok) {
         const errorData = await res.json();
@@ -28,23 +28,23 @@ export default function FavoriteAnimeListPage() {
       }
 
       const result = await res.json();
-      setFavList({
+      setWatchList({
         error: false,
         loading: false,
         data: result.animeList || [],
       });
     } catch (error) {
-      setFavList((prev) => ({ ...prev, error: true, loading: false }));
-      console.error("Error fetching favorite list:", error.message);
+      setWatchList((prev) => ({ ...prev, error: true, loading: false }));
+      console.error("Error fetching Watchlist:", error.message);
     }
   }
 
-  async function removeFromFavorites(animeId) {
+  async function removeFromWatchList(animeId) {
     if (!session?.user?.id || !animeId) return;
 
     try {
       const res = await fetch(
-        `/api/favorite-list?animeId=${animeId}&userId=${session.user.id}`,
+        `/api/watch-list?animeId=${animeId}&userId=${session.user.id}`,
         {
           method: "DELETE",
         }
@@ -56,21 +56,21 @@ export default function FavoriteAnimeListPage() {
       }
 
       // Remove the anime from the local state
-      setFavList((prev) => ({
+      setWatchList((prev) => ({
         ...prev,
         data: prev.data.filter((anime) => anime.animeId !== animeId),
       }));
 
-      console.log("Anime removed from favorites successfully");
+      console.log("Anime removed from Watchlist successfully");
     } catch (error) {
-      console.error("Error removing anime from favorites:", error.message);
+      console.error("Error removing anime from Watchlist:", error.message);
       // Optionally show an error message to the user
     }
   }
 
   useEffect(() => {
     if (session?.user?.id) {
-      getFavList();
+      getWatchList();
     }
   }, [session?.user?.id]);
 
@@ -81,7 +81,7 @@ export default function FavoriteAnimeListPage() {
   if (status === "unauthenticated") {
     return (
       <div className="text-center text-2xl mt-[5rem] h-screen text-white">
-        <p>Please log in to view your favorite list</p>
+        <p>Please log in to view your Watchlist</p>
         <Link href="/login" className="text-blue-500 hover:underline">
           Go to Login
         </Link>
@@ -89,14 +89,12 @@ export default function FavoriteAnimeListPage() {
     );
   }
 
-  if (favList.error) {
+  if (watchList.error) {
     return (
       <div className="text-center mt-[5rem] h-screen">
-        <p className="text-red-500 text-2xl mb-4">
-          Error fetching favorite list
-        </p>
+        <p className="text-red-500 text-2xl mb-4">Error fetching Watchlist</p>
         <button
-          onClick={getFavList}
+          onClick={getWatchList}
           className="bg-blue-600 cursor-pointer text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Try Again
@@ -105,35 +103,35 @@ export default function FavoriteAnimeListPage() {
     );
   }
 
-  if (favList.loading) {
+  if (watchList.loading) {
     return <Loader />;
   }
 
   return (
     <div className="mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto px-4">
       <div className="w-full flex flex-col gap-1">
-        <h1 className="text-white text-3xl font-bold">Favorite List</h1>
+        <h1 className="text-white text-3xl font-bold">Watchlist</h1>
         <span className="p-1 rounded-xl bg-blue-800 w-[10%]" />
       </div>
 
-      {favList.data.length === 0 ? (
+      {watchList.data.length === 0 ? (
         <div className="text-center h-[15rem] text-white mt-10">
-          <p className="text-xl mb-4">Your favorite list is empty</p>
+          <p className="text-xl mb-4">Your Watchlist is empty</p>
           <Link href="/" className="text-blue-500 hover:underline">
-            Browse anime to add to your favorites
+            Browse anime to add to your Watchlist
           </Link>
         </div>
       ) : (
         <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          {favList.data.map((anime) => (
+          {watchList.data.map((anime) => (
             <div
               key={anime.animeId || nanoid()}
               className="text-white flex flex-col gap-2 relative group"
             >
               <button
-                onClick={() => removeFromFavorites(anime.animeId)}
+                onClick={() => removeFromWatchList(anime.animeId)}
                 className="absolute cursor-pointer text-lg font-medium top-2 right-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 z-10 opacity-0 duration-300 group-hover:opacity-100 transition-opacity"
-                title="Remove from favorites"
+                title="Remove from Watchlist"
               >
                 Remove
               </button>

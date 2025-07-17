@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ChevronRight,
   CircleX,
@@ -167,6 +167,29 @@ const Home = () => {
     return () => clearTimeout(delayDebounce);
   }, [searchTerm, selectedSeason, selectedYear, selectedGenre]);
 
+  const filterRef = useRef(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToFilters = () => {
+    if (filterRef.current) {
+      filterRef.current.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="mt-3 sm:mt-5 md:mt-8 flex flex-col items-center gap-3 sm:gap-5 md:gap-8 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="mt-3 sm:mt-5 md:mt-8 text-center flex flex-col items-center justify-center gap-2 sm:gap-3 md:gap-5">
@@ -184,7 +207,7 @@ const Home = () => {
       {status === "unauthenticated" ? (
         <div className=" text-white flex flex-col items-center gap-2">
           <p className="font-medium italic text-gray-300">
-            Login and make your favorite AnimeList
+            Login and start making your Watchlist
           </p>
           <button
             onClick={() => signIn("google")}
@@ -205,10 +228,10 @@ const Home = () => {
         </span>
       ) : (
         <Link
-          href={"/favorite-animeList"}
+          href={"/Watchlist"}
           className=" border border-gray-200 bg-transparent px-5 py-3 rounded-full text-lg text-white hover:translate-x-3 duration-200"
         >
-          Favorite AnimeList ➡️
+          My Watchlist ➡️
         </Link>
       )}
 
@@ -310,7 +333,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8">
+      <section ref={filterRef} className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
             <label
@@ -516,6 +539,16 @@ const Home = () => {
           ))
         )}
       </section>
+      {showScrollTop && (
+        <button
+          onClick={scrollToFilters}
+          className="fixed bottom-8 border border-gray-600 right-8 z-50 cursor-pointer bg-gray-800 hover:translate-y-[-10px] duration-200 text-white rounded-full p-3 shadow-lg flex items-center gap-2 animate-fade-in"
+          aria-label="Back to top"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+          <span className="hidden sm:inline font-medium">Top</span>
+        </button>
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import React from "react";
 
-export const metadata ={
-  title:"Search Results"
-}
+export const metadata = {
+  title: "Watchlist",
+};
 
 export default function layout({ children }) {
   return <>{children}</>;

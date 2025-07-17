@@ -105,10 +105,7 @@ export default function EpisodePage({ params }) {
               {episodeData.data.title}
             </h1>
             <select
-              // style={{
-              //   backgroundColor: "rgba(255,255,255,0.05)",
-              // }}
-              className=" border border-transparent bg-white/5 text-lg font-medium outline-none px-5 py-2 rounded-lg cursor-pointer text-white self-start"
+              className=" border border-gray-500 bg-white/5 text-lg font-medium outline-none px-5 py-2 rounded-lg cursor-pointer text-white self-start hover:bg-white/10 duration-200"
               value={episodeLink}
               onChange={(e) => {
                 const selectedEpisode = Number(e.target.value);
@@ -139,7 +136,7 @@ export default function EpisodePage({ params }) {
                   : `/anime/${animeId}/watch/${episodeLink - 1}/episode`
               }
               title={episodeLink - 1 === 0 ? "" : episodeLink - 1}
-              className={`border border-transparent flex flex-row gap-2 justify-center items-center text-lg px-10 py-2 rounded-lg md:text-xl bg-white/5 ${
+              className={`border border-gray-500 flex flex-row gap-2 justify-center items-center text-lg px-10 py-2 rounded-lg md:text-xl bg-white/5 hover:bg-white/10 duration-200 ${
                 Number(episodeId) === 1
                   ? "cursor-not-allowed opacity-80"
                   : "cursor-pointer"
@@ -155,7 +152,7 @@ export default function EpisodePage({ params }) {
                   : `/anime/${animeId}/watch/${episodeLink + 1}/episode`
               }
               title={episodeLink + 1}
-              className={`border border-transparent flex flex-row gap-2 justify-center items-center text-lg px-10 py-2 rounded-lg md:text-xl bg-white/5 ${
+              className={`border border-gray-500 flex flex-row gap-2 justify-center items-center text-lg px-10 py-2 rounded-lg md:text-xl bg-white/5 hover:bg-white/10 duration-200 ${
                 Number(episodeId) === Number(episodeListLength)
                   ? "cursor-not-allowed opacity-50"
                   : "cursor-pointer"

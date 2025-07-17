@@ -11,7 +11,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const success = () => {
-    toast.success("Added to favorite list", {
+    toast.success("Added to Watchlist", {
       position: "top-right",
       autoClose: 1000,
       hideProgressBar: false,
@@ -22,7 +22,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
   };
 
   const alreadyAdded = () => {
-    toast("Already added to favorite list", {
+    toast("Already added to Watchlist", {
       position: "top-right",
       autoClose: 1000,
       hideProgressBar: false,
@@ -33,7 +33,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
   };
 
   const loginAlert = () => {
-    toast.error("Login first to add anime to your favorite list.", {
+    toast.error("Login first to add anime to your watchlist.", {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -43,7 +43,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
     });
   };
 
-  const handleAddToFavorite = async (e) => {
+  const handleAddToWatchList = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -57,7 +57,6 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
       return;
     }
 
-    // Validate required data
     if (!animeId || !animeName || !animeImage) {
       toast.error("Missing anime information");
       return;
@@ -79,7 +78,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
         userName: session.user.name,
       });
 
-      const res = await fetch("/api/favorite-list", {
+      const res = await fetch("/api/watch-list", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +105,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
         } else if (res.status === 500) {
           toast.error("Server error. Please try again later.");
         } else {
-          toast.error("Failed to add anime to favorites");
+          toast.error("Failed to add anime to Watchlist");
         }
         return;
       }
@@ -159,14 +158,14 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
       {isHovered && (
         <div className="absolute top-2 right-2 z-10">
           <button
-            title="Add to favorite"
-            onClick={handleAddToFavorite}
+            title="Add to Watchlist"
+            onClick={handleAddToWatchList}
             disabled={isLoading}
             className={`bg-black/80 border border-gray-600 text-white px-3 py-1.5 rounded-md text-[16px] font-medium hover:translate-x-[-5px] duration-200 ${
               isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           >
-            {isLoading ? "Adding..." : "Add to favorite"}
+            {isLoading ? "Adding..." : "Add to Watchlist"}
           </button>
         </div>
       )}
