@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import Image from "next/image";
-
 import { useSession } from "next-auth/react";
 import Loader from "../../../components/loader/Loader";
 

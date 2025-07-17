@@ -5,6 +5,29 @@ import Link from "next/link";
 import { nanoid } from "nanoid";
 import { Tv, Calendar, Clock } from "lucide-react";
 
+export async function generateMetadata({ params }, parent) {
+  const id = params.animeId;
+
+  const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/full`);
+  const result = await res.json();
+
+  return {
+    title: {
+      template: ` ${
+        result.data.title_english
+          ? result.data.title_english
+          : result.data.title
+      } - %s | AnimeVista`,
+      default: `${
+        result.data.title_english
+          ? result.data.title_english
+          : result.data.title
+      }`,
+    },
+    description: `${result.data.synopsis}`,
+  };
+}
+
 export default async function layout({ children, params }) {
   const { animeId } = params;
   const animeData = await fetchAnimeData(animeId);
@@ -91,9 +114,6 @@ export default async function layout({ children, params }) {
                   <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
                     {title}
                   </h1>
-                  {/* <p className=" text-white text-lg font-semibold">
-                    Broadcast Period : {string}
-                  </p> */}
 
                   <div className="flex flex-wrap items-center gap-3">
                     <span
@@ -117,14 +137,16 @@ export default async function layout({ children, params }) {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-center gap-1 bg-violet-500/20 px-3 py-1 rounded-full border border-violet-500/30">
-                      <span className=" text-violet-400">
-                        <Clock size={16} strokeWidth={2.25} />
-                      </span>
-                      <span className="text-violet-300 font-medium">
-                        {broadCastDays}
-                      </span>
-                    </div>
+                    {broadCastDays && (
+                      <div className="flex items-center justify-center gap-1 bg-violet-500/20 px-3 py-1 rounded-full border border-violet-500/30">
+                        <span className=" text-violet-400">
+                          <Clock size={16} strokeWidth={2.25} />
+                        </span>
+                        <span className="text-violet-300 font-medium">
+                          {broadCastDays}
+                        </span>
+                      </div>
+                    )}
 
                     {animeData.data.score && (
                       <div className="flex items-center gap-1 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30">
@@ -278,6 +300,13 @@ export default async function layout({ children, params }) {
                   className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
                 >
                   Trailers & Themes
+                </Link>
+
+                <Link
+                  href={`/anime/${animeId}/recommendations`}
+                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                >
+                  Recommendations
                 </Link>
               </nav>
             </div>

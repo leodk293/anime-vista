@@ -13,7 +13,7 @@ export default function StaffPage({ params }) {
         <h1 className="text-xl font-bold">Anime Staff</h1>
         <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
       </div>
-      <AnimeStaff animeId={animeId} slice={0} />
+      <AnimeStaff animeId={animeId} length={0} />
     </div>
   );
 }

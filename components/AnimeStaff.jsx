@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import Loader from "./loader/Loader";
 import Anonym from "../public/anonym-profile-picture.jpeg";
 
-export default function AnimeStaff({ animeId, slice }) {
+export default function AnimeStaff({ animeId, length }) {
   const [animeStaff, setAnimeStaff] = useState({
     data: [],
     loading: true,
@@ -63,7 +63,7 @@ export default function AnimeStaff({ animeId, slice }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {animeStaff.data?.length > 0 ? (
             animeStaff.data
-              .slice(0, slice !== 0 ? slice : animeStaff.data.length)
+              .slice(0, length !== 0 ? length : animeStaff.data.length)
               .map((element) => (
                 <div
                   className="flex flex-row items-center border border-gray-200/30 w-full justify-between bg-white/5 rounded-lg"
@@ -98,7 +98,7 @@ export default function AnimeStaff({ animeId, slice }) {
                       <p className="text-white font-semibold line-clamp-1">
                         {element.person.name}
                       </p>
-                      <p className="text-gray-400 line-clamp-2">
+                      <p className="text-gray-300 font-medium line-clamp-2">
                         {element.positions.join(", ")}
                       </p>
                     </div>

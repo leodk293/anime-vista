@@ -138,6 +138,7 @@ export default function EpisodePage({ params }) {
                   ? ""
                   : `/anime/${animeId}/watch/${episodeLink - 1}/episode`
               }
+              title={episodeLink - 1 === 0 ? "" : episodeLink - 1}
               className={`border border-transparent flex flex-row gap-2 justify-center items-center text-lg px-10 py-2 rounded-lg md:text-xl bg-white/5 ${
                 Number(episodeId) === 1
                   ? "cursor-not-allowed opacity-80"
@@ -153,6 +154,7 @@ export default function EpisodePage({ params }) {
                   ? ""
                   : `/anime/${animeId}/watch/${episodeLink + 1}/episode`
               }
+              title={episodeLink + 1}
               className={`border border-transparent flex flex-row gap-2 justify-center items-center text-lg px-10 py-2 rounded-lg md:text-xl bg-white/5 ${
                 Number(episodeId) === Number(episodeListLength)
                   ? "cursor-not-allowed opacity-50"

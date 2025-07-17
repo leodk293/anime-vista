@@ -2,23 +2,23 @@
 import React, { useState, useEffect } from "react";
 import {
   ChevronRight,
-  Search,
   CircleX,
   MoveRight,
   RefreshCw,
+  Search,
 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import Image from "next/image";
 import AnimeBox from "../../components/AnimeBox";
+import SearchAnime from "../../components/SearchAnime";
 import Loader from "../../components/loader/Loader";
-import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [genres, setGenres] = useState([]);
   const [years, setYears] = useState([]);
-  const router = useRouter();
+  const { status, data: session } = useSession();
 
   async function getAnimeGenres() {
     try {
@@ -54,13 +54,8 @@ const Home = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, []);
-  /*useEffect(() => {
-    getAnimeGenres();
-    getAnimeYears();
-  }, []);*/
+
   const seasons = ["Spring", "Fall", "Winter", "Summer"];
-  const types = ["recent", "popular", "upcoming", "top"];
-  const { status, data: session } = useSession();
 
   const [animeData, setAnimeData] = useState({
     error: false,
@@ -184,16 +179,7 @@ const Home = () => {
         </p>
       </div>
 
-      <form className=" flex flex-row" action="">
-        <input
-          className=" text-gray-100 font-medium px-4 py-2 self-center border border-gray-500 border-r-transparent rounded-tl-lg outline-none rounded-bl-lg text-lg"
-          placeholder="Search for an anime..."
-          type="text"
-        />
-        <button className=" cursor-pointer px-4 py-2 border border-gray-500 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
-          <Search size={28} color="#ffffff" strokeWidth={1.75} />
-        </button>
-      </form>
+      <SearchAnime />
 
       {status === "unauthenticated" ? (
         <div className=" text-white flex flex-col items-center gap-2">
@@ -212,6 +198,11 @@ const Home = () => {
             />
           </button>
         </div>
+      ) : status === "loading" ? (
+        <span className="self-center flex flex-row items-center gap-2">
+          <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          <span className="text-white text-sm font-medium">Loading...</span>
+        </span>
       ) : (
         <Link
           href={"/favorite-animeList"}
