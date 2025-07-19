@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Loader from "../../../components/loader/Loader";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { nanoid } from "nanoid";
 import AnimeBox from "../../../components/AnimeBox";
 
-export default function SearchAnimePage() {
+function SearchAnimeContent() {
   const searchParams = useSearchParams();
   const [searchState, setSearchState] = useState({
     query: "",
@@ -14,6 +14,7 @@ export default function SearchAnimePage() {
     loading: false,
     data: [],
   });
+
   const animeName = useMemo(
     () => searchParams.get("anime") || "",
     [searchParams]
@@ -117,4 +118,12 @@ export default function SearchAnimePage() {
       </div>
     );
   }
+}
+
+export default function SearchAnimePage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <SearchAnimeContent />
+    </Suspense>
+  );
 }
