@@ -117,7 +117,7 @@ export default function AnimeCharacters({ animeId, length }) {
                             </p>
                             <p className="text-gray-300 font-medium">{va.language}</p>
                           </div>
-                          <Link href={`/voice-actor/${va.person.mal_id}`}>
+                          <Link href={`/people/${va.person.mal_id}`}>
                             <div className="relative w-[60px] h-[80px] sm:w-[80px] sm:h-[100px]">
                               <Image
                                 src={va.person.images.jpg.image_url}

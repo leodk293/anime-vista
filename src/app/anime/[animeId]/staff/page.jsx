@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import { useState, useEffect, use } from "react";
-import Image from "next/image";
+import { use } from "react";
 import AnimeStaff from "../../../../../components/AnimeStaff";
 
 export default function StaffPage({ params }) {

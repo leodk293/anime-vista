@@ -73,4 +73,10 @@ export default function RecommendationsPage({ params }) {
       </div>
     );
   }
+
+  if(animeRecommendations.data && animeRecommendations.data.length === 0){
+    return(
+      <p className=" text-center text-xl font-medium text-white">No recommendations found ...</p>
+    )
+  }
 }

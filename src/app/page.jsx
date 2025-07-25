@@ -333,7 +333,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section ref={filterRef} className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8">
+      <section id="genres" ref={filterRef} className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
             <label

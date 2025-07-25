@@ -1,14 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import Logo from "./logo/Logo";
-import {
-  Youtube,
-  Facebook,
-  Twitter,
-  Instagram,
-  //Discord,
-  Github,
-} from "lucide-react";
+import { Youtube, Facebook, Twitter, Instagram, Github } from "lucide-react";
+import SearchAnime from "./SearchAnime";
 
 export default function Footer() {
   const date = new Date();
@@ -32,13 +26,13 @@ export default function Footer() {
           <div className=" flex flex-col gap-2">
             <Link
               className="pt-2 hover:text-blue-400 transition-colors"
-              href="/trending"
+              href="/recent-anime"
             >
               Trending Anime
             </Link>
             <Link
               className="hover:text-blue-400 transition-colors"
-              href="/top-rated"
+              href="/top-anime"
             >
               Top Rated
             </Link>
@@ -50,7 +44,7 @@ export default function Footer() {
             </Link>
             <Link
               className="hover:text-blue-400 transition-colors"
-              href="/genres"
+              href="/#genres"
             >
               Browse Genres
             </Link>
@@ -84,9 +78,9 @@ export default function Footer() {
             </Link>
             <Link
               className="hover:text-blue-400 transition-colors"
-              href="/report"
+              href="/"
             >
-              Report Issue
+              API
             </Link>
             <Link
               className="hover:text-blue-400 transition-colors"
@@ -98,7 +92,7 @@ export default function Footer() {
         </div>
 
         {/* Legal */}
-        <div className=" flex flex-col gap-3">
+        {/* <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Legal</h1>
           <div className=" flex flex-col gap-2">
             <Link
@@ -132,7 +126,7 @@ export default function Footer() {
               Disclaimer
             </Link>
           </div>
-        </div>
+        </div> */}
 
         {/* Social Media */}
         <div className=" flex flex-col gap-3">
@@ -166,13 +160,6 @@ export default function Footer() {
             >
               <Instagram size={25} color="#ffffff" strokeWidth={1.75} />
             </Link>
-            {/* <Link
-              className=" border border-transparent rounded-full p-2 bg-indigo-600 hover:bg-indigo-700 transition-colors"
-              href=""
-              aria-label="Discord"
-            >
-              <Discord size={25} color="#ffffff" strokeWidth={1.75} />
-            </Link> */}
             <Link
               className=" border border-gray-500 rounded-full p-2 bg-gray-800 hover:bg-gray-900 transition-colors"
               href=""
@@ -181,6 +168,9 @@ export default function Footer() {
               <Github size={25} color="#ffffff" strokeWidth={1.75} />
             </Link>
           </div>
+          <span className=" mt-4">
+            <SearchAnime />
+          </span>
         </div>
       </footer>
     </div>

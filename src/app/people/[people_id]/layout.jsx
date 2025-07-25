@@ -1,9 +1,9 @@
 import React from "react";
 
 export async function generateMetadata({ params }, parent) {
-  const id = params.characterId;
+  const id = params.people_id;
 
-  const res = await fetch(`https://api.jikan.moe/v4/characters/${id}/full`);
+  const res = await fetch(`https://api.jikan.moe/v4/people/${id}/full`);
   const result = await res.json();
 
   if (result) {

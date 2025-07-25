@@ -25,7 +25,7 @@ export default function SearchAnime() {
         value={animeName}
         required
       />
-      <button className=" cursor-pointer px-4 py-2 border border-gray-500 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
+      <button className=" cursor-pointer p-2 border border-gray-500 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
         <Search size={28} color="#ffffff" strokeWidth={1.75} />
       </button>
     </form>

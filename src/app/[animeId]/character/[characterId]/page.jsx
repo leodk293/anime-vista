@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
 import { useState, useEffect, use } from "react";
-import Link from "next/link";
-import { nanoid } from "nanoid";
 import Image from "next/image";
 import Loader from "../../../../../components/loader/Loader";
 import ReadMore from "../../../../../components/readMore";
+import AnimeBox from "../../../../../components/AnimeBox";
 
 export default function CharacterPage({ params }) {
   const resolvedParams = use(params);
@@ -156,28 +155,12 @@ export default function CharacterPage({ params }) {
           <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
             {animeCharacterData?.data?.anime &&
               animeCharacterData?.data?.anime.map((element) => (
-                <Link
-                  href={`/anime/${element?.anime?.mal_id}`}
+                <AnimeBox
                   key={element?.anime?.mal_id}
-                  className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
-                >
-                  <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
-                    {element?.anime?.images?.jpg?.large_image_url && (
-                      <Image
-                        key={element?.anime?.mal_id}
-                        width={200}
-                        height={300}
-                        src={element?.anime?.images?.jpg?.large_image_url}
-                        alt={element?.anime?.title}
-                        className="rounded-lg border border-gray-300 object-cover"
-                      />
-                    )}
-
-                    <p className="text-gray-300 max-w-[200px] text-xs sm:text-sm font-medium line-clamp-2">
-                      {element?.anime?.title}
-                    </p>
-                  </div>
-                </Link>
+                  animeId={element?.anime?.mal_id}
+                  animeImage={element?.anime?.images?.jpg?.large_image_url}
+                  animeName={element?.anime?.title}
+                />
               ))}
           </div>
         </section>

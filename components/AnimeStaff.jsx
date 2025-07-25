@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Loader from "./loader/Loader";
 import Anonym from "../public/anonym-profile-picture.jpeg";
+import Link from "next/link";
 
 export default function AnimeStaff({ animeId, length }) {
   const [animeStaff, setAnimeStaff] = useState({
@@ -73,25 +74,29 @@ export default function AnimeStaff({ animeId, length }) {
                     <div className="relative w-[60px] h-[80px] sm:w-[80px] sm:h-[100px]">
                       {element.person.images.jpg.image_url ===
                       "https://cdn.myanimelist.net/images/questionmark_23.gif?s=f7dcbc4a4603d18356d3dfef8abd655c" ? (
-                        <Image
-                          src={Anonym}
-                          alt="Picture not available"
-                          fill
-                          className="object-cover rounded-tl-md rounded-bl-md"
-                          onError={(e) => {
-                            e.target.src = "/placeholder-image.jpg";
-                          }}
-                        />
+                        <Link href={`/people/${element.person.mal_id}`}>
+                          <Image
+                            src={Anonym}
+                            alt="Picture not available"
+                            fill
+                            className="object-cover rounded-tl-md rounded-bl-md"
+                            onError={(e) => {
+                              e.target.src = "/placeholder-image.jpg";
+                            }}
+                          />
+                        </Link>
                       ) : (
-                        <Image
-                          src={element.person.images.jpg.image_url}
-                          alt={element.person.name}
-                          fill
-                          className="object-cover rounded-tl-md rounded-bl-md"
-                          onError={(e) => {
-                            e.target.src = "/placeholder-image.jpg";
-                          }}
-                        />
+                        <Link href={`/people/${element.person.mal_id}`}>
+                          <Image
+                            src={element.person.images.jpg.image_url}
+                            alt={element.person.name}
+                            fill
+                            className="object-cover rounded-tl-md rounded-bl-md"
+                            onError={(e) => {
+                              e.target.src = "/placeholder-image.jpg";
+                            }}
+                          />
+                        </Link>
                       )}
                     </div>
                     <div className="flex flex-col text-xs sm:text-sm gap-4 sm:gap-10">

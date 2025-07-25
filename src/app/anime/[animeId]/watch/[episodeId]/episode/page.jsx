@@ -164,7 +164,9 @@ export default function EpisodePage({ params }) {
           </section>
 
           <p className=" mt-5 w-[85%] leading-8 text-gray-200/100 text-[16px] md:text-lg">
-            {episodeData.data.synopsis}
+            {episodeData.data.synopsis
+              ? episodeData.data.synopsis
+              : "Episode unreachable for the moment"}
           </p>
         </div>
       </div>
