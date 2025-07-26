@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Logo from "./logo/Logo";
-import { Youtube, Facebook, Twitter, Instagram, Github } from "lucide-react";
+import Medias from "./Medias";
 import SearchAnime from "./SearchAnime";
 
 export default function Footer() {
@@ -15,7 +15,7 @@ export default function Footer() {
             <Logo />
           </div>
           <p>© {year} AnimeVista. All rights reserved.</p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-200">
             Your gateway to anime discovery
           </p>
         </div>
@@ -67,107 +67,26 @@ export default function Footer() {
             >
               Contact Us
             </Link>
-            <Link className="hover:text-blue-400 transition-colors" href="/faq">
+            <Link className="hover:text-blue-400 transition-colors" href="/FAQ">
               FAQ
             </Link>
-            <Link
-              className="hover:text-blue-400 transition-colors"
-              href="/help"
-            >
-              Help Center
-            </Link>
-            <Link
-              className="hover:text-blue-400 transition-colors"
-              href="/"
-            >
+
+            <Link className="hover:text-blue-400 transition-colors" href="/">
               API
             </Link>
             <Link
               className="hover:text-blue-400 transition-colors"
-              href="mailto:aboubatraore04@gmail.com"
+              href="mailto:atnumberone61@gmail.com"
             >
-              aboubatraore04@gmail.com
+              atnumberone61@gmail.com
             </Link>
           </div>
         </div>
 
-        {/* Legal */}
-        {/* <div className=" flex flex-col gap-3">
-          <h1 className=" font-bold text-2xl">Legal</h1>
-          <div className=" flex flex-col gap-2">
-            <Link
-              className="pt-2 hover:text-blue-400 transition-colors"
-              href="/privacy"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              className="hover:text-blue-400 transition-colors"
-              href="/terms"
-            >
-              Terms of Service
-            </Link>
-            <Link
-              className="hover:text-blue-400 transition-colors"
-              href="/cookies"
-            >
-              Cookie Policy
-            </Link>
-            <Link
-              className="hover:text-blue-400 transition-colors"
-              href="/dmca"
-            >
-              DMCA
-            </Link>
-            <Link
-              className="hover:text-blue-400 transition-colors"
-              href="/disclaimer"
-            >
-              Disclaimer
-            </Link>
-          </div>
-        </div> */}
-
         {/* Social Media */}
         <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Connect with us</h1>
-          <div className=" flex flex-row gap-3 flex-wrap">
-            <Link
-              className=" border border-transparent rounded-full p-2 bg-red-600 hover:bg-red-700 transition-colors"
-              href=""
-              aria-label="YouTube"
-            >
-              <Youtube size={25} color="#ffffff" strokeWidth={1.75} />
-            </Link>
-            <Link
-              className=" border border-transparent rounded-full p-2 bg-blue-600 hover:bg-blue-700 transition-colors"
-              href=""
-              aria-label="Twitter"
-            >
-              <Twitter size={25} color="#ffffff" strokeWidth={1.75} />
-            </Link>
-            <Link
-              className=" border border-transparent rounded-full p-2 bg-blue-800 hover:bg-blue-900 transition-colors"
-              href=""
-              aria-label="Facebook"
-            >
-              <Facebook size={25} color="#ffffff" strokeWidth={1.75} />
-            </Link>
-            <Link
-              className=" border border-transparent rounded-full p-2 bg-pink-800 hover:bg-pink-700 transition-colors"
-              href=""
-              aria-label="Instagram"
-            >
-              <Instagram size={25} color="#ffffff" strokeWidth={1.75} />
-            </Link>
-            <Link
-              className=" border border-gray-500 rounded-full p-2 bg-gray-800 hover:bg-gray-900 transition-colors"
-              href=""
-              aria-label="GitHub"
-            >
-              <Github size={25} color="#ffffff" strokeWidth={1.75} />
-            </Link>
-          </div>
+          <Medias />
           <span className=" mt-4">
             <SearchAnime />
           </span>

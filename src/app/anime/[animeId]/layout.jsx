@@ -109,9 +109,9 @@ export default async function layout({ children, params }) {
                 </div>
               </div>
 
-              {/* Content */}
+              
               <div className="flex-1 space-y-6">
-                {/* Title and Status */}
+               
                 <div className="space-y-4">
                   <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
                     {title}

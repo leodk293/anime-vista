@@ -40,15 +40,12 @@ export default function PeoplePage({ params }) {
   }
 
   function formatBirthday(isoDateString) {
-    // Parse the ISO date string
     const date = new Date(isoDateString);
 
-    // Check if the date is valid
     if (isNaN(date.getTime())) {
       throw new Error("Invalid date format");
     }
 
-    // Format options for a readable birthday format
     const options = {
       year: "numeric",
       month: "long",

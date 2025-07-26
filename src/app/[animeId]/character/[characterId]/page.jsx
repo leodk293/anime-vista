@@ -105,7 +105,7 @@ export default function CharacterPage({ params }) {
         </div>
       )}
 
-      {/* Main Content */}
+      
       <div className="relative max-w-6xl text-white pt-20 pb-12 mx-auto flex flex-col items-center gap-10 justify-center">
         <section className="w-full flex flex-col md:flex-row items-center justify-center gap-8">
           {animeCharacterData?.data?.images.jpg.image_url && (

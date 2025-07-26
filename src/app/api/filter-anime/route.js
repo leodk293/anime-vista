@@ -19,7 +19,6 @@ export const GET = async (request) => {
         if (year) filter.year = year;
         if (search) filter.animeName = { $regex: search, $options: "i" };
 
-        // If no filters are provided, return all anime
         const animeList = await AnimeList.find(filter);
 
         return NextResponse.json({ animeList });

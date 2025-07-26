@@ -4,7 +4,7 @@ import { connectMongoDB } from "@/lib/db/connectMongoDb";
 
 export const POST = async (request) => {
     try {
-        // Add more detailed logging
+
         console.log("POST request received");
 
         const body = await request.json();
