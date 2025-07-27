@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import Loader from "../../../components/loader/Loader";
+import googleLogo from "../../../public/google-logo.png";
 
 export default function WatchListPage() {
   const { status, data: session } = useSession();
@@ -80,11 +81,21 @@ export default function WatchListPage() {
 
   if (status === "unauthenticated") {
     return (
-      <div className="text-center text-2xl mt-[5rem] h-screen text-white">
+      <div className=" flex flex-col gap-5 items-center text-center text-xl mt-[5rem] h-screen text-white">
         <p>Please log in to view your Watchlist</p>
-        <Link href="/login" className="text-blue-500 hover:underline">
-          Go to Login
-        </Link>
+        <button
+          onClick={() => signIn("google")}
+          className="border border-transparent text-lg bg-gray-100 rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-1 justify-center items-center"
+        >
+          <Image
+            src={googleLogo}
+            alt="Google"
+            width={25}
+            height={25}
+            className="self-center object-contain"
+          />
+          <span className="self-center text-black font-medium">Login</span>
+        </button>
       </div>
     );
   }

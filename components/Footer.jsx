@@ -71,7 +71,7 @@ export default function Footer() {
               FAQ
             </Link>
 
-            <Link className="hover:text-blue-400 transition-colors" href="/">
+            <Link target="_blank" className="hover:text-blue-400 transition-colors" href="https://anime-vista-api-showcase.vercel.app">
               API
             </Link>
             <Link
