@@ -6,6 +6,7 @@ import {
   MoveRight,
   RefreshCw,
   Search,
+  Bookmark,
 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
@@ -229,9 +230,10 @@ const Home = () => {
       ) : (
         <Link
           href={"/Watchlist"}
-          className=" border border-gray-200 bg-transparent px-5 py-3 rounded-full text-lg text-white hover:translate-x-3 duration-200"
+          className=" flex flex-row gap-2 justify-center items-center border border-gray-200 bg-transparent px-5 py-3 rounded-full text-lg text-white hover:translate-x-3 duration-200"
         >
-          My Watchlist ➡️
+          <Bookmark size={25} strokeWidth={1.5} />
+          <p>My Watchlist</p>
         </Link>
       )}
 
@@ -315,17 +317,6 @@ const Home = () => {
                         </h2>
                       </div>
                     </Link>
-                    // <AnimeBox
-                    //   animeId={anime.mal_id}
-                    //   animeImage={
-                    //     anime.images.jpg.large_image_url
-                    //       ? anime.images.jpg.large_image_url
-                    //       : anime.images.jpg.image_url
-                    //   }
-                    //   animeName={
-                    //     anime.title_english ? anime.title_english : anime.title
-                    //   }
-                    // />
                   ))}
               </div>
             )
@@ -333,7 +324,11 @@ const Home = () => {
         </div>
       </section>
 
-      <section id="genres" ref={filterRef} className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8">
+      <section
+        id="genres"
+        ref={filterRef}
+        className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
             <label
@@ -545,7 +540,21 @@ const Home = () => {
           className="fixed bottom-8 border border-gray-600 right-8 z-50 cursor-pointer bg-gray-800 hover:translate-y-[-10px] duration-200 text-white rounded-full p-3 shadow-lg flex items-center gap-2 animate-fade-in"
           aria-label="Back to top"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M5 15l7-7 7 7"
+            />
+          </svg>
           <span className="hidden sm:inline font-medium">Top</span>
         </button>
       )}

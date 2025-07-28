@@ -5,7 +5,17 @@ import Image from "next/image";
 import googleLogo from "../public/google-logo.png";
 import Logo from "./logo/Logo";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { LogOut, TrendingUp, Star, Heart, Code, Bookmark } from "lucide-react";
+import {
+  LogOut,
+  TrendingUp,
+  Star,
+  Heart,
+  Code,
+  Bookmark,
+  Github,
+  Twitter,
+} from "lucide-react";
+import Reddit from "../public/reddit-icon.png";
 
 export default function Header() {
   const { status, data: session } = useSession();
@@ -27,6 +37,32 @@ export default function Header() {
       <header className="flex flex-col mx-auto py-5 max-w-5xl gap-4">
         <div className="flex flex-wrap justify-center gap-5 md:justify-between md:gap-0">
           <Logo />
+
+          <div className=" text-lg text-gray-300 font-medium self-center flex flex-row gap-5">
+            <Link
+              target="_blank"
+              className=" self-center"
+              href={"https://www.reddit.com/user/ElectricalHurry5975/"}
+            >
+              Reddit
+            </Link>
+            <Link
+              className=" self-center"
+              href="https://x.com/Aboubac48530295"
+              aria-label="Twitter"
+              target="_blank"
+            >
+              X/Twitter
+            </Link>
+            <Link
+              className=" self-center"
+              href="https://github.com/leodk293"
+              aria-label="GitHub"
+              target="_blank"
+            >
+              Github
+            </Link>
+          </div>
 
           {status === "unauthenticated" ? (
             <button
