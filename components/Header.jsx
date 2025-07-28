@@ -5,17 +5,7 @@ import Image from "next/image";
 import googleLogo from "../public/google-logo.png";
 import Logo from "./logo/Logo";
 import { signIn, signOut, useSession } from "next-auth/react";
-import {
-  LogOut,
-  TrendingUp,
-  Star,
-  Heart,
-  Code,
-  Bookmark,
-  Github,
-  Twitter,
-} from "lucide-react";
-import Reddit from "../public/reddit-icon.png";
+import { LogOut, TrendingUp, Star, Heart, Code, Bookmark } from "lucide-react";
 
 export default function Header() {
   const { status, data: session } = useSession();
