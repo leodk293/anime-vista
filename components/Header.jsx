@@ -5,7 +5,15 @@ import Image from "next/image";
 import googleLogo from "../public/google-logo.png";
 import Logo from "./logo/Logo";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { LogOut, TrendingUp, Star, Heart, Code, Bookmark } from "lucide-react";
+import {
+  LogOut,
+  TrendingUp,
+  Star,
+  Heart,
+  Code,
+  Bookmark,
+  PhoneCall,
+} from "lucide-react";
 
 export default function Header() {
   const { status, data: session } = useSession();
@@ -15,6 +23,7 @@ export default function Header() {
     { href: "/top-anime", label: "Top Rated", icon: Star },
     { href: "/popular-anime", label: "Popular", icon: Heart },
     { href: "/Watchlist", label: "Watchlist", icon: Bookmark },
+    { href: "/contact", label: "contact", icon: PhoneCall },
     {
       href: "https://anime-vista-api-showcase.vercel.app",
       label: "API",
@@ -31,13 +40,13 @@ export default function Header() {
           <div className=" text-lg text-gray-300 font-medium self-center flex flex-row gap-5">
             <Link
               target="_blank"
-              className=" self-center"
+              className=" self-center hover:text-white duration-200"
               href={"https://www.reddit.com/user/ElectricalHurry5975/"}
             >
               Reddit
             </Link>
             <Link
-              className=" self-center"
+              className=" self-center hover:text-white duration-200"
               href="https://x.com/Aboubac48530295"
               aria-label="Twitter"
               target="_blank"
@@ -45,7 +54,7 @@ export default function Header() {
               X/Twitter
             </Link>
             <Link
-              className=" self-center"
+              className=" self-center hover:text-white duration-200"
               href="https://github.com/leodk293"
               aria-label="GitHub"
               target="_blank"
@@ -107,7 +116,7 @@ export default function Header() {
         </div>
 
         {/* Navigation section */}
-        <nav className=" mt-3 w-[70%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex flex-wrap justify-center gap-2 md:gap-4">
+        <nav className=" mt-3 w-[75%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex flex-wrap justify-center gap-2 md:gap-4">
           {navLinks.map((link) => {
             const IconComponent = link.icon;
             return (

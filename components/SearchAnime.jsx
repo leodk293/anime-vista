@@ -18,14 +18,14 @@ export default function SearchAnime() {
   return (
     <form onSubmit={handleSubmit} className=" flex flex-row" action="">
       <input
-        className=" text-gray-100 font-medium px-4 py-2 self-center border border-gray-500 border-r-transparent rounded-tl-lg outline-none rounded-bl-lg text-lg"
+        className=" text-gray-100 font-medium px-4 py-2 self-center border border-gray-200 border-r-transparent rounded-tl-lg outline-none rounded-bl-lg text-lg placeholder:text-gray-300"
         placeholder="Search for an anime..."
         type="text"
         onChange={(e) => setAnimeName(e.target.value)}
         value={animeName}
         required
       />
-      <button className=" cursor-pointer p-2 border border-gray-500 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
+      <button className=" cursor-pointer p-2 border border-gray-200 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
         <Search size={28} color="#ffffff" strokeWidth={1.75} />
       </button>
     </form>

@@ -4,6 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { nanoid } from "nanoid";
 import { Tv, Calendar, Clock } from "lucide-react";
+import { Belanosima } from "next/font/google";
+
+const belanosima = Belanosima({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export async function generateMetadata({ params }, parent) {
   const id = params.animeId;
@@ -109,11 +115,11 @@ export default async function layout({ children, params }) {
                 </div>
               </div>
 
-              
               <div className="flex-1 space-y-6">
-               
                 <div className="space-y-4">
-                  <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+                  <h1
+                    className={` ${belanosima.className} text-4xl lg:text-5xl text-white leading-tight`}
+                  >
                     {title}
                   </h1>
 

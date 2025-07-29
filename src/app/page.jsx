@@ -15,6 +15,12 @@ import Image from "next/image";
 import AnimeBox from "../../components/AnimeBox";
 import SearchAnime from "../../components/SearchAnime";
 import Loader from "../../components/loader/Loader";
+import { Shanti } from "next/font/google";
+
+const shanti = Shanti({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const Home = () => {
   const [genres, setGenres] = useState([]);
@@ -194,10 +200,14 @@ const Home = () => {
   return (
     <div className="mt-3 sm:mt-5 md:mt-8 flex flex-col items-center gap-3 sm:gap-5 md:gap-8 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="mt-3 sm:mt-5 md:mt-8 text-center flex flex-col items-center justify-center gap-2 sm:gap-3 md:gap-5">
-        <h1 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
+        <h1
+          className={`text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl ${shanti.className}`}
+        >
           The next generation anime platform
         </h1>
-        <p className="text-blue-200 leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl">
+        <p
+          className={`text-blue-200 ${shanti.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
+        >
           Track, share and discover <br className="hidden sm:block" /> your
           favorite anime among severals
         </p>
@@ -233,7 +243,7 @@ const Home = () => {
           className=" flex flex-row gap-2 justify-center items-center border border-gray-200 bg-transparent px-5 py-3 rounded-full text-lg text-white hover:translate-x-3 duration-200"
         >
           <Bookmark size={25} strokeWidth={1.5} />
-          <p>My Watchlist</p>
+          <p>Watchlist</p>
         </Link>
       )}
 
