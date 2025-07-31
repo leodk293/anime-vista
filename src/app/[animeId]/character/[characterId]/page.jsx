@@ -70,7 +70,7 @@ export default function CharacterPage({ params }) {
 
   if (!animeId || !characterId) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center">
         <h1 className="text-xl text-red-500">Invalid ID provided.</h1>
       </div>
     );
@@ -82,7 +82,7 @@ export default function CharacterPage({ params }) {
 
   if (animeCharacterData.error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center">
         <h1 className="text-xl text-red-500">
           Failed to load character data. Please try again later.
         </h1>
@@ -91,7 +91,7 @@ export default function CharacterPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen">
+    <>
       {animePoster && (
         <div className="fixed inset-0 -z-10 opacity-30">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/80 to-slate-900" />
@@ -105,7 +105,6 @@ export default function CharacterPage({ params }) {
         </div>
       )}
 
-      
       <div className="relative max-w-6xl text-white pt-20 pb-12 mx-auto flex flex-col items-center gap-10 justify-center">
         <section className="w-full flex flex-col md:flex-row items-center justify-center gap-8">
           {animeCharacterData?.data?.images.jpg.image_url && (
@@ -165,6 +164,6 @@ export default function CharacterPage({ params }) {
           </div>
         </section>
       </div>
-    </div>
+    </>
   );
 }

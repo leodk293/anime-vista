@@ -42,7 +42,7 @@ export default async function layout({ children, params }) {
 
   if (!animeData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+      <div className=" flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
         <div className="text-center p-8 bg-red-900/20 border border-red-500/30 rounded-xl backdrop-blur-sm">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
             <svg
@@ -80,7 +80,7 @@ export default async function layout({ children, params }) {
   const isNotYetAired = animeData.data.status === "Not yet aired";
 
   return (
-    <div className="min-h-screen">
+    <>
       <div className="fixed inset-0 -z-10 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/80 to-slate-900" />
         <Image
@@ -326,6 +326,6 @@ export default async function layout({ children, params }) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

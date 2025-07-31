@@ -146,7 +146,7 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
               width={180}
               height={200}
               alt={animeName}
-              className="object-cover w-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
+              className="object-cover bg-blue-950 w-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
             />
           </div>
           <h2 className="text-gray-300 text-xs sm:text-sm font-medium line-clamp-2">

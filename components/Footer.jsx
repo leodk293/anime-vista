@@ -20,7 +20,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Quick Links */}
         <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Quick Links</h1>
           <div className=" flex flex-col gap-2">
@@ -57,7 +56,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Support */}
         <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Support</h1>
           <div className=" flex flex-col gap-2">
@@ -83,7 +81,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Social Media */}
         <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Connect with us</h1>
           <Medias />

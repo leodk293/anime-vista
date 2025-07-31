@@ -61,9 +61,9 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br relative overflow-hidden">
+    <div className=" bg-gradient-to-br relative overflow-hidden">
       <div className="relative z-10 container mx-auto px-4 py-12">
-        {/* Header */}
+        
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-blue-600 to-blue-800 bg-clip-text text-transparent mb-4 animate-pulse">
             Contact Us
@@ -79,7 +79,7 @@ export default function ContactPage() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Form */}
+         
           <div className="bg-black/30 backdrop-blur-lg rounded-3xl p-8 border border-purple-500/30 shadow-2xl">
             <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
               <MessageSquare className="mr-3 text-cyan-400" />

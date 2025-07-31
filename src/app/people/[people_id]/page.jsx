@@ -52,7 +52,6 @@ export default function PeoplePage({ params }) {
       day: "numeric",
     };
 
-    // Return formatted date
     return date.toLocaleDateString("en-US", options);
   }
 
@@ -61,7 +60,7 @@ export default function PeoplePage({ params }) {
   }, [people_id]);
 
   if (!people_id) {
-    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+    <div className="flex flex-col items-center justify-center gap-4">
       <h1 className="text-xl text-red-500">Invalid Voice Actor Id</h1>
     </div>;
   }
@@ -72,7 +71,7 @@ export default function PeoplePage({ params }) {
 
   if (peopleData.error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-xl text-red-500">
           Failed to load voice actor data. Please try again.
         </h1>
@@ -80,8 +79,7 @@ export default function PeoplePage({ params }) {
     );
   }
   return (
-    <div className="min-h-screen">
-      {/* Main Content */}
+    <>
       {peopleData.data && (
         <div className="relative max-w-6xl text-white pt-20 pb-12 mx-auto flex flex-col items-center gap-10 justify-center">
           <section className="w-full flex flex-col md:flex-row items-center justify-center gap-8">
@@ -217,6 +215,6 @@ export default function PeoplePage({ params }) {
           )}
         </div>
       )}
-    </div>
+    </>
   );
 }

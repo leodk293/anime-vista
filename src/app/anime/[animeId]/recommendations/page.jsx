@@ -44,7 +44,7 @@ export default function RecommendationsPage({ params }) {
 
   if (animeRecommendations.error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <div className="flex flex-col items-center justify-center gap-4">
         <h1 className="text-xl text-red-500">
           Something went wrong, try again
         </h1>
