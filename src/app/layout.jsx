@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
     <NextAuthProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={` flex flex-col ${geistSans.variable} ${geistMono.variable} bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 mx-auto antialiased `}
+          className={` flex flex-col ${geistSans.variable} ${geistMono.variable} bg-slate-900 mx-auto antialiased `}
         >
           <Header />
           <div className=" min-h-screen mx-auto px-3 md:px-0 ">{children}</div>

@@ -82,7 +82,7 @@ export default async function layout({ children, params }) {
   return (
     <>
       <div className="fixed inset-0 -z-10 opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/80 to-slate-900" />
+        <div className="absolute inset-0 bg-transparent" />
         <Image
           src={animeData.data.images.jpg.large_image_url}
           alt="Background"

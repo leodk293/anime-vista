@@ -37,7 +37,7 @@ const AnimeType = ({ animeTypeName, url }) => {
         <span className=" p-1 rounded-xl bg-blue-800 w-[10%]" />
       </div>
       {animeData.error === true ? (
-        <p className="text-center text-red-500">Try again...</p>
+        <p className="text-center w-full mt-10 text-xl text-red-500">Try again...</p>
       ) : animeData.loading === true ? (
         <Loader />
       ) : (

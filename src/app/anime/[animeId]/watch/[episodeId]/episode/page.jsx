@@ -163,11 +163,20 @@ export default function EpisodePage({ params }) {
             </Link>
           </section>
 
-          <p className=" mt-5 w-[85%] leading-8 text-gray-200/100 text-[16px] md:text-lg">
+          {/* <p className=" mt-5 w-[85%] text-center leading-8 text-gray-200/100 text-[16px] md:text-lg">
             {episodeData.data.synopsis
               ? episodeData.data.synopsis
               : "Episode unreachable for the moment"}
-          </p>
+          </p> */}
+          {episodeData.data.synopsis ? (
+            <p className=" mt-5 w-[85%] leading-8 text-gray-200/100 text-[16px] md:text-lg">
+              {episodeData?.data?.synopsis}
+            </p>
+          ) : (
+            <p className="mt-5 w-[85%] text-center leading-8 text-gray-200/100 text-[16px] md:text-lg">
+              Episode unreachable for the moment
+            </p>
+          )}
         </div>
       </div>
     )
