@@ -15,6 +15,8 @@ import {
   PhoneCall,
 } from "lucide-react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function Header() {
   const { status, data: session } = useSession();
 
@@ -78,10 +80,13 @@ export default function Header() {
               <span className="self-center font-medium">Login</span>
             </button>
           ) : status === "loading" ? (
-            <span className="self-center flex flex-row items-center gap-2">
-              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span className="text-white text-sm font-medium">Loading...</span>
-            </span>
+            <div className="flex items-center gap-3 px-3 py-2 bg-white/10 rounded-full border border-gray-300/10 min-w-[160px] animate-pulse">
+              <Skeleton className="h-8 w-8 rounded-full bg-gray-300/30" />
+              <div className="flex flex-col gap-2 flex-1">
+                <Skeleton className="h-3 w-20 rounded bg-gray-300/30" />
+                <Skeleton className="h-2 w-14 rounded bg-gray-300/20" />
+              </div>
+            </div>
           ) : (
             <div className="flex flex-row gap-2">
               {session?.user && (

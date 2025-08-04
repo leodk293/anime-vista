@@ -51,7 +51,7 @@ export default function Footer() {
               className="hover:text-blue-400 transition-colors"
               href="/Watchlist"
             >
-              My Watchlist
+              Watchlist
             </Link>
           </div>
         </div>
@@ -69,7 +69,11 @@ export default function Footer() {
               FAQ
             </Link>
 
-            <Link target="_blank" className="hover:text-blue-400 transition-colors" href="https://anime-vista-api-showcase.vercel.app">
+            <Link
+              target="_blank"
+              className="hover:text-blue-400 transition-colors"
+              href="https://anime-vista-api-showcase.vercel.app"
+            >
               API
             </Link>
             <Link

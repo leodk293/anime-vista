@@ -65,7 +65,6 @@ export default function WatchListPage() {
       console.log("Anime removed from Watchlist successfully");
     } catch (error) {
       console.error("Error removing anime from Watchlist:", error.message);
-      // Optionally show an error message to the user
     }
   }
 
@@ -126,7 +125,7 @@ export default function WatchListPage() {
       </div>
 
       {watchList.data.length === 0 ? (
-        <div className="text-center h-[15rem] text-white mt-10">
+        <div className="text-center h-[15rem] w-full text-white mt-10">
           <p className="text-xl mb-4">Your Watchlist is empty</p>
           <Link href="/" className="text-blue-500 hover:underline">
             Browse anime to add to your Watchlist
