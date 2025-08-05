@@ -2,11 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import googleLogo from "../public/google-logo.png";
 import Logo from "./logo/Logo";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import {
-  LogOut,
   TrendingUp,
   Star,
   Heart,
@@ -14,6 +12,9 @@ import {
   Bookmark,
   PhoneCall,
 } from "lucide-react";
+
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -66,19 +67,7 @@ export default function Header() {
           </div>
 
           {status === "unauthenticated" ? (
-            <button
-              onClick={() => signIn("google")}
-              className="border border-transparent text-lg bg-gray-100 rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-1 justify-center items-center"
-            >
-              <Image
-                src={googleLogo}
-                alt="Google"
-                width={25}
-                height={25}
-                className="self-center object-contain"
-              />
-              <span className="self-center font-medium">Login</span>
-            </button>
+            <LoginButton />
           ) : status === "loading" ? (
             <div className="flex items-center gap-3 px-3 py-2 bg-white/10 rounded-full border border-gray-300/10 min-w-[160px] animate-pulse">
               <Skeleton className="h-8 w-8 rounded-full bg-gray-300/30" />
@@ -104,23 +93,11 @@ export default function Header() {
                 </div>
               )}
 
-              <button
-                onClick={() => signOut()}
-                className="border border-transparent text-lg bg-white/10 text-white rounded-full cursor-pointer px-4 py-2 self-center flex flex-row gap-2 justify-center items-center hover:translate-x-2 duration-200"
-              >
-                <LogOut
-                  className="self-center"
-                  size={25}
-                  color="#ffffff"
-                  strokeWidth={1.75}
-                />
-                <p className="self-center">Log out</p>
-              </button>
+              <LogoutButton />
             </div>
           )}
         </div>
 
-        {/* Navigation section */}
         <nav className=" mt-3 w-[75%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex flex-wrap justify-center gap-2 md:gap-4">
           {navLinks.map((link) => {
             const IconComponent = link.icon;

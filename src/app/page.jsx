@@ -1,14 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import {
-  ChevronRight,
-  CircleX,
-  MoveRight,
-  RefreshCw,
-  Search,
-  Bookmark,
-} from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { CircleX, MoveRight, RefreshCw, Search, Bookmark } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,6 +9,7 @@ import AnimeBox from "../../components/AnimeBox";
 import SearchAnime from "../../components/SearchAnime";
 import Loader from "../../components/loader/Loader";
 import { Shanti } from "next/font/google";
+import LoginButton from "../../components/LoginButton";
 
 const shanti = Shanti({
   subsets: ["latin"],
@@ -217,20 +211,11 @@ const Home = () => {
 
       {status === "unauthenticated" ? (
         <div className=" text-white flex flex-col items-center gap-2">
-          <p className="font-medium italic text-gray-300">
+          <p className="font-medium text-gray-300">
             Login and start making your Watchlist
           </p>
-          <button
-            onClick={() => signIn("google")}
-            className="text-sm sm:text-base md:text-lg font-medium rounded-full flex flex-row px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-3 justify-center items-center cursor-pointer gap-2 sm:gap-3 md:gap-4 bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
-          >
-            <p className="text-white capitalize">Login</p>
-            <ChevronRight
-              className="border border-transparent text-blue-500 bg-white rounded-full p-0.5 sm:p-1"
-              size={24}
-              strokeWidth={1.75}
-            />
-          </button>
+
+          <LoginButton />
         </div>
       ) : status === "loading" ? (
         <span className="self-center flex flex-row items-center gap-2">
@@ -334,10 +319,17 @@ const Home = () => {
         </div>
       </section>
 
+      <div className="text-center mt-8 sm:mt-12 md:mt-16 space-y-2">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          More than 1,000 Anime
+        </h1>
+        <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto rounded-full"></div>
+      </div>
+
       <section
         id="genres"
         ref={filterRef}
-        className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col gap-3 sm:gap-5 md:gap-8"
+        className="w-full max-w-5xl mt-2 flex flex-col gap-3 sm:gap-5 md:gap-8"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
@@ -547,7 +539,7 @@ const Home = () => {
       {showScrollTop && (
         <button
           onClick={scrollToFilters}
-          className="fixed bottom-8 border border-gray-600 right-8 z-50 cursor-pointer bg-gray-800 hover:translate-y-[-10px] duration-200 text-white rounded-full p-3 shadow-lg flex items-center gap-2 animate-fade-in"
+          className="fixed bottom-8 border border-gray-600 left-8 z-50 cursor-pointer bg-gray-800 hover:translate-y-[-10px] duration-200 text-white rounded-full p-3 shadow-lg flex items-center gap-2 animate-fade-in"
           aria-label="Back to top"
         >
           <svg

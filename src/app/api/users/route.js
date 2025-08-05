@@ -22,5 +22,4 @@ export const POST = async (request) => {
         console.error(error);
         return NextResponse.json({ message: "Failed to register user" }, { status: 500 });
     }
-
 }

@@ -4,6 +4,13 @@ import { NextAuthProvider } from "../../Providers";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { ToastContainer } from "react-toastify";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import Ai_assistant from "./Ai_assistant";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +40,18 @@ export default function RootLayout({ children }) {
           <Header />
           <div className=" min-h-screen px-3 md:px-0 ">{children}</div>
           <Footer />
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="fixed bottom-6 border border-gray-500 font-semibold cursor-pointer right-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg transition-all duration-200 md:bg-white/5">
+                AI
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className=" mr-5 rounded-[10px] p-0 bg-gray-900 border-gray-700 w-auto md:w-150">
+              <Ai_assistant />
+            </PopoverContent>
+          </Popover>
+
           <ToastContainer />
         </body>
       </html>
