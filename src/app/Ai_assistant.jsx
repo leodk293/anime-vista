@@ -8,6 +8,14 @@ import { Send, Bot, Trash2, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { Permanent_Marker } from "next/font/google";
+import Logo from "../../components/logo/Logo";
+import { Onest } from "next/font/google";
+
+const onest = Onest({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export default function AiAssistant() {
   const { status, data: session } = useSession();
@@ -39,7 +47,6 @@ export default function AiAssistant() {
       const aiResponse =
         result.message || "Sorry, I couldn't generate a response.";
 
-      // Save the chat to database
       await fetch("/api/chats", {
         method: "POST",
         headers: {
@@ -77,14 +84,12 @@ export default function AiAssistant() {
       // Convert chat history to messages format
       const chatMessages = [];
 
-      // Add initial bot greeting if no chats exist
       if (chats.length === 0) {
         chatMessages.push({
           sender: "bot",
           text: "Hello! How can I help you today?",
         });
       } else {
-        // Convert each chat to user/bot message pairs
         chats.forEach((chat) => {
           chatMessages.push({ sender: "user", text: chat.userRequest });
           chatMessages.push({ sender: "bot", text: chat.aiResponse });
@@ -94,7 +99,7 @@ export default function AiAssistant() {
       setMessages(chatMessages);
     } catch (error) {
       console.error("Error loading chat history:", error.message);
-      // Keep the default greeting message on error
+
       setMessages([
         { sender: "bot", text: "Hello! How can I help you today?" },
       ]);
@@ -201,10 +206,9 @@ export default function AiAssistant() {
   return (
     <div className="w-full p-5 rounded-[10px] bg-gray-900 text-white">
       <div className="flex flex-col h-[400px]">
-        {/* Header with delete button */}
         {messages.length > 1 && (
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-medium">Anime<span className="text-blue-600">Vista</span>🍥</h3>
+            <Logo mobileSize={'text-lg'} LaptopSize={'text-xl'}/>
             <Button
               onClick={deleteChats}
               variant="outline"
@@ -235,7 +239,7 @@ export default function AiAssistant() {
                   </Avatar>
                 )}
                 <div
-                  className={`rounded-lg px-3 py-2 leading-6 max-w-[80%] text-sm ${
+                  className={`rounded-lg ${onest.className} px-3 py-2 leading-6 max-w-[80%] text-sm ${
                     msg.sender === "user"
                       ? "bg-sky-600 text-white"
                       : "bg-slate-800 text-gray-100"
@@ -278,9 +282,9 @@ export default function AiAssistant() {
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="flex gap-2">
-          <Input
+          <textarea
             placeholder="Type your message..."
-            className="flex-1 bg-slate-800 border-slate-700 text-white placeholder:text-gray-400"
+            className="flex-1 rounded-[10px] p-1 bg-slate-800 border-slate-700 text-white placeholder:text-gray-400"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isLoading}
@@ -288,7 +292,7 @@ export default function AiAssistant() {
           <Button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="bg-sky-600 cursor-pointer hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-sky-600 self-center cursor-pointer hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <Loader2 size={16} className="animate-spin" />

@@ -41,7 +41,7 @@ export const GET = async (request) => {
 
         await connectMongoDB();
 
-        const chats = await Chat.find({ userId }).sort({ createdAt: 1 }); // Sort by creation time
+        const chats = await Chat.find({ userId }).sort({ createdAt: 1 }); 
 
         return NextResponse.json({ chats });
     } catch (error) {

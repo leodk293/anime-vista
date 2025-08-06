@@ -11,6 +11,8 @@ import Loader from "../../components/loader/Loader";
 import { Shanti } from "next/font/google";
 import LoginButton from "../../components/LoginButton";
 
+const NUMBER_ANIME = "1,000";
+
 const shanti = Shanti({
   subsets: ["latin"],
   weight: "400",
@@ -321,7 +323,7 @@ const Home = () => {
 
       <div className="text-center mt-8 sm:mt-12 md:mt-16 space-y-2">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          More than 1,000 Anime
+          More than {NUMBER_ANIME} Anime
         </h1>
         <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto rounded-full"></div>
       </div>

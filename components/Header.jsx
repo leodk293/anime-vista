@@ -38,7 +38,7 @@ export default function Header() {
     <div className="bg-black/10 border-b border-b-gray-400/10 w-full">
       <header className="flex flex-col mx-auto py-5 max-w-5xl gap-4">
         <div className="flex flex-wrap justify-center gap-5 md:justify-between md:gap-0">
-          <Logo />
+          <Logo mobileSize={"text-3xl"} LaptopSize={"text-4xl"} />
 
           <div className=" text-lg text-gray-300 font-medium self-center flex flex-row gap-5">
             <Link

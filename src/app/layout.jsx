@@ -47,7 +47,18 @@ export default function RootLayout({ children }) {
                 AI
               </button>
             </PopoverTrigger>
-            <PopoverContent className=" mr-5 rounded-[10px] p-0 bg-gray-900 border-gray-700 w-auto md:w-150">
+            <PopoverContent
+              className="
+                rounded-[10px] p-0
+                bg-gray-900 border-gray-700
+                w-[95vw] max-w-xl
+                sm:w-[80vw] sm:max-w-lg
+                md:w-[60vw] md:max-w-xl
+                lg:w-[40vw] lg:max-w-xl
+                xl:w-[32vw] xl:max-w-xl
+                mr-1 md:mr-5
+              "
+            >
               <Ai_assistant />
             </PopoverContent>
           </Popover>

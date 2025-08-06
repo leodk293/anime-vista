@@ -12,7 +12,7 @@ export default function Footer() {
       <footer className=" text-white flex flex-wrap mx-auto max-w-6xl justify-start gap-5 px-3 py-10 md:justify-between md:gap-0 md:px-0 ">
         <div className=" flex flex-col items-start gap-2">
           <div>
-            <Logo />
+            <Logo mobileSize={"text-3xl"} LaptopSize={"text-4xl"} />
           </div>
           <p>© {year} AnimeVista. All rights reserved.</p>
           <p className="text-sm text-gray-200">
