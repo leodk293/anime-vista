@@ -1,0 +1,51 @@
+# Anime Vista
+
+Anime Vista is a sleek and powerful anime discovery platform built with modern web technologies. It allows users to explore thousands of anime titles, interact with an anime-savvy AI chatbot, and enjoy a smooth, responsive interface. Powered by both the Jikan API and a custom-built anime API, Anime Vista offers extensive content, user-friendly features, and a stylish UI designed for anime lovers.
+
+---
+
+## ✨ Features
+
+- 🔍 Browse and search anime using the [Jikan API](https://jikan.moe/) and a custom-built database of 2000+ titles.
+- 🧠 Chat with a Gemini-powered AI bot that knows everything about anime.
+- 🔐 Secure authentication via **Auth.js**.
+- 💾 MongoDB for user data and favorites.
+- ⚡ Fast, modern, and responsive UI built with **Tailwind CSS** and **shadcn/ui**.
+- 🚀 Built with **Next.js** for server-side rendering and fast performance.
+
+---
+
+## 🚀 Demo
+
+- **Live Website**: _[https://ai-image-creator-peach.vercel.app]_
+- **Anime API**: [https://anime-vista-api-showcase.vercel.app/](https://anime-vista-api-showcase.vercel.app/)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui
+- **Authentication**: Auth.js
+- **Database**: MongoDB
+- **APIs**:
+  - Jikan API (MyAnimeList data)
+  - Custom REST API (2,000+ anime entries)
+- **AI**: Gemini (Google AI)
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the project
+git clone https://github.com/yourusername/anime-vista.git
+cd anime-vista
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env.local
+
+# Start the development server
+npm run dev
