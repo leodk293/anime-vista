@@ -284,7 +284,7 @@ export default function AiAssistant() {
         <form onSubmit={handleSubmit} className="flex gap-2">
           <textarea
             placeholder="Type your message..."
-            className="flex-1 rounded-[10px] p-1 bg-slate-800 border-slate-700 text-white placeholder:text-gray-400"
+            className="flex-1 h-[80px] rounded-[10px] p-1 bg-slate-800 border-slate-700 text-white placeholder:text-gray-400"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isLoading}
