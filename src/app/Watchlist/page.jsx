@@ -127,7 +127,7 @@ export default function WatchListPage() {
       {watchList.data.length === 0 ? (
         <div className="text-center h-[15rem] w-full text-white mt-10">
           <p className="text-xl mb-4">Your Watchlist is empty</p>
-          <Link href="/" className="text-blue-500 hover:underline">
+          <Link href="/#genres" className="text-blue-500 hover:underline">
             Browse anime to add to your Watchlist
           </Link>
         </div>
