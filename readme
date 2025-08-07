@@ -25,6 +25,7 @@ Anime Vista is a sleek and powerful anime discovery platform built with modern w
 ## 🛠️ Tech Stack
 
 - **Frontend**: React, Next.js, Tailwind CSS, shadcn/ui
+- **Backend**: Nextjs
 - **Authentication**: Auth.js
 - **Database**: MongoDB
 - **APIs**:
@@ -46,6 +47,11 @@ npm install
 
 # Setup environment variables
 cp .env.example .env.local
+
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+GEMINI_API_KEY=your_gemini_api_key
 
 # Start the development server
 npm run dev
