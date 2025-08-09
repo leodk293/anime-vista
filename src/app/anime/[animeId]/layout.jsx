@@ -70,7 +70,7 @@ export default async function layout({ children, params }) {
     );
   }
 
-  const title = animeData.data.title_english || animeData.data.title;
+  const title = animeData.data.title_english || animeData.data.title || 'Anime Poster';
   const hasStreaming = animeData.data?.streaming?.length > 0;
 
   const string = animeData.data.aired.string || "";
@@ -92,7 +92,6 @@ export default async function layout({ children, params }) {
         />
       </div>
 
-      {/* Main Content */}
       <div className="relative pt-20 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header Section */}

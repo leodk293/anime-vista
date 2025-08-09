@@ -91,7 +91,7 @@ const ErrorState = ({ onRetry }) => (
 
 const EmptyState = () => (
   <p className="mt-5 text-center text-gray-200">
-    Episodes not available yet...
+    Episodes not available...
   </p>
 );
 

@@ -11,7 +11,17 @@ import Loader from "../../components/loader/Loader";
 import { Shanti } from "next/font/google";
 import LoginButton from "../../components/LoginButton";
 
-const NUMBER_ANIME = "1,000";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const NUMBER_ANIME = "2,000";
 
 const shanti = Shanti({
   subsets: ["latin"],
@@ -65,7 +75,7 @@ const Home = () => {
     loading: false,
     data: [],
   });
-  const [selectedAnimeType, setSelectedAnimeType] = useState("Recent");
+  const [selectedAnimeType, setSelectedAnimeType] = useState("recent");
   const [animeTypeLink, setAnimeTypeLink] = useState("");
 
   async function getSelectedAnime() {
@@ -235,18 +245,55 @@ const Home = () => {
       )}
 
       <section className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
-        <h1 className="text-gray-300 self-start uppercase font-bold text-base sm:text-lg md:text-xl">
-          Filter :{" "}
-          <select
-            onChange={(e) => setSelectedAnimeType(e.target.value)}
-            className=" cursor-pointer bg-gray-900 outline-none border border-gray-700 rounded-md text-sm sm:text-base md:text-lg text-gray-300 p-1 sm:p-2 md:p-3"
-          >
-            <option value="recent">recent</option>
-            <option value="popular">popular</option>
-            <option value="upcoming">upcoming</option>
-            <option value="top">top</option>
-          </select>
-        </h1>
+        <div className=" text-white self-start flex flex-col gap-2">
+          <div className=" flex flex-row gap-2">
+            <h1 className=" text-2xl font-bold self-center">Filter : </h1>
+            <Select
+              value={selectedAnimeType}
+              onValueChange={setSelectedAnimeType}
+              className=" outline-0 self-center"
+            >
+              <SelectTrigger className="w-[180px] border border-white/15 outline-0 cursor-pointer text-lg font-medium">
+                <SelectValue placeholder="Filter anime" />
+              </SelectTrigger>
+              <SelectContent className=" p-1 bg-gray-900 outline-none border border-gray-700 rounded-md sm:text-base md:text-lg text-gray-300">
+                <SelectItem
+                  className={
+                    " text-lg font-medium cursor-pointer bg-transparent"
+                  }
+                  value="recent"
+                >
+                  recent
+                </SelectItem>
+                <SelectItem
+                  className={
+                    " text-lg font-medium cursor-pointer bg-transparent"
+                  }
+                  value="popular"
+                >
+                  popular
+                </SelectItem>
+                <SelectItem
+                  className={
+                    " text-lg font-medium cursor-pointer bg-transparent"
+                  }
+                  value="upcoming"
+                >
+                  upcoming
+                </SelectItem>
+                <SelectItem
+                  className={
+                    " text-lg font-medium cursor-pointer bg-transparent"
+                  }
+                  value="top"
+                >
+                  top
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <span className=" w-[35%] border border-transparent py-1 rounded-full bg-blue-900" />
+        </div>
 
         <div className="flex flex-col w-full gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-row justify-between items-center">
