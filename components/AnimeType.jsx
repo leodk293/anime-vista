@@ -3,6 +3,14 @@ import React, { useState, useEffect } from "react";
 import AnimeBox from "./AnimeBox";
 import { nanoid } from "nanoid";
 import Loader from "./loader/Loader";
+import Link from "next/link";
+import { ArrowBigRight } from "lucide-react";
+import { Fira_Sans } from "next/font/google";
+
+const firaSans = Fira_Sans({
+  subsets: ["latin"],
+  weight: "700",
+});
 
 const AnimeType = ({ animeTypeName, url }) => {
   const [animeData, setAnimeData] = useState({
@@ -32,18 +40,61 @@ const AnimeType = ({ animeTypeName, url }) => {
 
   return (
     <div className=" mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto">
-      <div className=" w-full flex flex-col gap-1">
-        <h1 className=" text-white text-3xl font-bold">{animeTypeName}</h1>
-        <span className=" p-1 rounded-xl bg-blue-800 w-[10%]" />
+      <div className=" flex flex-row justify-between w-full">
+        <div className=" self-center w-full flex flex-col gap-1">
+          <h1
+            className={` ${firaSans.className} text-white text-xl font-bold md:text-3xl`}
+          >
+            {animeTypeName}
+          </h1>
+          <span className=" p-1 rounded-xl bg-blue-800 w-[10%]" />
+        </div>
+        <Link
+          className=" text-gray-300 flex flex-row justify-center items-center font-semibold self-center hover:translate-x-2 duration-300 hover:text-gray-400"
+          href={
+            animeTypeName === "Top Anime"
+              ? "/recent-anime"
+              : animeTypeName === "Upcoming Next Season"
+                ? "/top-anime"
+                : animeTypeName === "All Time Popular"
+                  ? "/upcoming-anime"
+                  : animeTypeName === "Recent Anime"
+                    ? "/popular-anime"
+                    : ""
+          }
+        >
+          <p className=" self-center text-lg md:text-2xl">
+            {animeTypeName === "Top Anime"
+              ? "Recent"
+              : animeTypeName === "Upcoming Next Season"
+                ? "Top"
+                : animeTypeName === "All Time Popular"
+                  ? "Upcoming"
+                  : animeTypeName === "Recent Anime"
+                    ? "Popular"
+                    : ""}
+          </p>
+          {animeTypeName !== "New Releases" && (
+            <ArrowBigRight
+              className=" self-center"
+              size={35}
+              strokeWidth={1.65}
+            />
+          )}
+        </Link>
       </div>
       {animeData.error === true ? (
-        <p className="text-center w-full mt-10 text-xl text-red-500">Try again...</p>
+        <p className="text-center w-full mt-10 text-xl text-red-500">
+          Try again...
+        </p>
       ) : animeData.loading === true ? (
         <Loader />
       ) : (
         animeData.data &&
         (animeData.data.length === 0 ? (
-          <p className=" text-center text-xl font-medium h-[15rem] text-white">No anime found...</p>
+          <p className=" text-center text-xl font-medium h-[15rem] text-white">
+            No anime found...
+          </p>
         ) : (
           <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
             {animeData.data

@@ -352,7 +352,7 @@ const Home = () => {
                           width={180}
                           height={200}
                           alt={anime.title}
-                          className="rounded-lg bg-blue-950 border border-gray-700 object-cover"
+                          className="rounded-lg bg-gray-900 border border-gray-700 object-cover"
                         />
                         <h2 className="text-gray-300 text-xs sm:text-sm font-medium w-[140px] sm:w-[160px] md:w-[180px] line-clamp-2">
                           {anime.title_english
