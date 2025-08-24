@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "./logo/Logo";
@@ -11,6 +11,8 @@ import {
   Code,
   Bookmark,
   PhoneCall,
+  Menu,
+  X,
 } from "lucide-react";
 
 import LoginButton from "./LoginButton";
@@ -20,6 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Header() {
   const { status, data: session } = useSession();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { href: "/recent-anime", label: "Trending", icon: TrendingUp },
@@ -34,22 +37,30 @@ export default function Header() {
     },
   ];
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <div className="bg-black/10 border-b border-b-gray-400/10 w-full">
       <header className="flex flex-col mx-auto py-5 max-w-5xl gap-4">
         <div className="flex flex-wrap justify-center gap-5 md:justify-between md:gap-0">
           <Logo mobileSize={"text-3xl"} LaptopSize={"text-4xl"} />
 
-          <div className=" text-lg text-gray-300 font-medium self-center flex flex-row gap-5">
+          <div className="text-lg text-gray-300 font-medium self-center flex flex-row gap-5">
             <Link
               target="_blank"
-              className=" self-center hover:text-white duration-200"
+              className="self-center hover:text-white duration-200"
               href={"https://www.reddit.com/user/ElectricalHurry5975/"}
             >
               Reddit
             </Link>
             <Link
-              className=" self-center hover:text-white duration-200"
+              className="self-center hover:text-white duration-200"
               href="https://x.com/Aboubac48530295"
               aria-label="Twitter"
               target="_blank"
@@ -57,7 +68,7 @@ export default function Header() {
               X/Twitter
             </Link>
             <Link
-              className=" self-center hover:text-white duration-200"
+              className="self-center hover:text-white duration-200"
               href="https://github.com/leodk293"
               aria-label="GitHub"
               target="_blank"
@@ -98,7 +109,8 @@ export default function Header() {
           )}
         </div>
 
-        <nav className=" mt-3 w-[75%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex flex-wrap justify-center gap-2 md:gap-4">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex mt-3 w-[75%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex-wrap justify-center gap-2 md:gap-4">
           {navLinks.map((link) => {
             const IconComponent = link.icon;
             return (
@@ -108,16 +120,50 @@ export default function Header() {
                 target={link.label === "API" ? "_blank" : ""}
                 className="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200 text-sm font-medium"
               >
-                <IconComponent
-                  className=" hidden md:block"
-                  size={18}
-                  strokeWidth={1.5}
-                />
-                <span className="">{link.label}</span>
+                <IconComponent size={18} strokeWidth={1.5} />
+                <span>{link.label}</span>
               </Link>
             );
           })}
         </nav>
+
+        {/* Mobile Hamburger Button */}
+        <div className="md:hidden flex justify-center">
+          <button
+            onClick={toggleMobileMenu}
+            className="flex items-center justify-center w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? (
+              <X size={24} strokeWidth={1.5} />
+            ) : (
+              <Menu size={24} strokeWidth={1.5} />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <nav className="md:hidden mt-2 w-full bg-white/5 rounded-2xl border border-gray-300/10 backdrop-blur-sm">
+            <div className="flex flex-col p-4 space-y-2">
+              {navLinks.map((link) => {
+                const IconComponent = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target={link.label === "API" ? "_blank" : ""}
+                    onClick={closeMobileMenu}
+                    className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-base font-medium"
+                  >
+                    <IconComponent size={20} strokeWidth={1.5} />
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        )}
       </header>
     </div>
   );
