@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SearchAnime() {
   const [animeName, setAnimeName] = useState("");
   const router = useRouter();
+  const [animeList, setAnimeList] = useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -15,18 +16,50 @@ export default function SearchAnime() {
     }
   };
 
+  async function getAnimeList() {
+    try {
+      const response = await fetch(
+        "https://anime-vista-api.vercel.app/api/anime-vista-list"
+      );
+      if (!response.ok) {
+        throw new Error("An error has occurred");
+      }
+      const result = await response.json();
+      setAnimeList(result.animeList);
+    } catch (error) {
+      console.error("Error fetching anime list:", error);
+      setAnimeList([]);
+    }
+  }
+
+  useEffect(() => {
+    getAnimeList();
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit} className=" flex flex-row" action="">
+    <form
+      onSubmit={handleSubmit}
+      className=" border border-gray-500 rounded-lg flex flex-row p-1"
+      action=""
+    >
       <input
-        className=" text-gray-100 font-medium px-4 py-2 self-center border border-gray-200 border-r-transparent rounded-tl-lg outline-none rounded-bl-lg text-lg placeholder:text-gray-300"
+        className=" text-gray-100 font-medium px-4 py-2 self-center bg-transparent outline-0 "
         placeholder="Search for an anime..."
         type="text"
         onChange={(e) => setAnimeName(e.target.value)}
         value={animeName}
+        list="anime-list"
         required
       />
-      <button className=" cursor-pointer p-2 border border-gray-200 bg-blue-950 self-center rounded-tr-lg rounded-br-lg text-lg">
-        <Search size={28} color="#ffffff" strokeWidth={1.75} />
+
+      <datalist id="anime-list">
+        {animeList.map((anime) => (
+          <option key={anime.animeId} value={anime.animeName} />
+        ))}
+      </datalist>
+      <button className=" cursor-pointer text-white px-2 py-1 border border-transparent bg-white/5 rounded-lg self-center text-lg">
+        {/* <Search size={28} color="#ffffff" strokeWidth={1.75} /> */}
+        Search
       </button>
     </form>
   );

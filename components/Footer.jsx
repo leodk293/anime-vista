@@ -88,7 +88,7 @@ export default function Footer() {
         <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Connect with us</h1>
           <Medias />
-          <span className=" mt-4">
+          <span className=" w-auto mt-4">
             <SearchAnime />
           </span>
         </div>

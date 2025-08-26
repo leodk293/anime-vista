@@ -3,7 +3,14 @@ import fetchAnimeData from "../../../../utils/fetchAnimeData";
 import Image from "next/image";
 import Link from "next/link";
 import { nanoid } from "nanoid";
-import { Tv, Calendar, Clock } from "lucide-react";
+import {
+  Tv,
+  Calendar,
+  Clock,
+  Clapperboard,
+  CirclePlay,
+  Tag,
+} from "lucide-react";
 import { Belanosima } from "next/font/google";
 
 const belanosima = Belanosima({
@@ -11,7 +18,7 @@ const belanosima = Belanosima({
   weight: "400",
 });
 
-export async function generateMetadata({ params }, parent) {
+export async function generateMetadata({ params }) {
   const id = params.animeId;
 
   const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/full`);
@@ -70,7 +77,8 @@ export default async function layout({ children, params }) {
     );
   }
 
-  const title = animeData.data.title_english || animeData.data.title || 'Anime Poster';
+  const title =
+    animeData.data.title_english || animeData.data.title || "Anime Poster";
   const hasStreaming = animeData.data?.streaming?.length > 0;
 
   const string = animeData.data.aired.string || "";
@@ -180,23 +188,11 @@ export default async function layout({ children, params }) {
                 </div>
 
                 {/* Meta Information */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className=" flex flex-wrap gap-5 md:gap-7">
                   {/* Genres */}
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5 text-purple-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                        />
-                      </svg>
+                      <Tag className=" text-purple-400" size={20} />
                       Genres
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -211,13 +207,47 @@ export default async function layout({ children, params }) {
                     </div>
                   </div>
 
-                  {/* Streaming */}
+                  {/* Studios */}
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                      <Tv className=" text-blue-400" size={20} />
-                      Streaming
+                      <CirclePlay className=" text-orange-400" size={20} />
+                      Studio{animeData.data.studios.length > 1 ? "s" : ""}
                     </h3>
-                    {hasStreaming ? (
+                    <div className="flex flex-wrap gap-2">
+                      {animeData.data.studios.map((studio) => (
+                        <span
+                          key={nanoid(10)}
+                          className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-sm font-medium border border-orange-500/30 hover:bg-purple-orange/30 transition-colors"
+                        >
+                          {studio.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* TYPE */}
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      <Clapperboard className=" text-red-400" size={20} />
+                      Type
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-sm font-medium border border-red-500/30 hover:bg-red-500/30 transition-colors">
+                        {animeData.data.type} (Duration:{" "}
+                        {animeData.data.duration})
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Streaming */}
+
+                  {hasStreaming && (
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <Tv className=" text-blue-400" size={20} />
+                        Streaming
+                      </h3>
+
                       <div className="flex flex-wrap gap-2">
                         {animeData.data.streaming.map((platform) => (
                           <Link
@@ -243,12 +273,8 @@ export default async function layout({ children, params }) {
                           </Link>
                         ))}
                       </div>
-                    ) : (
-                      <p className="text-slate-200 text-sm">
-                        No streaming platforms found
-                      </p>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
