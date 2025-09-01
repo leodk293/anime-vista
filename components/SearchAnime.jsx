@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SearchAnime() {
@@ -40,7 +39,6 @@ export default function SearchAnime() {
     <form
       onSubmit={handleSubmit}
       className=" border border-gray-500 rounded-lg flex flex-row p-1"
-      action=""
     >
       <input
         className=" text-gray-100 font-medium px-4 py-2 self-center bg-transparent outline-0 "
@@ -58,7 +56,6 @@ export default function SearchAnime() {
         ))}
       </datalist>
       <button className=" cursor-pointer text-white px-2 py-1 border border-transparent bg-white/5 rounded-lg self-center text-lg">
-        {/* <Search size={28} color="#ffffff" strokeWidth={1.75} /> */}
         Search
       </button>
     </form>

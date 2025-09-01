@@ -13,6 +13,7 @@ import {
   PhoneCall,
   Menu,
   X,
+  Rocket,
 } from "lucide-react";
 
 import LoginButton from "./LoginButton";
@@ -27,6 +28,7 @@ export default function Header() {
   const navLinks = [
     { href: "/recent-anime", label: "Trending", icon: TrendingUp },
     { href: "/top-anime", label: "Top Rated", icon: Star },
+    { href: "/upcoming-anime", label: "Upcoming", icon: Rocket },
     { href: "/popular-anime", label: "Popular", icon: Heart },
     { href: "/Watchlist", label: "Watchlist", icon: Bookmark },
     { href: "/contact", label: "contact", icon: PhoneCall },
@@ -96,6 +98,7 @@ export default function Header() {
                     alt={session?.user?.name}
                     width={30}
                     height={30}
+                    title={session?.user?.name}
                     className="self-center border border-gray-950/10 rounded-full object-cover"
                   />
                   <p className="text-white self-center">
@@ -110,7 +113,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex mt-3 w-[75%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex-wrap justify-center gap-2 md:gap-4">
+        <nav className="hidden md:flex mt-3 w-[90%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex-wrap justify-center gap-2 md:gap-4">
           {navLinks.map((link) => {
             const IconComponent = link.icon;
             return (
