@@ -237,9 +237,9 @@ const Home = () => {
       ) : (
         <Link
           href={"/Watchlist"}
-          className=" flex flex-row gap-2 justify-center items-center border border-gray-200 bg-transparent px-5 py-3 rounded-full text-lg text-white hover:translate-x-3 duration-200"
+          className=" flex flex-row gap-2 justify-center items-center border border-gray-200 bg-transparent px-4 py-2 rounded-full text-sm text-white hover:translate-x-3 duration-200 md:text-lg"
         >
-          <Bookmark size={25} strokeWidth={1.5} />
+          <Bookmark strokeWidth={1.5} />
           <p>Watchlist</p>
         </Link>
       )}

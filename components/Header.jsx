@@ -18,6 +18,7 @@ import {
 
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
+import SearchAnime from "./SearchAnime";
 
 import { Skeleton } from "@/components/ui/skeleton";
 

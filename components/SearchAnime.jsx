@@ -41,7 +41,7 @@ export default function SearchAnime() {
       className=" border border-gray-500 rounded-lg flex flex-row p-1"
     >
       <input
-        className=" text-gray-100 font-medium px-4 py-2 self-center bg-transparent outline-0 "
+        className=" text-gray-100 font-medium px-4 py-1 self-center bg-transparent outline-0 "
         placeholder="Search for an anime..."
         type="text"
         onChange={(e) => setAnimeName(e.target.value)}
@@ -55,7 +55,7 @@ export default function SearchAnime() {
           <option key={anime.animeId} value={anime.animeName} />
         ))}
       </datalist>
-      <button className=" cursor-pointer text-white px-2 py-1 border border-transparent bg-white/5 rounded-lg self-center text-lg">
+      <button className=" cursor-pointer text-white font-medium px-2 py-1 border border-gray-700 bg-gray-800 rounded-sm self-center">
         Search
       </button>
     </form>
