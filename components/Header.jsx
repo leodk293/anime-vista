@@ -58,9 +58,9 @@ export default function Header() {
             <Link
               target="_blank"
               className="self-center hover:text-white duration-200"
-              href={"https://www.reddit.com/user/ElectricalHurry5975/"}
+              href={"https://www.youtube.com/@aboubacartraore5831"}
             >
-              Reddit
+              Youtube
             </Link>
             <Link
               className="self-center hover:text-white duration-200"
