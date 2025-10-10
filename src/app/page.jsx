@@ -14,14 +14,12 @@ import LoginButton from "../../components/LoginButton";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
-const NUMBER_ANIME = "2,000";
+const NUMBER_ANIME = "3,000";
 
 const shanti = Shanti({
   subsets: ["latin"],
@@ -32,6 +30,8 @@ const Home = () => {
   const [genres, setGenres] = useState([]);
   const [years, setYears] = useState([]);
   const { status, data: session } = useSession();
+
+  const [showAllAnime, setShowAllAnime] = useState(false);
 
   async function getAnimeGenres() {
     try {
@@ -135,10 +135,22 @@ const Home = () => {
       setAnime((prev) => ({ ...prev, loading: true }));
 
       const params = new URLSearchParams();
-      if (selectedSeason) params.append("season", selectedSeason.toLowerCase());
-      if (selectedGenre) params.append("genre", selectedGenre);
-      if (selectedYear) params.append("year", selectedYear);
-      if (searchTerm) params.append("search", searchTerm);
+      if (selectedSeason) {
+        setShowAllAnime(true);
+        params.append("season", selectedSeason.toLowerCase());
+      }
+      if (selectedGenre) {
+        setShowAllAnime(true);
+        params.append("genre", selectedGenre);
+      }
+      if (selectedYear) {
+        setShowAllAnime(true);
+        params.append("year", selectedYear);
+      }
+      if (searchTerm) {
+        setShowAllAnime(true);
+        params.append("search", searchTerm);
+      }
 
       const url = `/api/filter-anime${
         params.toString() ? `?${params.toString()}` : ""
@@ -166,6 +178,7 @@ const Home = () => {
     setSelectedYear("");
     setSelectedGenre("");
     setSearchTerm("");
+    setShowAllAnime(false);
   }
 
   useEffect(() => {
@@ -502,7 +515,10 @@ const Home = () => {
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
                   <p className="">{selectedSeason}</p>
                   <button
-                    onClick={() => setSelectedSeason("")}
+                    onClick={() => {
+                      setSelectedSeason("");
+                      setShowAllAnime(false);
+                    }}
                     className=" cursor-pointer text-xl "
                   >
                     <CircleX size={22} strokeWidth={1.75} />
@@ -513,7 +529,10 @@ const Home = () => {
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
                   <p className="">{selectedGenre}</p>
                   <button
-                    onClick={() => setSelectedGenre("")}
+                    onClick={() => {
+                      setSelectedGenre("");
+                      setShowAllAnime(false);
+                    }}
                     className=" cursor-pointer text-xl "
                   >
                     <CircleX size={22} strokeWidth={1.75} />
@@ -524,7 +543,10 @@ const Home = () => {
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
                   <p className="">{selectedYear}</p>
                   <button
-                    onClick={() => setSelectedYear("")}
+                    onClick={() => {
+                      setSelectedYear("");
+                      setShowAllAnime(false);
+                    }}
                     className=" cursor-pointer text-xl "
                   >
                     <CircleX size={22} strokeWidth={1.75} />
@@ -535,7 +557,10 @@ const Home = () => {
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
                   <p className="">{searchTerm}</p>
                   <button
-                    onClick={() => setSearchTerm("")}
+                    onClick={() => {
+                      setSearchTerm("");
+                      setShowAllAnime(false);
+                    }}
                     className=" cursor-pointer text-xl "
                   >
                     <CircleX size={22} strokeWidth={1.75} />
@@ -554,35 +579,26 @@ const Home = () => {
           ""
         )}
 
-        {anime.error === true ? (
+        {anime.error ? (
           <p className="text-center text-red-500">Try again...</p>
-        ) : anime.loading === true ? (
+        ) : anime.loading ? (
           <Loader />
+        ) : !anime.data ? null : anime.data.length === 0 ? (
+          <p className="text-center text-white">No anime found...</p>
         ) : (
-          anime.data &&
-          (anime.data.length === 0 ? (
-            <p className=" text-center text-white">No anime found...</p>
-          ) : (
-            <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-              {anime.data
-                .filter(
-                  (anime) =>
-                    anime &&
-                    anime.animeId &&
-                    anime.animeImage &&
-                    anime.animeName
-                )
-                .map((anime) => (
-                  <div key={anime.animeId}>
-                    <AnimeBox
-                      animeId={anime.animeId}
-                      animeImage={anime.animeImage}
-                      animeName={anime.animeName}
-                    />
-                  </div>
-                ))}
-            </div>
-          ))
+          <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            {(showAllAnime ? anime.data : anime.data.slice(0, 350))
+              .filter((a) => a && a.animeId && a.animeImage && a.animeName)
+              .map((a) => (
+                <div key={a.animeId}>
+                  <AnimeBox
+                    animeId={a.animeId}
+                    animeImage={a.animeImage}
+                    animeName={a.animeName}
+                  />
+                </div>
+              ))}
+          </div>
         )}
       </section>
       {showScrollTop && (
