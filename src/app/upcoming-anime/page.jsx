@@ -2,11 +2,10 @@ import AnimeType from "../../../components/AnimeType";
 
 const UpcomingAnimePage = () => {
   return (
-    // <AnimeType
-    //   animeTypeName={"Upcoming Next Season"}
-    //   url={"https://api.jikan.moe/v4/seasons/upcoming"}
-    // />
-    <p></p>
+    <AnimeType
+      animeTypeName={"Upcoming Next Season"}
+      url={"https://api.jikan.moe/v4/seasons/upcoming"}
+    />
   );
 };
 
