@@ -78,42 +78,42 @@ const Home = () => {
   const [selectedAnimeType, setSelectedAnimeType] = useState("recent");
   const [animeTypeLink, setAnimeTypeLink] = useState("");
 
-  async function getSelectedAnime() {
-    try {
-      setAnimeData((prev) => ({ ...prev, loading: true }));
-      let url = "";
-      switch (selectedAnimeType.toLowerCase()) {
-        case "recent":
-          url = "https://api.jikan.moe/v4/seasons/now";
-          setAnimeTypeLink("/recent-anime");
-          break;
-        case "popular":
-          url = "https://api.jikan.moe/v4/top/anime?filter=bypopularity";
-          setAnimeTypeLink("/popular-anime");
-          break;
-        case "upcoming":
-          url = "https://api.jikan.moe/v4/seasons/upcoming";
-          setAnimeTypeLink("/upcoming-anime");
-          break;
-        case "top":
-          url = "https://api.jikan.moe/v4/top/anime";
-          setAnimeTypeLink("/top-anime");
-          break;
-        default:
-          url = "https://api.jikan.moe/v4/seasons/now";
-          setAnimeTypeLink("/");
-      }
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch anime data");
-      }
-      const data = await response.json();
-      setAnimeData({ error: false, loading: false, data: data.data });
-    } catch (error) {
-      console.log(error);
-      setAnimeData({ error: true, loading: false, data: [] });
-    }
-  }
+  // async function getSelectedAnime() {
+  //   try {
+  //     setAnimeData((prev) => ({ ...prev, loading: true }));
+  //     let url = "";
+  //     switch (selectedAnimeType.toLowerCase()) {
+  //       case "recent":
+  //         url = "https://api.jikan.moe/v4/seasons/now";
+  //         setAnimeTypeLink("/recent-anime");
+  //         break;
+  //       case "popular":
+  //         url = "https://api.jikan.moe/v4/top/anime?filter=bypopularity";
+  //         setAnimeTypeLink("/popular-anime");
+  //         break;
+  //       case "upcoming":
+  //         url = "https://api.jikan.moe/v4/seasons/upcoming";
+  //         setAnimeTypeLink("/upcoming-anime");
+  //         break;
+  //       case "top":
+  //         url = "https://api.jikan.moe/v4/top/anime";
+  //         setAnimeTypeLink("/top-anime");
+  //         break;
+  //       default:
+  //         url = "https://api.jikan.moe/v4/seasons/now";
+  //         setAnimeTypeLink("/");
+  //     }
+  //     const response = await fetch(url);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch anime data");
+  //     }
+  //     const data = await response.json();
+  //     setAnimeData({ error: false, loading: false, data: data.data });
+  //   } catch (error) {
+  //     console.log(error);
+  //     setAnimeData({ error: true, loading: false, data: [] });
+  //   }
+  // }
 
   const [anime, setAnime] = useState({
     error: false,
@@ -308,7 +308,7 @@ const Home = () => {
           <span className=" w-[35%] border border-transparent py-1 rounded-full bg-blue-900" />
         </div>
 
-        <div className="flex flex-col w-full gap-3 sm:gap-4 md:gap-5">
+        {/* <div className="flex flex-col w-full gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-row justify-between items-center">
             <h1 className="text-gray-300 uppercase font-bold text-base sm:text-lg md:text-xl">
               {selectedAnimeType === "popular"
@@ -378,7 +378,7 @@ const Home = () => {
               </div>
             )
           )}
-        </div>
+        </div> */}
       </section>
 
       <div className="text-center mt-8 sm:mt-12 md:mt-16 space-y-2">
