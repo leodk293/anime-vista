@@ -12,6 +12,7 @@ import {
   Tag,
 } from "lucide-react";
 import { Belanosima } from "next/font/google";
+import AddToList from "../../../../utils/AddToWatchList";
 
 const belanosima = Belanosima({
   subsets: ["latin"],
@@ -120,6 +121,11 @@ export default async function layout({ children, params }) {
                     />
                   </div>
                 </div>
+                <AddToList
+                  animeId={animeId}
+                  animeName={title}
+                  animeImage={animeData.data.images.jpg.large_image_url}
+                />
               </div>
 
               <div className="flex-1 space-y-6">

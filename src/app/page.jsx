@@ -130,6 +130,35 @@ const Home = () => {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const saveToLocalStorage = (key, value) => {
+    try {
+      localStorage.setItem(`anime-filter-${key}`, value);
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
+  };
+
+  const getFromLocalStorage = (key, defaultValue = "") => {
+    try {
+      return localStorage.getItem(`anime-filter-${key}`) || defaultValue;
+    } catch (error) {
+      console.error("Error reading from localStorage:", error);
+      return defaultValue;
+    }
+  };
+
+  useEffect(() => {
+    const savedYear = getFromLocalStorage("year");
+    const savedSeason = getFromLocalStorage("season");
+    const savedGenre = getFromLocalStorage("genre");
+    const savedSearchTerm = getFromLocalStorage("searchTerm");
+
+    if (savedYear) setSelectedYear(savedYear);
+    if (savedSeason) setSelectedSeason(savedSeason);
+    if (savedGenre) setSelectedGenre(savedGenre);
+    if (savedSearchTerm) setSearchTerm(savedSearchTerm);
+  }, []);
+
   async function getAnime() {
     try {
       setAnime((prev) => ({ ...prev, loading: true }));
@@ -179,6 +208,11 @@ const Home = () => {
     setSelectedGenre("");
     setSearchTerm("");
     setShowAllAnime(false);
+
+    saveToLocalStorage("season", "");
+    saveToLocalStorage("year", "");
+    saveToLocalStorage("genre", "");
+    saveToLocalStorage("searchTerm", "");
   }
 
   useEffect(() => {
@@ -413,12 +447,18 @@ const Home = () => {
                 type="text"
                 placeholder="Search anime..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  saveToLocalStorage("searchTerm", e.target.value);
+                }}
               />
               {searchTerm && (
                 <button
                   className=" cursor-pointer text-white"
-                  onClick={() => setSearchTerm("")}
+                  onClick={() => {
+                    setSearchTerm("");
+                    saveToLocalStorage("searchTerm", "");
+                  }}
                 >
                   <CircleX size={19} strokeWidth={1.75} />
                 </button>
@@ -434,14 +474,18 @@ const Home = () => {
               Genres
             </label>
             <select
-              onChange={(event) => setSelectedGenre(event.target.value)}
+              onChange={(event) => {
+                setSelectedGenre(event.target.value);
+                saveToLocalStorage("genre", event.target.value);
+              }}
               className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-white/5 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
               name="anime-genres"
               id="genres"
+              value={selectedGenre}
             >
               <option value="">Any</option>
               {genres &&
-                genres.map((genre) => (
+                genres.slice(0, 20).map((genre) => (
                   <option
                     className="cursor-pointer font-medium"
                     key={genre.mal_id}
@@ -461,10 +505,14 @@ const Home = () => {
               Years
             </label>
             <select
-              onChange={(event) => setSelectedYear(event.target.value)}
+              onChange={(event) => {
+                setSelectedYear(event.target.value);
+                saveToLocalStorage("year", event.target.value);
+              }}
               className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-white/5 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
               name="anime-years"
               id="years"
+              value={selectedYear}
             >
               <option value="">Any</option>
               {years &&
@@ -488,10 +536,14 @@ const Home = () => {
               Seasons
             </label>
             <select
-              onChange={(event) => setSelectedSeason(event.target.value)}
+              onChange={(event) => {
+                setSelectedSeason(event.target.value);
+                saveToLocalStorage("season", event.target.value);
+              }}
               className="border-transparent w-full font-medium cursor-pointer outline-0 text-gray-300 p-1.5 sm:p-2 bg-white/5 text-xs sm:text-sm rounded-[5px] hover:bg-gray-700 transition-colors duration-200"
               name="anime-seasons"
               id="seasons"
+              value={selectedSeason}
             >
               <option value="">Any</option>
 
@@ -518,6 +570,7 @@ const Home = () => {
                     onClick={() => {
                       setSelectedSeason("");
                       setShowAllAnime(false);
+                      saveToLocalStorage("season", "");
                     }}
                     className=" cursor-pointer text-xl "
                   >
@@ -532,6 +585,7 @@ const Home = () => {
                     onClick={() => {
                       setSelectedGenre("");
                       setShowAllAnime(false);
+                      saveToLocalStorage("genre", "");
                     }}
                     className=" cursor-pointer text-xl "
                   >
@@ -546,6 +600,7 @@ const Home = () => {
                     onClick={() => {
                       setSelectedYear("");
                       setShowAllAnime(false);
+                      saveToLocalStorage("year", "");
                     }}
                     className=" cursor-pointer text-xl "
                   >
@@ -560,6 +615,7 @@ const Home = () => {
                     onClick={() => {
                       setSearchTerm("");
                       setShowAllAnime(false);
+                      saveToLocalStorage("searchTerm", "");
                     }}
                     className=" cursor-pointer text-xl "
                   >

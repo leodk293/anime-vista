@@ -8,7 +8,6 @@ import { Send, Bot, Trash2, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { Permanent_Marker } from "next/font/google";
 import Logo from "../../components/logo/Logo";
 import { Onest } from "next/font/google";
 
@@ -141,14 +140,12 @@ export default function AiAssistant() {
     setInput("");
     setIsLoading(true);
 
-    // Add user message immediately
     setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
 
     try {
-      // Fetch AI response
+      
       const aiResponse = await fetchAiResponse();
 
-      // Add AI response to messages
       setMessages((prev) => [...prev, { sender: "bot", text: aiResponse }]);
     } catch (error) {
       console.error("Error in handleSubmit:", error);
@@ -164,7 +161,7 @@ export default function AiAssistant() {
     }
   };
 
-  // Load chat history when session is available
+  
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
       loadChatHistory();
