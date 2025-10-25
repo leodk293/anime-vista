@@ -130,6 +130,10 @@ const Home = () => {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Session and timestamp tracking for state reset
+  const [lastSessionId, setLastSessionId] = useState(null);
+  const [lastVisitTime, setLastVisitTime] = useState(null);
+
   const saveToLocalStorage = (key, value) => {
     try {
       localStorage.setItem(`anime-filter-${key}`, value);
@@ -147,17 +151,73 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    const savedYear = getFromLocalStorage("year");
-    const savedSeason = getFromLocalStorage("season");
-    const savedGenre = getFromLocalStorage("genre");
-    const savedSearchTerm = getFromLocalStorage("searchTerm");
+  const clearAllFilterState = () => {
+    setSelectedSeason("");
+    setSelectedYear("");
+    setSelectedGenre("");
+    setSearchTerm("");
+    setShowAllAnime(false);
+    
+    // Clear localStorage
+    saveToLocalStorage("season", "");
+    saveToLocalStorage("year", "");
+    saveToLocalStorage("genre", "");
+    saveToLocalStorage("searchTerm", "");
+    saveToLocalStorage("lastSessionId", "");
+    saveToLocalStorage("lastVisitTime", "");
+  };
 
-    if (savedYear) setSelectedYear(savedYear);
-    if (savedSeason) setSelectedSeason(savedSeason);
-    if (savedGenre) setSelectedGenre(savedGenre);
-    if (savedSearchTerm) setSearchTerm(savedSearchTerm);
-  }, []);
+  const shouldResetState = () => {
+    const currentSessionId = session?.user?.email || session?.user?.id || 'anonymous';
+    const savedSessionId = getFromLocalStorage("lastSessionId");
+    const savedVisitTime = getFromLocalStorage("lastVisitTime");
+    
+    // Reset if different user
+    if (savedSessionId && savedSessionId !== currentSessionId) {
+      return true;
+    }
+    
+    // Reset if more than 24 hours have passed
+    if (savedVisitTime) {
+      const lastVisit = new Date(savedVisitTime);
+      const now = new Date();
+      const hoursDiff = (now - lastVisit) / (1000 * 60 * 60);
+      if (hoursDiff > 24) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
+
+  // Handle state restoration and reset logic
+  useEffect(() => {
+    // Check if we should reset state due to session change or long absence
+    if (shouldResetState()) {
+      clearAllFilterState();
+    } else {
+      // Restore saved state
+      const savedYear = getFromLocalStorage("year");
+      const savedSeason = getFromLocalStorage("season");
+      const savedGenre = getFromLocalStorage("genre");
+      const savedSearchTerm = getFromLocalStorage("searchTerm");
+
+      if (savedYear) setSelectedYear(savedYear);
+      if (savedSeason) setSelectedSeason(savedSeason);
+      if (savedGenre) setSelectedGenre(savedGenre);
+      if (savedSearchTerm) setSearchTerm(savedSearchTerm);
+    }
+
+    // Update session tracking
+    const currentSessionId = session?.user?.email || session?.user?.id || 'anonymous';
+    const currentTime = new Date().toISOString();
+    
+    saveToLocalStorage("lastSessionId", currentSessionId);
+    saveToLocalStorage("lastVisitTime", currentTime);
+    
+    setLastSessionId(currentSessionId);
+    setLastVisitTime(currentTime);
+  }, [session]);
 
   async function getAnime() {
     try {
@@ -203,16 +263,7 @@ const Home = () => {
   }
 
   function clearAll() {
-    setSelectedSeason("");
-    setSelectedYear("");
-    setSelectedGenre("");
-    setSearchTerm("");
-    setShowAllAnime(false);
-
-    saveToLocalStorage("season", "");
-    saveToLocalStorage("year", "");
-    saveToLocalStorage("genre", "");
-    saveToLocalStorage("searchTerm", "");
+    clearAllFilterState();
   }
 
   useEffect(() => {
