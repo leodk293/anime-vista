@@ -85,7 +85,10 @@ export default function TrailerThemePage({ params }) {
                   />
                   <div className=" flex flex-col gap-1">
                     <p className=" font-medium">{element?.title}</p>
-                    <Link target="_blank" href={element.trailer.url}>
+                    <Link
+                      target="_blank"
+                      href={element.trailer.url || "#"}
+                    >
                       <button className=" border border-white bg-transparent px-4 py-1 rounded-sm cursor-pointer flex flex-row justify-center items-center gap-1 text-white">
                         <p>Watch on Youtube</p>
                         <Youtube size={20} color="#ffffff" strokeWidth={1.5} />
@@ -127,7 +130,10 @@ export default function TrailerThemePage({ params }) {
                   />
                   <div className=" flex flex-col gap-1">
                     <p className=" font-medium">{element?.title}</p>
-                    <Link target="_blank" href={element?.video?.url}>
+                    <Link
+                      target="_blank"
+                      href={element?.video?.url || "#"}
+                    >
                       <button className=" border border-white bg-transparent px-4 py-1 rounded-sm cursor-pointer flex flex-row justify-center items-center gap-1 text-white">
                         <p>Watch on Youtube</p>
                         <Youtube size={20} color="#ffffff" strokeWidth={1.5} />
