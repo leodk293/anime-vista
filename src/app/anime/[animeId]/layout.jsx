@@ -124,13 +124,23 @@ export default async function layout({ children, params }) {
                 <AddToList
                   animeId={animeId}
                   animeName={title}
-                  animeImage={animeData.data.images.jpg.large_image_url}
+                  animeImage={animeData.data.images?.jpg?.large_image_url || ""}
                   year={
-                    animeData.data.year ||
-                    (animeData.data.aired?.prop?.from?.year ?? "")
+                    typeof animeData.data.year === "number"
+                      ? animeData.data.year
+                      : animeData.data.aired?.prop?.from?.year ?? 0
                   }
-                  season={animeData.data.season || ""}
-                  genres={animeData.data.genres?.map((g) => g.name) || []}
+                  season={animeData.data.season || "Unknown"}
+                  genres={
+                    Array.isArray(animeData.data.genres) &&
+                    animeData.data.genres.length > 0
+                      ? animeData.data.genres.map((g) =>
+                          typeof g === "object" && g !== null
+                            ? g.name || String(g)
+                            : String(g)
+                        )
+                      : []
+                  }
                 />
               </div>
 
