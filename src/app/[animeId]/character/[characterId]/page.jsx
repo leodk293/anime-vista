@@ -16,6 +16,7 @@ export default function CharacterPage({ params }) {
     loading: false,
     data: null,
   });
+  const [genresMap, setGenresMap] = useState({}); // store genres by ID
 
   async function getAnimePoster() {
     try {
@@ -60,6 +61,16 @@ export default function CharacterPage({ params }) {
     }
   }
 
+  async function loadGenres(id) {
+    const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/full`);
+    const data = await res.json();
+
+    setGenresMap((prev) => ({
+      ...prev,
+      [id]: data.data?.genres ?? [],
+    }));
+  }
+
   useEffect(() => {
     getAnimePoster();
   }, [animeId]);
@@ -67,6 +78,16 @@ export default function CharacterPage({ params }) {
   useEffect(() => {
     getAnimeCharacterData();
   }, [characterId]);
+
+  useEffect(() => {
+    if (animeCharacterData?.data?.anime && animeCharacterData.data.anime.length > 0) {
+      animeCharacterData.data.anime.forEach((element) => {
+        if (element?.anime?.mal_id) {
+          loadGenres(element.anime.mal_id);
+        }
+      });
+    }
+  }, [animeCharacterData.data]);
 
   if (!animeId || !characterId) {
     return (
@@ -157,8 +178,17 @@ export default function CharacterPage({ params }) {
                 <AnimeBox
                   key={element?.anime?.mal_id}
                   animeId={element?.anime?.mal_id}
-                  animeImage={element?.anime?.images?.jpg?.large_image_url}
-                  animeName={element?.anime?.title}
+                  animeImage={
+                    element?.anime?.images?.jpg?.large_image_url
+                      ? element.anime.images.jpg.large_image_url
+                      : element?.anime?.images?.jpg?.image_url || ""
+                  }
+                  animeName={element?.anime?.title_english || element?.anime?.title}
+                  year={element?.anime?.year ?? element?.anime?.aired?.prop?.from?.year ?? 0}
+                  season={element?.anime?.season ?? "Unknown"}
+                  genres={Array.isArray(genresMap[element?.anime?.mal_id]) && genresMap[element?.anime?.mal_id].length > 0 
+                    ? genresMap[element?.anime?.mal_id].map(g => typeof g === 'object' && g !== null ? g.name : g) 
+                    : []}
                 />
               ))}
           </div>

@@ -125,6 +125,12 @@ export default async function layout({ children, params }) {
                   animeId={animeId}
                   animeName={title}
                   animeImage={animeData.data.images.jpg.large_image_url}
+                  year={
+                    animeData.data.year ||
+                    (animeData.data.aired?.prop?.from?.year ?? "")
+                  }
+                  season={animeData.data.season || ""}
+                  genres={animeData.data.genres?.map((g) => g.name) || []}
                 />
               </div>
 

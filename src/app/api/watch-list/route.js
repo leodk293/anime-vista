@@ -1,36 +1,67 @@
 import { NextResponse } from "next/server";
-import FavoriteList from "@/lib/models/favoriteList";
 import { connectMongoDB } from "@/lib/db/connectMongoDb";
+import FavoriteList from "@/lib/models/favoriteList";
+import mongoose from "mongoose";
 
 export const POST = async (request) => {
     try {
-
         console.log("POST request received");
 
         const body = await request.json();
         console.log("Request body:", body);
 
-        const { animeId, animeTitle, animePoster, userId, userName } = body;
+        const { animeId, animeTitle, animePoster, userId, userName, year, season, genres } = body;
 
-        if (!animeId || !animeTitle || !animePoster || !userId || !userName) {
-            console.log("Missing required fields:", { animeId, animeTitle, animePoster, userId, userName });
+        // Validate required fields
+        if (!animeId || !animeTitle || !animePoster || !userId || !userName || (year === null || year === undefined) || !season || !genres) {
+            console.log("Missing required fields:", { animeId, animeTitle, animePoster, userId, year, season, genres });
             return NextResponse.json({
                 error: "Missing required fields",
-                required: ["animeId", "animeTitle", "animePoster", "userId", "userName"]
+                required: ["animeId", "animeTitle", "animePoster", "userId", "userName", "year", "season", "genres"]
             }, { status: 400 });
         }
 
-        if (typeof animeId !== 'string' || typeof animeTitle !== 'string' ||
-            typeof animePoster !== 'string' || typeof userId !== 'string' || typeof userName !== 'string') {
+        // Validate data types
+        if (
+            typeof animeId !== 'string' ||
+            typeof animeTitle !== 'string' ||
+            typeof animePoster !== 'string' ||
+            typeof userId !== 'string' ||
+            typeof userName !== 'string' ||
+            typeof year !== 'number' ||
+            typeof season !== 'string' ||
+            !Array.isArray(genres)
+        ) {
             console.log("Invalid data types:", {
                 animeId: typeof animeId,
                 animeTitle: typeof animeTitle,
                 animePoster: typeof animePoster,
                 userId: typeof userId,
-                userName: typeof userName
+                userName: typeof userName,
+                year: typeof year,
+                season: typeof season,
+                genres: Array.isArray(genres) ? 'array' : typeof genres
             });
             return NextResponse.json({
-                error: "Invalid data types. All fields must be strings"
+                error: "Invalid data types",
+                details: {
+                    animeId: "must be string",
+                    animeTitle: "must be string",
+                    animePoster: "must be string",
+                    userId: "must be string",
+                    userName: "must be string",
+                    year: "must be number",
+                    season: "must be string",
+                    genres: "must be array of strings"
+                }
+            }, { status: 400 });
+        }
+
+        // Validate userId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            console.log("Invalid userId format:", userId);
+            return NextResponse.json({
+                error: "Invalid userId format"
             }, { status: 400 });
         }
 
@@ -55,7 +86,10 @@ export const POST = async (request) => {
             animeTitle,
             animePoster,
             userId,
-            userName
+            userName,
+            year,
+            season,
+            genres
         });
 
         console.log("Anime created successfully:", anime);
@@ -69,6 +103,13 @@ export const POST = async (request) => {
         console.error("Error stack:", error.stack);
         console.error("Error name:", error.name);
         console.error("Error message:", error.message);
+
+        // Handle duplicate key error (in case unique index exists)
+        if (error.code === 11000) {
+            return NextResponse.json({
+                error: "Anime already exists in favorites"
+            }, { status: 409 });
+        }
 
         if (error.name === 'ValidationError') {
             return NextResponse.json({
@@ -84,10 +125,16 @@ export const POST = async (request) => {
             }, { status: 500 });
         }
 
-        // Check for JSON parsing errors
         if (error.name === 'SyntaxError') {
             return NextResponse.json({
                 error: "Invalid JSON format"
+            }, { status: 400 });
+        }
+
+        if (error.name === 'CastError') {
+            return NextResponse.json({
+                error: "Invalid data format",
+                details: error.message
             }, { status: 400 });
         }
 

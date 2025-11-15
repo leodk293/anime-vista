@@ -104,13 +104,18 @@ function SearchAnimeContent() {
                 <AnimeBox
                   animeId={anime.mal_id}
                   animeImage={
-                    anime.images.jpg.large_image_url
+                    anime.images?.jpg?.large_image_url
                       ? anime.images.jpg.large_image_url
-                      : anime.images.jpg.image_url
+                      : anime.images?.jpg?.image_url
                   }
                   animeName={
-                    anime.title_english ? anime.title_english : anime.title
+                    anime.title_english
+                      ? anime.title_english
+                      : anime.title
                   }
+                  year={anime.year ?? 0}
+                  season={anime.season ?? "Unknown"}
+                  genres={Array.isArray(anime.genres) && anime.genres.length > 0 ? anime.genres.map(g => typeof g === 'object' && g !== null ? g.name : g) : []}
                 />
               </div>
             ))}

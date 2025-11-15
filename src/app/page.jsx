@@ -702,6 +702,9 @@ const Home = () => {
                     animeId={a.animeId}
                     animeImage={a.animeImage}
                     animeName={a.animeName}
+                    year={a.year}
+                    season={a.season}
+                    genres={Array.isArray(a.genres) ? a.genres.map(g => typeof g === 'object' && g !== null ? g.name : g) : []}
                   />
                 </div>
               ))}

@@ -107,13 +107,14 @@ const AnimeType = ({ animeTypeName, url }) => {
                   <AnimeBox
                     animeId={anime.mal_id}
                     animeImage={
-                      anime.images.jpg.large_image_url
+                      anime.images?.jpg?.large_image_url
                         ? anime.images.jpg.large_image_url
-                        : anime.images.jpg.image_url
+                        : anime.images?.jpg?.image_url || ""
                     }
-                    animeName={
-                      anime.title_english ? anime.title_english : anime.title
-                    }
+                    animeName={anime.title_english || anime.title}
+                    year={anime.year || (anime.aired?.prop?.from?.year ?? "")}
+                    season={anime.season || ""}
+                    genres={anime.genres?.map((g) => g.name) || []}
                   />
                 </div>
               ))}

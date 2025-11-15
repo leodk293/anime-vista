@@ -10,9 +10,21 @@ const favoriteListSchema = new Schema(
             type: String,
             required: true
         },
+        year:{
+            type: Number,
+            required: true
+        },
+        season:{
+            type: String,
+            required: true
+        },
         animePoster: {
             type: String,
             required: true
+        },
+        genres:{
+            type: Array,
+            required: true,
         },
         userId: {
             type: mongoose.Schema.Types.ObjectId,

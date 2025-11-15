@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-export default function AnimeBox({ animeId, animeImage, animeName }) {
+export default function AnimeBox({ animeId, animeImage, animeName, year, season, genres }) {
   const { data: session, status } = useSession();
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +62,12 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
       return;
     }
 
+    // Validate required fields for API
+    if (year === undefined || season === undefined || !genres || !Array.isArray(genres)) {
+      toast.error("Missing required anime details (year, season, or genres)");
+      return;
+    }
+
     if (!session?.user?.id || !session?.user?.name) {
       toast.error("User session is incomplete. Please login again.");
       return;
@@ -76,6 +82,9 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
         animePoster: animeImage,
         userId: session.user.id,
         userName: session.user.name,
+        year,
+        season,
+        genres,
       });
 
       const res = await fetch("/api/watch-list", {
@@ -89,6 +98,11 @@ export default function AnimeBox({ animeId, animeImage, animeName }) {
           animePoster: String(animeImage),
           userId: String(session.user.id),
           userName: String(session.user.name),
+          year: Number(year),
+          season: String(season),
+          genres: Array.isArray(genres) 
+            ? genres.map(g => typeof g === 'object' && g !== null ? (g.name || String(g)) : String(g))
+            : [typeof genres === 'object' && genres !== null ? (genres.name || String(genres)) : String(genres)],
         }),
       });
 

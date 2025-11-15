@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import { toast } from "react-toastify";
 import { useState } from 'react'
 
-export default function AddToList({ animeId, animeName, animeImage }) {
+export default function AddToList({ animeId, animeName, animeImage, year, season, genres }) {
 
     const { status, data: session } = useSession();
     const [isLoading, setIsLoading] = useState(false);
@@ -59,6 +59,12 @@ export default function AddToList({ animeId, animeName, animeImage }) {
             return;
         }
 
+        // Validate required fields for API
+        if (year === undefined || season === undefined || !genres || !Array.isArray(genres)) {
+            toast.error("Missing required anime details (year, season, or genres)");
+            return;
+        }
+
         if (!session?.user?.id || !session?.user?.name) {
             toast.error("User session is incomplete. Please login again.");
             return;
@@ -76,6 +82,11 @@ export default function AddToList({ animeId, animeName, animeImage }) {
                     animePoster: String(animeImage),
                     userId: String(session?.user.id),
                     userName: String(session?.user.name),
+                    year: Number(year),
+                    season: String(season),
+                    genres: Array.isArray(genres) 
+                        ? genres.map(g => typeof g === 'object' && g !== null ? (g.name || String(g)) : String(g))
+                        : [typeof genres === 'object' && genres !== null ? (genres.name || String(genres)) : String(genres)],
                 }),
             });
 
