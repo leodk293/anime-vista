@@ -113,8 +113,14 @@ const AnimeType = ({ animeTypeName, url }) => {
                     }
                     animeName={anime.title_english || anime.title}
                     year={anime.year || (anime.aired?.prop?.from?.year ?? "")}
-                    season={anime.season || ""}
-                    genres={anime.genres?.map((g) => g.name) || []}
+                    season={anime?.season}
+                    genres={
+                      Array.isArray(anime.genres)
+                        ? anime.genres.map((g) =>
+                            typeof g === "object" && g !== null ? g.name : g
+                          )
+                        : []
+                    }
                   />
                 </div>
               ))}
