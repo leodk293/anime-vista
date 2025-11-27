@@ -16,17 +16,23 @@ const authOptions = {
                 return true;
             }
 
-            const { name, email } = user;
+            const { name, email, image } = user;
+            const avatarUrl = image;
 
             try {
                 await connectMongoDB();
                 const existingUser = await User.findOne({ email });
 
                 if (existingUser) {
+                    const updates = {};
                     if (existingUser.fullName !== name) {
-                        await User.findByIdAndUpdate(existingUser._id, {
-                            fullName: name,
-                        });
+                        updates.fullName = name;
+                    }
+                    if (avatarUrl && existingUser.avatarUrl !== avatarUrl) {
+                        updates.avatarUrl = avatarUrl;
+                    }
+                    if (Object.keys(updates).length > 0) {
+                        await User.findByIdAndUpdate(existingUser._id, updates);
                     }
                 } else {
                     const res = await fetch(`${process.env.NEXTAUTH_URL}/api/users`, {
@@ -37,6 +43,7 @@ const authOptions = {
                         body: JSON.stringify({
                             fullName: name,
                             email,
+                            avatarUrl,
                         }),
                     });
                     if (!res.ok) {
@@ -57,6 +64,7 @@ const authOptions = {
                     const dbUser = await User.findOne({ email: session.user.email });
                     if (dbUser) {
                         session.user.id = dbUser._id.toString();
+                        session.user.avatarUrl = dbUser.avatarUrl;
                     }
                 } catch (error) {
                     console.error("Session error:", error);
@@ -64,8 +72,7 @@ const authOptions = {
             }
             return session;
         },
-    }
-
+    },
 };
 
 const handler = NextAuth(authOptions);

@@ -11,6 +11,11 @@ const userSchema = new Schema(
             unique: true,
             required: true
         },
+        avatarUrl:{
+            type: String,
+            required: true
+
+        }
     },
     { timestamps: true }
 );

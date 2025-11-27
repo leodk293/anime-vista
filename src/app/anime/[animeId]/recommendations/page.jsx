@@ -65,10 +65,13 @@ export default function RecommendationsPage({ params }) {
   if (animeRecommendations.error) return <p>Something went wrong...</p>;
 
   if (animeRecommendations.data.length === 0)
-    return <p>No recommendations found...</p>;
+    return (
+      <p className=" text-white text-xl font-semibold">
+        No recommendations found...
+      </p>
+    );
 
   return (
-   
     <div className="text-white flex flex-col gap-10">
       <div className=" flex flex-col gap-2">
         <h1 className="text-xl font-bold">Recommendations</h1>
@@ -84,9 +87,14 @@ export default function RecommendationsPage({ params }) {
             animeImage={anime.entry.images?.jpg?.large_image_url}
             year={anime.entry.year ?? 0}
             season={anime.entry.season ?? "Unknown"}
-            genres={Array.isArray(genresMap[anime.entry.mal_id]) && genresMap[anime.entry.mal_id].length > 0 
-              ? genresMap[anime.entry.mal_id].map(g => typeof g === 'object' && g !== null ? g.name : g) 
-              : []}
+            genres={
+              Array.isArray(genresMap[anime.entry.mal_id]) &&
+              genresMap[anime.entry.mal_id].length > 0
+                ? genresMap[anime.entry.mal_id].map((g) =>
+                    typeof g === "object" && g !== null ? g.name : g
+                  )
+                : []
+            }
           />
         ))}
       </div>

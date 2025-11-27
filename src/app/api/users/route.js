@@ -6,11 +6,11 @@ export const POST = async (request) => {
     try {
         const body = await request.json();
         console.log(body);
-        const { fullName, email } = body;
+        const { fullName, email, avatarUrl } = body;
         await connectMongoDB();
         const isUserExits = await User.findOne({ email })
         if (!isUserExits) {
-            await User.create({ fullName, email });
+            await User.create({ fullName, email, avatarUrl });
             console.log("user created")
             return NextResponse.json({ message: "User Registered" }, { status: 201 });
         }
