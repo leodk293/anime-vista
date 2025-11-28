@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
           className={` flex flex-col ${geistSans.variable} ${geistMono.variable} bg-slate-900 mx-auto antialiased `}
         >
           <Header />
-          <div className=" min-h-screen px-3 md:px-0 ">{children}</div>
+          <div className=" min-h-screen mt-[17rem] px-3 md:px-0 md:mt-[11rem] ">{children}</div>
           <Footer />
 
           <Popover>
