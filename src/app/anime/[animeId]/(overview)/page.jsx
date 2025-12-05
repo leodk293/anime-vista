@@ -34,6 +34,7 @@ export default function AnimePage({ params }) {
         throw new Error(`Failed to fetch anime data: ${response.status}`);
       }
       const data = await response.json();
+      //console.log(data)
       setAnimeData({
         error: false,
         loading: false,
@@ -94,44 +95,53 @@ export default function AnimePage({ params }) {
     <div className="text-white flex flex-col gap-10 ">
       <section className="flex flex-col gap-5">
         <Link href={`/anime/${animeId}/characters`}>
-          <h1 className="text-xl sm:text-2xl font-bold hover:text-gray-400 duration-300">Characters</h1>
+          <h1 className="text-xl sm:text-2xl font-bold hover:text-gray-400 duration-300">
+            Characters
+          </h1>
         </Link>
         <AnimeCharacters animeId={animeId} length={8} />
       </section>
 
       <section className="flex flex-col gap-5">
         <Link href={`/anime/${animeId}/staff`}>
-          <h1 className="text-xl sm:text-2xl font-bold hover:text-gray-400 duration-300">Staff</h1>
+          <h1 className="text-xl sm:text-2xl font-bold hover:text-gray-400 duration-300">
+            Staff
+          </h1>
         </Link>
         <AnimeStaff animeId={animeId} length={4} />
       </section>
 
-      <section className="flex flex-col gap-5">
-        <h1 className="text-xl sm:text-2xl font-bold">Trailer</h1>
-        {animeData.data &&
-          (animeData.data.trailer ? (
-            <div className="w-full bg-gray-900">
-              <iframe
-                className="w-full border border-gray-800 rounded-sm h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[30rem]"
-                src={
-                  animeData.data?.trailer?.embed_url
-                    ? animeData.data?.trailer?.embed_url.replace(
-                        "autoplay=1",
-                        "autoplay=0"
-                      )
-                    : undefined
-                }
-                title={`${animeData.data?.title_english} trailer`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          ) : (
-            <p className="text-sm text-gray-700 italic">
-              No trailer available...
-            </p>
-          ))}
-      </section>
+      {animeData.data && animeData.data.trailer.embed_url ? (
+        <section className="flex flex-col gap-5">
+          <h1 className="text-xl sm:text-2xl font-bold">Trailer 🎞️</h1>
+
+          <div className="w-full bg-gray-900">
+            <iframe
+              className="w-full border border-gray-800 rounded-sm h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[30rem]"
+              src={
+                animeData.data?.trailer?.embed_url
+                  ? animeData.data?.trailer?.embed_url.replace(
+                      "autoplay=1",
+                      "autoplay=0"
+                    )
+                  : undefined
+              }
+              title={`${animeData.data?.title_english} trailer`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </section>
+      ) : (
+        <div className=" flex flex-col items-center gap-5 mt-15 h-30">
+          <p className="text-sm text-gray-200 text-center text-xl font-semibold italic md:text-3xl">
+            No trailer available...
+          </p>
+          <span className=" text-5xl">😢</span>
+        </div>
+      )}
+
+      
     </div>
   );
 }
