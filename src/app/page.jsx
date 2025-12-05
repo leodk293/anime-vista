@@ -19,12 +19,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const NUMBER_ANIME = "3,000";
-
 const shanti = Shanti({
   subsets: ["latin"],
   weight: "400",
 });
+
+const NUMBER_ANIME = "3,000";
 
 const Home = () => {
   const [genres, setGenres] = useState([]);
@@ -157,7 +157,7 @@ const Home = () => {
     setSelectedGenre("");
     setSearchTerm("");
     setShowAllAnime(false);
-    
+
     // Clear localStorage
     saveToLocalStorage("season", "");
     saveToLocalStorage("year", "");
@@ -168,16 +168,15 @@ const Home = () => {
   };
 
   const shouldResetState = () => {
-    const currentSessionId = session?.user?.email || session?.user?.id || 'anonymous';
+    const currentSessionId =
+      session?.user?.email || session?.user?.id || "anonymous";
     const savedSessionId = getFromLocalStorage("lastSessionId");
     const savedVisitTime = getFromLocalStorage("lastVisitTime");
-    
-    // Reset if different user
+
     if (savedSessionId && savedSessionId !== currentSessionId) {
       return true;
     }
-    
-    // Reset if more than 24 hours have passed
+
     if (savedVisitTime) {
       const lastVisit = new Date(savedVisitTime);
       const now = new Date();
@@ -186,17 +185,14 @@ const Home = () => {
         return true;
       }
     }
-    
+
     return false;
   };
 
-  // Handle state restoration and reset logic
   useEffect(() => {
-    // Check if we should reset state due to session change or long absence
     if (shouldResetState()) {
       clearAllFilterState();
     } else {
-      // Restore saved state
       const savedYear = getFromLocalStorage("year");
       const savedSeason = getFromLocalStorage("season");
       const savedGenre = getFromLocalStorage("genre");
@@ -209,12 +205,13 @@ const Home = () => {
     }
 
     // Update session tracking
-    const currentSessionId = session?.user?.email || session?.user?.id || 'anonymous';
+    const currentSessionId =
+      session?.user?.email || session?.user?.id || "anonymous";
     const currentTime = new Date().toISOString();
-    
+
     saveToLocalStorage("lastSessionId", currentSessionId);
     saveToLocalStorage("lastVisitTime", currentTime);
-    
+
     setLastSessionId(currentSessionId);
     setLastVisitTime(currentTime);
   }, [session]);
@@ -307,10 +304,10 @@ const Home = () => {
         <h1
           className={`text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl ${shanti.className}`}
         >
-          The next generation anime platform
+          Kickstart Your Anime Journey on AnimeVista
         </h1>
         <p
-          className={`text-blue-200 ${shanti.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
+          className={`text-blue-100 ${shanti.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
         >
           Track, share and discover <br className="hidden sm:block" /> your
           favorite anime among severals
@@ -468,7 +465,7 @@ const Home = () => {
 
       <div className="text-center mt-8 sm:mt-12 md:mt-16 space-y-2">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          More than {NUMBER_ANIME} Anime
+          More than {NUMBER_ANIME} to dive into
         </h1>
         <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-500 mx-auto rounded-full"></div>
       </div>
@@ -704,7 +701,13 @@ const Home = () => {
                     animeName={a.animeName}
                     year={a.year}
                     season={a.season}
-                    genres={Array.isArray(a.genres) ? a.genres.map(g => typeof g === 'object' && g !== null ? g.name : g) : []}
+                    genres={
+                      Array.isArray(a.genres)
+                        ? a.genres.map((g) =>
+                            typeof g === "object" && g !== null ? g.name : g
+                          )
+                        : []
+                    }
                   />
                 </div>
               ))}
