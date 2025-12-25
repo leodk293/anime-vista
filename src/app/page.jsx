@@ -316,7 +316,7 @@ const Home = () => {
 
       <SearchAnime />
 
-      {status === "unauthenticated" ? (
+      {/* {status === "unauthenticated" ? (
         <div className=" text-white flex flex-col items-center gap-2">
           <p className="font-medium text-gray-300">
             Login and start making your Watchlist
@@ -337,7 +337,7 @@ const Home = () => {
           <Bookmark strokeWidth={1.5} />
           <p>Watchlist</p>
         </Link>
-      )}
+      )} */}
 
       <section className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
         <div className=" text-white self-start flex flex-col gap-2">
@@ -691,7 +691,7 @@ const Home = () => {
           <p className="text-center text-white">No anime found...</p>
         ) : (
           <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {(showAllAnime ? anime.data : anime.data.slice(0, 350))
+            {(showAllAnime ? anime.data : anime.data.slice(0, 400))
               .filter((a) => a && a.animeId && a.animeImage && a.animeName)
               .map((a) => (
                 <div key={a.animeId}>

@@ -14,7 +14,7 @@ export default function RecommendationsPage({ params }) {
     error: false,
   });
 
-  const [genresMap, setGenresMap] = useState({}); // store genres by ID
+  const [genresMap, setGenresMap] = useState({}); 
 
   async function fetchAnimeRecommendations() {
     setAnimeRecommendations((prev) => ({ ...prev, loading: true }));

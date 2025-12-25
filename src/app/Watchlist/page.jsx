@@ -136,7 +136,7 @@ export default function WatchListPage() {
           {watchList.data.map((anime) => (
             <div
               key={anime.animeId || nanoid()}
-              className="text-white flex flex-col gap-2 relative group"
+              className="text-white flex flex-col gap-2 relative group w-full sm:w-[180px] max-w-full"
             >
               <button
                 onClick={() => removeFromWatchList(anime.animeId)}
@@ -147,18 +147,29 @@ export default function WatchListPage() {
               </button>
 
               <Link href={`/anime/${anime.animeId}`}>
-                <div className="relative cursor-pointer overflow-hidden rounded-lg border border-gray-700">
+                <div
+                  className="relative cursor-pointer overflow-hidden rounded-lg border border-gray-700 w-full aspect-[9/13] min-h-0"
+                  style={{
+                    // Responsive container for aspect ratio
+                  }}
+                >
                   <Image
                     src={anime.animePoster}
                     alt={anime.animeTitle}
-                    width={180}
-                    height={200}
-                    className="object-cover w-full h-auto hover:scale-105 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 639px) 100vw, 180px"
+                    className="object-cover bg-gray-900 w-full h-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               </Link>
 
-              <p className="text-sm font-medium line-clamp-2">
+              <p
+                className="text-sm font-medium line-clamp-2 w-full sm:w-[180px] max-w-full"
+                style={{
+                  wordBreak: "break-word",
+                }}
+                title={anime.animeTitle}
+              >
                 {anime.animeTitle}
               </p>
             </div>

@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Rocket,
+  BookOpen,
 } from "lucide-react";
 
 import LoginButton from "./LoginButton";
@@ -31,6 +32,7 @@ export default function Header() {
     { href: "/top-anime", label: "Top Rated", icon: Star },
     { href: "/upcoming-anime", label: "Upcoming", icon: Rocket },
     { href: "/popular-anime", label: "Popular", icon: Heart },
+    { href: "/manga", label: "Manga", icon: BookOpen },
     { href: "/Watchlist", label: "Watchlist", icon: Bookmark },
     { href: "/contact", label: "contact", icon: PhoneCall },
     {
@@ -54,16 +56,16 @@ export default function Header() {
         <div className="flex flex-wrap justify-center gap-5 md:justify-between md:gap-0">
           <Logo mobileSize={"text-3xl"} LaptopSize={"text-4xl"} />
 
-          <div className="text-lg text-gray-300 font-medium self-center flex flex-row gap-5">
+          <div className="hidden sm:flex self-center text-sm lg:text-base text-gray-300 font-medium gap-3 lg:gap-5">
             <Link
               target="_blank"
-              className="self-center hover:text-white duration-200"
+              className="hover:text-white duration-200 whitespace-nowrap"
               href={"https://www.youtube.com/@aboubacartraore5831"}
             >
               Youtube
             </Link>
             <Link
-              className="self-center hover:text-white duration-200"
+              className="hover:text-white duration-200 whitespace-nowrap"
               href="https://x.com/Aboubac48530295"
               aria-label="Twitter"
               target="_blank"
@@ -71,7 +73,7 @@ export default function Header() {
               X/Twitter
             </Link>
             <Link
-              className="self-center hover:text-white duration-200"
+              className="hover:text-white duration-200 whitespace-nowrap"
               href="https://github.com/leodk293"
               aria-label="GitHub"
               target="_blank"
@@ -114,7 +116,7 @@ export default function Header() {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex mt-3 w-[90%] self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex-wrap justify-center gap-2 md:gap-4">
+        <nav className="hidden md:flex mt-3 w-full self-center border border-transparent bg-white/5 px-5 py-2 rounded-full flex-wrap justify-center gap-2 md:gap-4">
           {navLinks.map((link) => {
             const IconComponent = link.icon;
             return (
@@ -147,7 +149,7 @@ export default function Header() {
         </div>
 
         {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
+        {/* {isMobileMenuOpen && (
           <nav className="md:hidden mt-2 w-full bg-white/5 rounded-2xl border border-gray-300/10 backdrop-blur-sm">
             <div className="flex flex-col p-4 space-y-2">
               {navLinks.map((link) => {
@@ -165,6 +167,59 @@ export default function Header() {
                   </Link>
                 );
               })}
+            </div>
+          </nav>
+        )} */}
+        {isMobileMenuOpen && (
+          <nav className="md:hidden mt-2 w-full bg-white/5 rounded-2xl border border-gray-300/10 backdrop-blur-sm overflow-hidden">
+            <div className="flex flex-col p-3 sm:p-4 space-y-1 sm:space-y-2 max-h-[60vh] overflow-y-auto">
+              {navLinks.map((link) => {
+                const IconComponent = link.icon;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target={link.label === "API" ? "_blank" : ""}
+                    onClick={closeMobileMenu}
+                    className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
+                  >
+                    <IconComponent
+                      size={18}
+                      strokeWidth={1.5}
+                      className="sm:w-5 sm:h-5"
+                    />
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+
+              {/* Mobile Social Links */}
+              <div className="pt-3 mt-2 border-t border-gray-300/10 flex flex-col space-y-1">
+                <Link
+                  target="_blank"
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
+                  href={"https://www.youtube.com/@aboubacartraore5831"}
+                >
+                  <span>Youtube</span>
+                </Link>
+                <Link
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
+                  href="https://x.com/Aboubac48530295"
+                  target="_blank"
+                >
+                  <span>X/Twitter</span>
+                </Link>
+                <Link
+                  onClick={closeMobileMenu}
+                  className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
+                  href="https://github.com/leodk293"
+                  target="_blank"
+                >
+                  <span>Github</span>
+                </Link>
+              </div>
             </div>
           </nav>
         )}

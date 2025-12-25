@@ -147,7 +147,7 @@ export default function ReviewsPage({ params }) {
         <div className="space-y-6">
           {reviews.data.map((review) => (
             <div
-              key={nanoid()}
+              key={nanoid(10)}
               className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 hover:border-white/20"
             >
               {/* Review Header */}
