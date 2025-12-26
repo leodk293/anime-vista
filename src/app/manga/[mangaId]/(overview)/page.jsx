@@ -254,7 +254,7 @@ export default function MangaDetails({ params }) {
           </div>
         </div>
 
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <Link href={`/manga/${mangaId}/recommendations`}>
             <h1 className="text-xl sm:text-2xl font-bold hover:text-gray-400 duration-300">
               Recommendations
@@ -263,7 +263,7 @@ export default function MangaDetails({ params }) {
           <div className="mt-5">
             <MangaRecommendations mangaId={mangaId} length={8} />
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
