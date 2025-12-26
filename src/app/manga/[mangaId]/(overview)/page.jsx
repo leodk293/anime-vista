@@ -74,69 +74,9 @@ export default function MangaDetails({ params }) {
   useEffect(() => {
     if (!mangaId) return;
 
-    let cancelled = false;
-
-    const fetchData = async () => {
-      // Set loading states
-      setMangaData({
-        error: false,
-        loading: true,
-        data: null,
-      });
-      setStatsLoading(true);
-      setStatsError(false);
-
-      try {
-        // Fetch manga details
-        const mangaRes = await fetch(
-          `https://api.jikan.moe/v4/manga/${mangaId}/full`
-        );
-        if (!mangaRes.ok) {
-          throw new Error("An error has occurred");
-        }
-        const mangaResult = await mangaRes.json();
-
-        if (!cancelled) {
-          setMangaData({
-            error: false,
-            loading: false,
-            data: mangaResult.data,
-          });
-        }
-
-        // Fetch statistics
-        const statsRes = await fetch(
-          `https://api.jikan.moe/v4/manga/${mangaId}/statistics`
-        );
-        if (!statsRes.ok) {
-          throw new Error("An error has occurred");
-        }
-        const statsResult = await statsRes.json();
-
-        if (!cancelled) {
-          setStatistics(statsResult.data);
-          setStatsLoading(false);
-        }
-      } catch (error) {
-        console.error(error.message);
-        if (!cancelled) {
-          setMangaData({
-            error: true,
-            loading: false,
-            data: null,
-          });
-          setStatsError(true);
-          setStatsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [mangaId]);
+    getMangaDetails();
+    getStatistics();
+  }, [mangaId, getMangaDetails, getStatistics]);
 
   const getChartData = useCallback(() => {
     if (

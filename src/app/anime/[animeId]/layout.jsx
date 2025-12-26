@@ -20,7 +20,7 @@ const belanosima = Belanosima({
 });
 
 export async function generateMetadata({ params }) {
-  const id = params.animeId;
+  const { animeId: id } = await params;
 
   const res = await fetch(`https://api.jikan.moe/v4/anime/${id}/full`);
   const result = await res.json();
@@ -45,12 +45,12 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function layout({ children, params }) {
-  const { animeId } = params;
+  const { animeId } = await params;
   const animeData = await fetchAnimeData(animeId);
 
   if (!animeData) {
     return (
-      <div className=" flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+      <div className=" mt-10 flex items-center justify-center">
         <div className="text-center p-8 bg-red-900/20 border border-red-500/30 rounded-xl backdrop-blur-sm">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/20 flex items-center justify-center">
             <svg

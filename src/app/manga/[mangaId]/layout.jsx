@@ -1,5 +1,4 @@
 import React from "react";
-//import { useState, use } from "react";
 import { Calendar, Tag, Newspaper, Clapperboard } from "lucide-react";
 import Link from "next/link";
 import Loader from "../../../../components/loader/Loader";
@@ -8,7 +7,8 @@ import { nanoid } from "nanoid";
 import fetchAnime from "../../../../utils/fetchAnime";
 
 export async function generateMetadata({ params }) {
-  const id = params.mangaId;
+  //const id = params.mangaId;
+  const { mangaId: id } = await params;
 
   const res = await fetch(`https://api.jikan.moe/v4/manga/${id}/full`);
   const result = await res.json();
@@ -33,7 +33,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function layout({ children, params }) {
-  const mangaId = params.mangaId;
+  //const mangaId = params.mangaId;
+  const { mangaId } = await params;
 
   const mangaData = await fetchAnime(
     `https://api.jikan.moe/v4/manga/${mangaId}/full`
@@ -43,14 +44,11 @@ export default async function layout({ children, params }) {
     return (
       <div className=" flex flex-col gap-3 items-center text-white w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <h1 className=" text-2xl font-semibold">Something went wrong</h1>
-        <p className="text-red-500">
-          An error has occurred, please try again
-        </p>
+        <p className="text-red-500">An error has occurred, please try again</p>
       </div>
     );
   }
 
-  
   if (mangaData && mangaData.data) {
     return (
       <div className="relative pt-20 pb-12">
