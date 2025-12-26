@@ -1,11 +1,9 @@
 "use client";
-import { nanoid } from "nanoid";
 import React, { useState, useEffect } from "react";
 import { Search, Filter, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Loader from "../../../components/loader/Loader";
-import { useSession } from "next-auth/react";
 
 export default function MangaPage() {
   const [mangaGenres, setMangaGenres] = useState([]);
@@ -14,7 +12,6 @@ export default function MangaPage() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { data: session } = useSession();
 
   const [mangaList, setMangaList] = useState({
     error: false,
@@ -97,7 +94,7 @@ export default function MangaPage() {
       setMangaList({
         error: false,
         loading: false,
-        data: result.mangaList.reverse(),
+        data: [...result.mangaList].reverse(),
       });
     } catch (error) {
       console.error(error.message);
@@ -235,7 +232,7 @@ export default function MangaPage() {
                 </option>
                 {mangaGenres.map((genre) => (
                   <option
-                    key={nanoid(10)}
+                    key={genre.mal_id || genre.name}
                     value={genre.name}
                     className="bg-gray-900"
                   >
@@ -325,7 +322,7 @@ export default function MangaPage() {
           {mangaList.data.map((manga) => (
             <Link
               href={`/manga/${encodeURIComponent(manga.mangaId)}`}
-              key={nanoid(10)}
+              key={manga.mangaId}
               className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
             >
               <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
@@ -352,7 +349,6 @@ export default function MangaPage() {
       )}
     <button
       className="fixed cursor-pointer bottom-6 left-10 z-50 bg-white/5 text-white rounded-full shadow-lg p-3 transition-all duration-200 focus:outline-none focus:ring-2"
-      style={{}}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       title="Back to Top"
       aria-label="Back to Top"
