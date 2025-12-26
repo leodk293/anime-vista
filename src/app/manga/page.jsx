@@ -4,6 +4,7 @@ import { Search, Filter, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Loader from "../../../components/loader/Loader";
+import { nanoid } from "nanoid";
 
 export default function MangaPage() {
   const [mangaGenres, setMangaGenres] = useState([]);
@@ -94,7 +95,8 @@ export default function MangaPage() {
       setMangaList({
         error: false,
         loading: false,
-        data: [...result.mangaList].reverse(),
+        //data: [...result.mangaList].reverse(),
+        data:result.mangaList
       });
     } catch (error) {
       console.error(error.message);
@@ -232,7 +234,7 @@ export default function MangaPage() {
                 </option>
                 {mangaGenres.map((genre) => (
                   <option
-                    key={genre.mal_id || genre.name}
+                    key={nanoid(10)}
                     value={genre.name}
                     className="bg-gray-900"
                   >
@@ -322,7 +324,7 @@ export default function MangaPage() {
           {mangaList.data.map((manga) => (
             <Link
               href={`/manga/${encodeURIComponent(manga.mangaId)}`}
-              key={manga.mangaId}
+              key={nanoid(10)}
               className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
             >
               <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
