@@ -78,6 +78,7 @@ export default async function layout({ children, params }) {
     );
   }
 
+  const japanese_title = animeData.data.title;
   const title =
     animeData.data.title_english || animeData.data.title || "Anime Poster";
   const hasStreaming = animeData.data?.streaming?.length > 0;
@@ -146,11 +147,20 @@ export default async function layout({ children, params }) {
 
               <div className="flex-1 space-y-6">
                 <div className="space-y-4">
-                  <h1
-                    className={` ${belanosima.className} text-4xl lg:text-5xl text-white leading-tight`}
-                  >
-                    {title}
-                  </h1>
+                  <div className=" flex flex-col">
+                    <h1
+                      className={` ${belanosima.className} text-4xl lg:text-5xl text-white leading-tight`}
+                    >
+                      {title}
+                    </h1>
+                    {title !== japanese_title ? (
+                      <h2 className=" text-gray-200 italic text-xl font-extrabold">
+                        {japanese_title}
+                      </h2>
+                    ) : (
+                      ""
+                    )}
+                  </div>
 
                   <div className="flex flex-wrap items-center gap-3">
                     <span

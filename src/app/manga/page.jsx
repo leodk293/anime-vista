@@ -1,18 +1,82 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Search, Filter, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Loader from "../../../components/loader/Loader";
 import { nanoid } from "nanoid";
+import { useSession } from "next-auth/react";
+
+// Utility functions for state persistence with expiration
+const STORAGE_PREFIX = "mangaPageState_";
+const EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour in milliseconds
+
+const getStorageKey = (userId) => {
+  return `${STORAGE_PREFIX}${userId || "guest"}`;
+};
+
+const saveStateToStorage = (userId, state) => {
+  try {
+    const storageKey = getStorageKey(userId);
+    const dataToSave = {
+      ...state,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(storageKey, JSON.stringify(dataToSave));
+  } catch (error) {
+    console.error("Error saving state to storage:", error);
+  }
+};
+
+const loadStateFromStorage = (userId) => {
+  try {
+    const storageKey = getStorageKey(userId);
+    const savedData = localStorage.getItem(storageKey);
+
+    if (!savedData) {
+      return null;
+    }
+
+    const parsedData = JSON.parse(savedData);
+    const now = Date.now();
+
+    // Check if state has expired (more than 1 hour old)
+    if (parsedData.timestamp && now - parsedData.timestamp > EXPIRATION_TIME) {
+      // State expired, remove it and return null
+      localStorage.removeItem(storageKey);
+      return null;
+    }
+
+    // Return state without timestamp
+    const { timestamp, ...state } = parsedData;
+    return state;
+  } catch (error) {
+    console.error("Error loading state from storage:", error);
+    return null;
+  }
+};
+
+const clearStateFromStorage = (userId) => {
+  try {
+    const storageKey = getStorageKey(userId);
+    localStorage.removeItem(storageKey);
+  } catch (error) {
+    console.error("Error clearing state from storage:", error);
+  }
+};
 
 export default function MangaPage() {
+  const { data: session } = useSession();
+  const userId = session?.user?.id || null;
+  const [showAllManga, setShowAllManga] = useState(false);
+
   const [mangaGenres, setMangaGenres] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isStateLoaded, setIsStateLoaded] = useState(false);
 
   const [mangaList, setMangaList] = useState({
     error: false,
@@ -22,18 +86,18 @@ export default function MangaPage() {
 
   const status = [
     {
-      name:"Finished",
-      value:"Finished"
+      name: "Finished",
+      value: "Finished",
     },
     {
-      name:"Still ongoing",
-      value:"Publishing"
+      name: "Still ongoing",
+      value: "Publishing",
     },
     {
-      name:"On pause",
-      value:"On Hiatus"
-    }
-  ]
+      name: "On pause",
+      value: "On Hiatus",
+    },
+  ];
 
   async function getMangaGenres() {
     setLoading(true);
@@ -41,13 +105,10 @@ export default function MangaPage() {
 
     try {
       const response = await fetch(`https://api.jikan.moe/v4/genres/manga`);
-
       if (!response.ok) {
         throw new Error(`Failed to fetch genres (${response.status})`);
       }
-
       const result = await response.json();
-
       if (result.data && Array.isArray(result.data)) {
         setMangaGenres(result.data);
       } else {
@@ -62,7 +123,7 @@ export default function MangaPage() {
     }
   }
 
-  async function getMangaList() {
+  const getMangaList = useCallback(async () => {
     setMangaList({
       error: false,
       loading: true,
@@ -95,8 +156,7 @@ export default function MangaPage() {
       setMangaList({
         error: false,
         loading: false,
-        //data: [...result.mangaList].reverse(),
-        data:result.mangaList
+        data: result.mangaList,
       });
     } catch (error) {
       console.error(error.message);
@@ -106,15 +166,42 @@ export default function MangaPage() {
         data: [],
       });
     }
-  }
+  }, [searchTerm, selectedGenre, selectedStatus]);
+
+  // Load saved state on mount
+  useEffect(() => {
+    if (userId !== undefined) {
+      const savedState = loadStateFromStorage(userId);
+      if (savedState) {
+        setSearchTerm(savedState.searchTerm || "");
+        setSelectedGenre(savedState.selectedGenre || "");
+        setSelectedStatus(savedState.selectedStatus || "");
+      }
+      setIsStateLoaded(true);
+    }
+  }, [userId]);
 
   useEffect(() => {
     getMangaGenres();
   }, []);
 
+  // Save state whenever it changes (only after initial load)
   useEffect(() => {
-    getMangaList();
-  }, [searchTerm, selectedGenre, selectedStatus]);
+    if (isStateLoaded && userId !== undefined) {
+      saveStateToStorage(userId, {
+        searchTerm,
+        selectedGenre,
+        selectedStatus,
+      });
+    }
+  }, [searchTerm, selectedGenre, selectedStatus, isStateLoaded, userId]);
+
+  useEffect(() => {
+    // Only fetch manga list after state is loaded to avoid unnecessary API calls
+    if (isStateLoaded) {
+      getMangaList();
+    }
+  }, [isStateLoaded, getMangaList]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -122,9 +209,14 @@ export default function MangaPage() {
   };
 
   const handleReset = () => {
+    setShowAllManga(false);
     setSearchTerm("");
     setSelectedGenre("");
     setSelectedStatus("");
+    // Clear saved state from storage
+    if (userId) {
+      clearStateFromStorage(userId);
+    }
   };
 
   return (
@@ -189,7 +281,10 @@ export default function MangaPage() {
             type="text"
             placeholder="Search manga by name..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowAllManga(true);
+            }}
             className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/5 border border-gray-300/10 rounded-xl sm:rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all duration-200 text-sm sm:text-base"
           />
         </div>
@@ -225,7 +320,10 @@ export default function MangaPage() {
               <Filter className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
               <select
                 value={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
+                onChange={(e) => {
+                  setSelectedGenre(e.target.value);
+                  setShowAllManga(true);
+                }}
                 disabled={loading || error}
                 className="w-full pl-11 pr-4 py-3 bg-white/5 border border-gray-300/10 rounded-xl text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
@@ -257,7 +355,10 @@ export default function MangaPage() {
               <Filter className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
               <select
                 value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
+                onChange={(e) => {
+                  setSelectedStatus(e.target.value);
+                  setShowAllManga(true);
+                }}
                 className="w-full pl-11 pr-4 py-3 bg-white/5 border border-gray-300/10 rounded-xl text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all duration-200 text-sm sm:text-base"
               >
                 <option value="" className="bg-gray-900">
@@ -321,44 +422,59 @@ export default function MangaPage() {
         <Loader />
       ) : mangaList.data && mangaList.data.length > 0 ? (
         <div className="w-full mt-10 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          {mangaList.data.map((manga) => (
-            <Link
-              href={`/manga/${encodeURIComponent(manga.mangaId)}`}
-              key={nanoid(10)}
-              className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
-            >
-              <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
-                <div className="overflow-hidden rounded-lg border border-gray-700">
-                  <Image
-                    src={manga.mangaPoster}
-                    width={180}
-                    height={200}
-                    alt={manga.mangaName}
-                    className="object-cover bg-gray-900 w-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
-                  />
+         
+          {(showAllManga ? mangaList.data : mangaList.data.slice(0, 100)).map(
+            (manga) => (
+              <Link
+                href={`/manga/${encodeURIComponent(manga.mangaId)}`}
+                key={nanoid(10)}
+                className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
+              >
+                <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
+                  <div className="overflow-hidden rounded-lg border border-gray-700">
+                    <Image
+                      src={manga.mangaPoster}
+                      width={180}
+                      height={200}
+                      alt={manga.mangaName}
+                      className="object-cover bg-gray-900 w-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <h2 className="text-gray-300 text-xs sm:text-sm font-medium line-clamp-2">
+                    {manga.mangaName}
+                  </h2>
                 </div>
-                <h2 className="text-gray-300 text-xs sm:text-sm font-medium line-clamp-2">
-                  {manga.mangaName}
-                </h2>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          )}
+         
         </div>
       ) : (
         <div className="mt-8 text-center text-gray-400 text-sm">
           No manga found for the current filter.
         </div>
       )}
-    <button
-      className="fixed cursor-pointer bottom-6 left-10 z-50 bg-white/5 text-white rounded-full shadow-lg p-3 transition-all duration-200 focus:outline-none focus:ring-2"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      title="Back to Top"
-      aria-label="Back to Top"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-      </svg>
-    </button>
+      <button
+        className="fixed cursor-pointer bottom-6 left-10 z-50 bg-white/5 text-white rounded-full shadow-lg p-3 transition-all duration-200 focus:outline-none focus:ring-2"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        title="Back to Top"
+        aria-label="Back to Top"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5 15l7-7 7 7"
+          />
+        </svg>
+      </button>
     </div>
   );
 }
