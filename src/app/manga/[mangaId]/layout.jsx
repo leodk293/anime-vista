@@ -141,24 +141,28 @@ export default async function layout({ children, params }) {
                   </div>
                 </div>
 
-                {/* Studios */}
-                <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <Newspaper className=" text-orange-400" size={20} />
-                    Magazine
-                    {mangaData.data.serializations.length > 1 ? "s" : ""}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {mangaData.data.serializations.map((magazine) => (
-                      <span
-                        key={nanoid(10)}
-                        className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-sm font-medium border border-orange-500/30 hover:bg-purple-orange/30 transition-colors"
-                      >
-                        {magazine.name}
-                      </span>
-                    ))}
+                {/* Magazine */}
+                {mangaData.data.serializations.length > 0 ? (
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      <Newspaper className=" text-orange-400" size={20} />
+                      Magazine
+                      {mangaData.data.serializations.length > 1 ? "s" : ""}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {mangaData.data.serializations.map((magazine) => (
+                        <span
+                          key={nanoid(10)}
+                          className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-sm font-medium border border-orange-500/30 hover:bg-purple-orange/30 transition-colors"
+                        >
+                          {magazine.name}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  ""
+                )}
 
                 {/* TYPE */}
                 <div className="space-y-3">
