@@ -23,7 +23,7 @@ const allerta = Allerta({
   weight: "400",
 });
 
-const NUMBER_ANIME = "3,000";
+const NUMBER_ANIME = "4,000";
 
 const Home = () => {
   const [genres, setGenres] = useState([]);
