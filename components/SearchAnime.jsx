@@ -1,11 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import animeList from "../utils/animeArray";
+import { nanoid } from "nanoid";
 
 export default function SearchAnime() {
   const [animeName, setAnimeName] = useState("");
   const router = useRouter();
-  const [animeList, setAnimeList] = useState([]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -14,26 +15,6 @@ export default function SearchAnime() {
       setAnimeName("");
     }
   };
-
-  async function getAnimeList() {
-    try {
-      const response = await fetch(
-        "https://anime-vista-api.vercel.app/api/anime-vista-list"
-      );
-      if (!response.ok) {
-        throw new Error("An error has occurred");
-      }
-      const result = await response.json();
-      setAnimeList(result.animeList);
-    } catch (error) {
-      console.error("Error fetching anime list:", error);
-      setAnimeList([]);
-    }
-  }
-
-  useEffect(() => {
-    getAnimeList();
-  }, []);
 
   return (
     <form
@@ -52,7 +33,7 @@ export default function SearchAnime() {
 
       <datalist id="anime-list">
         {animeList.map((anime) => (
-          <option key={anime.animeId} value={anime.animeName} />
+          <option key={nanoid(10)} value={anime} />
         ))}
       </datalist>
       <button className=" cursor-pointer text-white font-medium px-2 py-1 border border-gray-700 bg-gray-800 rounded-sm self-center">

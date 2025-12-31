@@ -11,10 +11,15 @@ import {
   CirclePlay,
   Tag,
 } from "lucide-react";
-import { Belanosima } from "next/font/google";
+import { Belanosima, Allerta } from "next/font/google";
 import AddToList from "../../../../utils/AddToWatchList";
 
 const belanosima = Belanosima({
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const allerta = Allerta({
   subsets: ["latin"],
   weight: "400",
 });
@@ -147,7 +152,7 @@ export default async function layout({ children, params }) {
 
               <div className="flex-1 space-y-6">
                 <div className="space-y-4">
-                  <div className=" flex flex-col">
+                  <div className=" flex flex-col gap-1">
                     <h1
                       className={` ${belanosima.className} text-4xl lg:text-5xl text-white leading-tight`}
                     >
@@ -318,14 +323,14 @@ export default async function layout({ children, params }) {
               <nav className="flex flex-wrap justify-evenly gap-1">
                 <Link
                   href={`/anime/${animeId}`}
-                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                  className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
                 >
                   Overview
                 </Link>
                 {!isNotYetAired && !isMovie && (
                   <Link
                     href={`/anime/${animeId}/watch`}
-                    className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white flex items-center gap-2"
+                    className={`px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white flex items-center gap-2 ${allerta.className}`}
                   >
                     <svg
                       className="w-4 h-4"
@@ -343,33 +348,33 @@ export default async function layout({ children, params }) {
                 )}
                 <Link
                   href={`/anime/${animeId}/characters`}
-                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                  className={`px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white ${allerta.className}`}
                 >
                   Characters
                 </Link>
                 <Link
                   href={`/anime/${animeId}/staff`}
-                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                  className={`px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white ${allerta.className}`}
                 >
                   Staff
                 </Link>
                 <Link
                   href={`/anime/${animeId}/reviews`}
-                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                  className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
                 >
                   Reviews
                 </Link>
 
                 <Link
                   href={`/anime/${animeId}/trailers-themes`}
-                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                  className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
                 >
                   Trailers & Themes
                 </Link>
 
                 <Link
                   href={`/anime/${animeId}/recommendations`}
-                  className="px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white"
+                  className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
                 >
                   Recommendations
                 </Link>

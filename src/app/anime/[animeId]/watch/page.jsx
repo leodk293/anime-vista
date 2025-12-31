@@ -98,7 +98,7 @@ const EmptyState = () => (
 
 const EpisodeListHeader = ({ episodeCount }) => (
   <div className="flex flex-col gap-2">
-    <h1 className="text-xl font-bold text-white">
+    <h1 className="text-2xl font-bold text-white">
       Episode List ({episodeCount})
     </h1>
     <div className="w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { CircleX, MoveRight, RefreshCw, Search, Bookmark } from "lucide-react";
+import { CircleX, MoveRight, RefreshCw, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
@@ -8,8 +8,7 @@ import Image from "next/image";
 import AnimeBox from "../../components/AnimeBox";
 import SearchAnime from "../../components/SearchAnime";
 import Loader from "../../components/loader/Loader";
-import { Shanti } from "next/font/google";
-import LoginButton from "../../components/LoginButton";
+import { Allerta } from "next/font/google";
 
 import {
   Select,
@@ -19,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const shanti = Shanti({
+const allerta = Allerta({
   subsets: ["latin"],
   weight: "400",
 });
@@ -302,12 +301,12 @@ const Home = () => {
     <div className="mt-3 sm:mt-5 md:mt-8 flex flex-col items-center gap-3 sm:gap-5 md:gap-8 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="mt-3 sm:mt-5 md:mt-8 text-center flex flex-col items-center justify-center gap-2 sm:gap-3 md:gap-5">
         <h1
-          className={`text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl ${shanti.className}`}
+          className={`text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl ${allerta.className}`}
         >
           Kickstart Your Anime Journey on AnimeVista
         </h1>
         <p
-          className={`text-blue-100 ${shanti.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
+          className={`text-blue-100 ${allerta.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
         >
           Track, share and discover <br className="hidden sm:block" /> your
           favorite anime among severals
@@ -315,29 +314,6 @@ const Home = () => {
       </div>
 
       <SearchAnime />
-
-      {/* {status === "unauthenticated" ? (
-        <div className=" text-white flex flex-col items-center gap-2">
-          <p className="font-medium text-gray-300">
-            Login and start making your Watchlist
-          </p>
-
-          <LoginButton />
-        </div>
-      ) : status === "loading" ? (
-        <span className="self-center flex flex-row items-center gap-2">
-          <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          <span className="text-white text-sm font-medium">Loading...</span>
-        </span>
-      ) : (
-        <Link
-          href={"/Watchlist"}
-          className=" flex flex-row gap-2 justify-center items-center border border-gray-200 bg-transparent px-4 py-2 rounded-full text-sm text-white hover:translate-x-3 duration-200 md:text-lg"
-        >
-          <Bookmark strokeWidth={1.5} />
-          <p>Watchlist</p>
-        </Link>
-      )} */}
 
       <section className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
         <div className=" text-white self-start flex flex-col gap-2">

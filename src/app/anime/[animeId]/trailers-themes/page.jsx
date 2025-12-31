@@ -62,7 +62,7 @@ export default function TrailerThemePage({ params }) {
       <div className="flex flex-col gap-10 text-white">
         <section className=" flex flex-col gap-5">
           <div className=" flex flex-col gap-2">
-            <h1 className="text-xl font-bold">Trailers</h1>
+            <h1 className="text-2xl font-bold">Trailers</h1>
             <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
           </div>
 

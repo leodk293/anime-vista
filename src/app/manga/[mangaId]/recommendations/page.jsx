@@ -10,7 +10,7 @@ export default function Recommendations({params}) {
   return (
     <div className=" flex flex-col gap-5">
       <div className=" flex flex-col gap-2">
-        <h1 className=" text-2xl font-bold text-white">You might like these ones :</h1>
+        <h1 className=" text-2xl font-bold text-white">You may like</h1>
         <span className=" w-[100px] p-1 rounded-full bg-blue-800"/>
      </div>
       <MangaRecommendations mangaId={mangaId} length={0} />
