@@ -111,7 +111,7 @@ export default function AnimeStaff({ animeId, length }) {
                 </div>
               ))
           ) : (
-            <p className="text-gray-400">No staff information available</p>
+            <p className="text-gray-300 font-semibold">No staff information available</p>
           )}
         </div>
       )}

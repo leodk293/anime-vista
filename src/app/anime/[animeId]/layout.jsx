@@ -228,10 +228,12 @@ export default async function layout({ children, params }) {
                 <div className=" flex flex-wrap gap-5 md:gap-7">
                   {/* Genres */}
                   <div className="space-y-3">
-                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                      <Tag className=" text-purple-400" size={20} />
-                      Genres
-                    </h3>
+                    {animeData.data.genres.length > 0 && (
+                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <Tag className=" text-purple-400" size={20} />
+                        Genres
+                      </h3>
+                    )}
                     <div className="flex flex-wrap gap-2">
                       {animeData.data.genres.map((genre) => (
                         <span
@@ -246,10 +248,13 @@ export default async function layout({ children, params }) {
 
                   {/* Studios */}
                   <div className="space-y-3">
-                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                      <CirclePlay className=" text-orange-400" size={20} />
-                      Studio{animeData.data.studios.length > 1 ? "s" : ""}
-                    </h3>
+                    {animeData.data.studios.length > 0 && (
+                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <CirclePlay className=" text-orange-400" size={20} />
+                        Studio{animeData.data.studios.length > 1 ? "s" : ""}
+                      </h3>
+                    )}
+
                     <div className="flex flex-wrap gap-2">
                       {animeData.data.studios.map((studio) => (
                         <span

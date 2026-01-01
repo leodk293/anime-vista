@@ -29,6 +29,7 @@ export default function AnimeCharacters({ animeId, length }) {
         error: false,
         errorMessage: "",
       });
+      console.log(`len ${result.data.length}`);
     } catch (error) {
       console.error(error);
       setAnimeCharacters({
@@ -62,7 +63,7 @@ export default function AnimeCharacters({ animeId, length }) {
     );
   }
 
-  if (animeCharacters.data && animeCharacters.data.length > 0) {
+  if (animeCharacters.data) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {animeCharacters.data?.length > 0 ? (
@@ -133,7 +134,7 @@ export default function AnimeCharacters({ animeId, length }) {
               </div>
             ))
         ) : (
-          <p className="text-gray-400">No character information available</p>
+          <p className="text-gray-300 font-semibold">No character information available yet</p>
         )}
       </div>
     );
