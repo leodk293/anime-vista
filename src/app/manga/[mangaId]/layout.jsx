@@ -1,13 +1,11 @@
 import React from "react";
 import { Calendar, Tag, Newspaper, Clapperboard } from "lucide-react";
 import Link from "next/link";
-import Loader from "../../../../components/loader/Loader";
 import Image from "next/image";
 import { nanoid } from "nanoid";
 import fetchAnime from "../../../../utils/fetchAnime";
 
 export async function generateMetadata({ params }) {
-  //const id = params.mangaId;
   const { mangaId: id } = await params;
 
   const res = await fetch(`https://api.jikan.moe/v4/manga/${id}/full`);
@@ -16,16 +14,8 @@ export async function generateMetadata({ params }) {
   if (result) {
     return {
       title: {
-        template: ` ${
-          result.data.title_english
-            ? result.data.title_english
-            : result.data.title
-        } - %s | AnimeVista`,
-        default: `${
-          result.data.title_english
-            ? result.data.title_english
-            : result.data.title
-        } | AnimeVista`,
+        template: ` ${result.data.title} - %s | AnimeVista`,
+        default: `${result.data.title} | AnimeVista`,
       },
       description: `${result.data.synopsis}`,
     };
