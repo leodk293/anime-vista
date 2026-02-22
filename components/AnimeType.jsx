@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import AnimeBox from "./AnimeBox";
 import { nanoid } from "nanoid";
-import Loader from "./loader/Loader";
+import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { ArrowBigRight } from "lucide-react";
 import { Fira_Sans } from "next/font/google";
@@ -88,7 +88,14 @@ const AnimeType = ({ animeTypeName, url }) => {
           Try again...
         </p>
       ) : animeData.loading === true ? (
-        <Loader />
+        <div className="w-full mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
+              <Skeleton className="rounded-lg bg-gray-300/30 w-full aspect-[9/13]" />
+              <Skeleton className="h-4 w-3/4 bg-gray-300/30 rounded" />
+            </div>
+          ))}
+        </div>
       ) : (
         animeData.data &&
         (animeData.data.length === 0 ? (
@@ -100,7 +107,7 @@ const AnimeType = ({ animeTypeName, url }) => {
             {animeData.data
               .filter(
                 (anime, index, self) =>
-                  index === self.findIndex((a) => a.mal_id === anime.mal_id)
+                  index === self.findIndex((a) => a.mal_id === anime.mal_id),
               )
               .map((anime) => (
                 <div key={nanoid(10)}>
@@ -117,7 +124,7 @@ const AnimeType = ({ animeTypeName, url }) => {
                     genres={
                       Array.isArray(anime.genres)
                         ? anime.genres.map((g) =>
-                            typeof g === "object" && g !== null ? g.name : g
+                            typeof g === "object" && g !== null ? g.name : g,
                           )
                         : []
                     }

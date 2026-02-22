@@ -4,22 +4,21 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signIn } from "next-auth/react";
-import Loader from "../../../components/loader/Loader";
 import googleLogo from "../../../public/google-logo.png";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WatchListPage() {
   const { status, data: session } = useSession();
 
   const [watchList, setWatchList] = useState({
     error: false,
-    loading: false,
     data: [],
   });
 
   async function getWatchList() {
     if (!session?.user?.id) return;
 
-    setWatchList((prev) => ({ ...prev, loading: true, error: false }));
+    setWatchList((prev) => ({ ...prev, error: false }));
     try {
       const res = await fetch(`/api/watch-list?userId=${session?.user?.id}`);
 
@@ -31,7 +30,6 @@ export default function WatchListPage() {
       const result = await res.json();
       setWatchList({
         error: false,
-        loading: false,
         data: result.animeList || [],
       });
     } catch (error) {
@@ -46,9 +44,7 @@ export default function WatchListPage() {
     try {
       const res = await fetch(
         `/api/watch-list?animeId=${animeId}&userId=${session.user.id}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" },
       );
 
       if (!res.ok) {
@@ -56,13 +52,10 @@ export default function WatchListPage() {
         throw new Error(errorData.error || `HTTP error! status: ${res.status}`);
       }
 
-      // Remove the anime from the local state
       setWatchList((prev) => ({
         ...prev,
         data: prev.data.filter((anime) => anime.animeId !== animeId),
       }));
-
-      console.log("Anime removed from Watchlist successfully");
     } catch (error) {
       console.error("Error removing anime from Watchlist:", error.message);
     }
@@ -75,7 +68,22 @@ export default function WatchListPage() {
   }, [session?.user?.id]);
 
   if (status === "loading") {
-    return <Loader />;
+    return (
+      <div className="mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto px-4">
+        <div className="w-full flex flex-col gap-1">
+          <h1 className="text-white text-3xl font-bold">Watchlist</h1>
+          <span className="p-1 rounded-xl bg-gray-800 w-[10%]" />
+        </div>
+        <div className="w-full mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-2">
+              <Skeleton className="rounded-lg bg-gray-300/30 w-full aspect-[9/13]" />
+              <Skeleton className="h-4 w-3/4 bg-gray-300/30 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {
@@ -113,15 +121,30 @@ export default function WatchListPage() {
     );
   }
 
-  if (watchList.loading) {
-    return <Loader />;
-  }
+  // if (watchList.loading) {
+  //   return (
+  //     <div className="mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto px-4">
+  //       <div className="w-full flex flex-col gap-1">
+  //         <h1 className="text-white text-3xl font-bold">Watchlist</h1>
+  //         <span className="p-1 rounded-xl bg-gray-800 w-[10%]" />
+  //       </div>
+  //       <div className="w-full mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+  //         {Array.from({ length: 10 }).map((_, i) => (
+  //           <div key={i} className="flex flex-col gap-2">
+  //             <Skeleton className="rounded-lg w-full aspect-[9/13]" />
+  //             <Skeleton className="h-4 w-3/4 rounded" />
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto px-4">
       <div className="w-full flex flex-col gap-1">
         <h1 className="text-white text-3xl font-bold">Watchlist</h1>
-        <span className="p-1 rounded-xl bg-blue-800 w-[10%]" />
+        <span className="p-1 rounded-xl bg-gray-800 w-[10%]" />
       </div>
 
       {watchList.data.length === 0 ? (
@@ -134,47 +157,55 @@ export default function WatchListPage() {
       ) : (
         <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
           {watchList.data.map((anime) => (
-            <div
+            <WatchListCard
               key={anime.animeId || nanoid()}
-              className="text-white flex flex-col gap-2 relative group w-full sm:w-[180px] max-w-full"
-            >
-              <button
-                onClick={() => removeFromWatchList(anime.animeId)}
-                className="absolute cursor-pointer text-lg font-medium top-2 right-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 z-10 opacity-0 duration-300 group-hover:opacity-100 transition-opacity"
-                title="Remove from Watchlist"
-              >
-                Remove
-              </button>
-
-              <Link href={`/anime/${anime.animeId}`}>
-                <div
-                  className="relative cursor-pointer overflow-hidden rounded-lg border border-gray-700 w-full aspect-[9/13] min-h-0"
-                  style={{
-                    // Responsive container for aspect ratio
-                  }}
-                >
-                  <Image
-                    src={anime.animePoster}
-                    alt={anime.animeTitle}
-                    fill
-                    sizes="(max-width: 639px) 100vw, 180px"
-                    className="object-cover bg-gray-900 w-full h-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              </Link>
-
-              <p
-                className="text-sm font-medium line-clamp-2 w-full sm:w-[180px] max-w-full"
-                style={{
-                  wordBreak: "break-word",
-                }}
-                title={anime.animeTitle}
-              >
-                {anime.animeTitle}
-              </p>
-            </div>
+              anime={anime}
+              onRemove={removeFromWatchList}
+            />
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function WatchListCard({ anime, onRemove }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  return (
+    <div className="text-white flex flex-col gap-2 relative group w-full sm:w-[180px] max-w-full">
+      <button
+        onClick={() => onRemove(anime.animeId)}
+        className="absolute cursor-pointer text-lg font-medium top-2 right-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 z-10 opacity-0 duration-300 group-hover:opacity-100 transition-opacity"
+        title="Remove from Watchlist"
+      >
+        Remove
+      </button>
+      <Link href={`/anime/${anime.animeId}`}>
+        <div className="relative cursor-pointer overflow-hidden rounded-lg border border-gray-700 w-full aspect-[9/13]">
+          {!imageLoaded && (
+            <Skeleton className="absolute bg-gray-300/30 inset-0 w-full h-full rounded-lg" />
+          )}
+          <Image
+            src={anime.animePoster}
+            alt={anime.animeTitle}
+            fill
+            sizes="(max-width: 639px) 100vw, 180px"
+            className={`object-cover bg-gray-900 hover:scale-105 transition-all duration-300`}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
+      </Link>
+      {!imageLoaded ? (
+        <Skeleton className="h-4 bg-gray-300/30 w-3/4 rounded" />
+      ) : (
+        <p
+          className="text-sm font-medium line-clamp-2 w-full sm:w-[180px] max-w-full"
+          style={{ wordBreak: "break-word" }}
+          title={anime.animeTitle}
+        >
+          {anime.animeTitle}
+        </p>
       )}
     </div>
   );

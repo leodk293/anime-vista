@@ -148,28 +148,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        {/* {isMobileMenuOpen && (
-          <nav className="md:hidden mt-2 w-full bg-white/5 rounded-2xl border border-gray-300/10 backdrop-blur-sm">
-            <div className="flex flex-col p-4 space-y-2">
-              {navLinks.map((link) => {
-                const IconComponent = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    target={link.label === "API" ? "_blank" : ""}
-                    onClick={closeMobileMenu}
-                    className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-base font-medium"
-                  >
-                    <IconComponent size={20} strokeWidth={1.5} />
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-        )} */}
         {isMobileMenuOpen && (
           <nav className="md:hidden mt-2 w-full bg-white/5 rounded-2xl border border-gray-300/10 backdrop-blur-sm overflow-hidden">
             <div className="flex flex-col p-3 sm:p-4 space-y-1 sm:space-y-2 max-h-[60vh] overflow-y-auto">

@@ -4,11 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function AnimeBox({ animeId, animeImage, animeName, year, season, genres }) {
+export default function AnimeBox({
+  animeId,
+  animeImage,
+  animeName,
+  year,
+  season,
+  genres,
+}) {
   const { data: session, status } = useSession();
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const success = () => {
     toast.success("Added to Watchlist", {
@@ -62,8 +71,12 @@ export default function AnimeBox({ animeId, animeImage, animeName, year, season,
       return;
     }
 
-    // Validate required fields for API
-    if (year === undefined || season === undefined || !genres || !Array.isArray(genres)) {
+    if (
+      year === undefined ||
+      season === undefined ||
+      !genres ||
+      !Array.isArray(genres)
+    ) {
       toast.error("Missing required anime details (year, season, or genres)");
       return;
     }
@@ -76,22 +89,9 @@ export default function AnimeBox({ animeId, animeImage, animeName, year, season,
     setIsLoading(true);
 
     try {
-      console.log("Sending request with data:", {
-        animeId,
-        animeTitle: animeName,
-        animePoster: animeImage,
-        userId: session.user.id,
-        userName: session.user.name,
-        year,
-        season,
-        genres,
-      });
-
       const res = await fetch("/api/watch-list", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           animeId: String(animeId),
           animeTitle: String(animeName),
@@ -100,18 +100,22 @@ export default function AnimeBox({ animeId, animeImage, animeName, year, season,
           userName: String(session.user.name),
           year: Number(year),
           season: String(season),
-          genres: Array.isArray(genres) 
-            ? genres.map(g => typeof g === 'object' && g !== null ? (g.name || String(g)) : String(g))
-            : [typeof genres === 'object' && genres !== null ? (genres.name || String(genres)) : String(genres)],
+          genres: Array.isArray(genres)
+            ? genres.map((g) =>
+                typeof g === "object" && g !== null
+                  ? g.name || String(g)
+                  : String(g),
+              )
+            : [
+                typeof genres === "object" && genres !== null
+                  ? genres.name || String(genres)
+                  : String(genres),
+              ],
         }),
       });
 
-      console.log("Response status:", res.status);
-
       if (!res.ok) {
         const errorData = await res.json();
-        console.error("API Error:", errorData);
-
         if (res.status === 409) {
           alreadyAdded();
         } else if (res.status === 400) {
@@ -124,12 +128,8 @@ export default function AnimeBox({ animeId, animeImage, animeName, year, season,
         return;
       }
 
-      const responseData = await res.json();
-      console.log("Success response:", responseData);
       success();
     } catch (error) {
-      console.error("Network error:", error);
-
       if (error.name === "TypeError" && error.message.includes("fetch")) {
         toast.error("Network error. Please check your connection.");
       } else if (error.name === "SyntaxError") {
@@ -149,23 +149,32 @@ export default function AnimeBox({ animeId, animeImage, animeName, year, season,
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link
-        key={animeId}
         href={`/anime/${animeId}`}
         className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
       >
         <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
-          <div className="overflow-hidden rounded-lg border border-gray-700">
+          <div className="overflow-hidden rounded-lg border border-gray-700 w-full aspect-[9/13] relative bg-gray-900">
+            {/* Skeleton shown while image is loading */}
+            {!imageLoaded && (
+              <Skeleton className="absolute bg-gray-300/30 inset-0 w-full h-full rounded-lg" />
+            )}
             <Image
               src={animeImage}
-              width={180}
-              height={200}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               alt={animeName}
-              className="object-cover bg-gray-900 w-full aspect-[9/13] hover:scale-105 transition-transform duration-300"
+              className={`object-cover hover:scale-105 transition-all duration-300 `}
+              onLoad={() => setImageLoaded(true)}
             />
           </div>
-          <h2 className="text-gray-300 text-xs sm:text-sm font-medium line-clamp-2">
-            {animeName}
-          </h2>
+          {/* Skeleton for title while image loads */}
+          {!imageLoaded ? (
+            <Skeleton className="h-4 w-3/4 bg-gray-300/30 rounded" />
+          ) : (
+            <h2 className="text-gray-300 text-xs sm:text-sm font-medium line-clamp-2">
+              {animeName}
+            </h2>
+          )}
         </div>
       </Link>
 

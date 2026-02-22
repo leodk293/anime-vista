@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { CircleX, MoveRight, RefreshCw, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AnimeBox from "../../components/AnimeBox";
 import SearchAnime from "../../components/SearchAnime";
-import Loader from "../../components/loader/Loader";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Allerta } from "next/font/google";
 
 import {
@@ -24,20 +24,17 @@ const allerta = Allerta({
 });
 
 const NUMBER_ANIME = "4,000";
+const PAGE_SIZE = 20;
 
 const Home = () => {
   const [genres, setGenres] = useState([]);
   const [years, setYears] = useState([]);
   const { status, data: session } = useSession();
 
-  const [showAllAnime, setShowAllAnime] = useState(false);
-
   async function getAnimeGenres() {
     try {
       const response = await fetch("https://api.jikan.moe/v4/genres/anime");
-      if (!response.ok) {
-        throw new Error("Failed to fetch anime genres");
-      }
+      if (!response.ok) throw new Error("Failed to fetch anime genres");
       const data = await response.json();
       setGenres(data.data);
     } catch (error) {
@@ -49,9 +46,7 @@ const Home = () => {
   async function getAnimeYears() {
     try {
       const response = await fetch("https://api.jikan.moe/v4/seasons");
-      if (!response.ok) {
-        throw new Error("Failed to fetch anime years");
-      }
+      if (!response.ok) throw new Error("Failed to fetch anime years");
       const data = await response.json();
       setYears(data.data);
     } catch (error) {
@@ -59,6 +54,7 @@ const Home = () => {
       setYears([]);
     }
   }
+
   useEffect(() => {
     const timer = setTimeout(() => {
       getAnimeGenres();
@@ -103,9 +99,7 @@ const Home = () => {
           setAnimeTypeLink("/");
       }
       const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch anime data");
-      }
+      if (!response.ok) throw new Error("Failed to fetch anime data");
       const data = await response.json();
       setAnimeData({ error: false, loading: false, data: data.data });
     } catch (error) {
@@ -120,6 +114,10 @@ const Home = () => {
     data: [],
   });
 
+  // Infinite scroll state
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const loaderRef = useRef(null);
+
   const refreshPage = () => {
     window.location.reload();
   };
@@ -129,7 +127,6 @@ const Home = () => {
   const [selectedGenre, setSelectedGenre] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Session and timestamp tracking for state reset
   const [lastSessionId, setLastSessionId] = useState(null);
   const [lastVisitTime, setLastVisitTime] = useState(null);
 
@@ -155,9 +152,8 @@ const Home = () => {
     setSelectedYear("");
     setSelectedGenre("");
     setSearchTerm("");
-    setShowAllAnime(false);
+    setVisibleCount(PAGE_SIZE);
 
-    // Clear localStorage
     saveToLocalStorage("season", "");
     saveToLocalStorage("year", "");
     saveToLocalStorage("genre", "");
@@ -172,17 +168,13 @@ const Home = () => {
     const savedSessionId = getFromLocalStorage("lastSessionId");
     const savedVisitTime = getFromLocalStorage("lastVisitTime");
 
-    if (savedSessionId && savedSessionId !== currentSessionId) {
-      return true;
-    }
+    if (savedSessionId && savedSessionId !== currentSessionId) return true;
 
     if (savedVisitTime) {
       const lastVisit = new Date(savedVisitTime);
       const now = new Date();
       const hoursDiff = (now - lastVisit) / (1000 * 60 * 60);
-      if (hoursDiff > 24) {
-        return true;
-      }
+      if (hoursDiff > 24) return true;
     }
 
     return false;
@@ -203,7 +195,6 @@ const Home = () => {
       if (savedSearchTerm) setSearchTerm(savedSearchTerm);
     }
 
-    // Update session tracking
     const currentSessionId =
       session?.user?.email || session?.user?.id || "anonymous";
     const currentTime = new Date().toISOString();
@@ -218,24 +209,13 @@ const Home = () => {
   async function getAnime() {
     try {
       setAnime((prev) => ({ ...prev, loading: true }));
+      setVisibleCount(PAGE_SIZE); // reset pagination on new filter
 
       const params = new URLSearchParams();
-      if (selectedSeason) {
-        setShowAllAnime(true);
-        params.append("season", selectedSeason.toLowerCase());
-      }
-      if (selectedGenre) {
-        setShowAllAnime(true);
-        params.append("genre", selectedGenre);
-      }
-      if (selectedYear) {
-        setShowAllAnime(true);
-        params.append("year", selectedYear);
-      }
-      if (searchTerm) {
-        setShowAllAnime(true);
-        params.append("search", searchTerm);
-      }
+      if (selectedSeason) params.append("season", selectedSeason.toLowerCase());
+      if (selectedGenre) params.append("genre", selectedGenre);
+      if (selectedYear) params.append("year", selectedYear);
+      if (searchTerm) params.append("search", searchTerm);
 
       const url = `/api/filter-anime${
         params.toString() ? `?${params.toString()}` : ""
@@ -243,13 +223,9 @@ const Home = () => {
 
       const response = await fetch(url, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch anime data");
-      }
+      if (!response.ok) throw new Error("Failed to fetch anime data");
       const data = await response.json();
       setAnime({ error: false, loading: false, data: data.animeList });
     } catch (error) {
@@ -270,20 +246,42 @@ const Home = () => {
     const delayDebounce = setTimeout(() => {
       getAnime();
     }, 400);
-
     return () => clearTimeout(delayDebounce);
   }, [searchTerm, selectedSeason, selectedYear, selectedGenre]);
+
+  // Infinite scroll: load more when loaderRef enters viewport
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && !anime.loading) {
+        setVisibleCount((prev) => {
+          const filtered = anime.data.filter(
+            (a) => a && a.animeId && a.animeImage && a.animeName,
+          );
+          if (prev >= filtered.length) return prev;
+          return prev + PAGE_SIZE;
+        });
+      }
+    },
+    [anime.loading, anime.data],
+  );
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "200px",
+      threshold: 0,
+    });
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
 
   const filterRef = useRef(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
+      setShowScrollTop(window.scrollY > 300);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -296,6 +294,12 @@ const Home = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  const filteredAnime = anime.data.filter(
+    (a) => a && a.animeId && a.animeImage && a.animeName,
+  );
+  const visibleAnime = filteredAnime.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredAnime.length;
 
   return (
     <div className="mt-3 sm:mt-5 md:mt-8 flex flex-col items-center gap-3 sm:gap-5 md:gap-8 px-3 sm:px-4 md:px-6 lg:px-8">
@@ -384,7 +388,14 @@ const Home = () => {
             </Link>
           </div>
           {animeData.loading === true ? (
-            <Loader />
+            <div className="flex flex-row gap-3 sm:gap-4 md:gap-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
+                  <Skeleton className="rounded-lg bg-gray-300/30 w-[180px] h-[200px]" />
+                  <Skeleton className="h-4 w-[140px] bg-gray-300/30 rounded" />
+                </div>
+              ))}
+            </div>
           ) : animeData.error === true ? (
             <div className=" flex flex-col items-center gap-2">
               <p className="text-red-900 font-bold text-lg text-center">
@@ -404,7 +415,8 @@ const Home = () => {
                 {animeData.data
                   .filter(
                     (anime, index, self) =>
-                      index === self.findIndex((a) => a.mal_id === anime.mal_id)
+                      index ===
+                      self.findIndex((a) => a.mal_id === anime.mal_id),
                   )
                   .slice(0, 5)
                   ?.map((anime) => (
@@ -463,7 +475,6 @@ const Home = () => {
               onSubmit={(event) => event.preventDefault()}
               id="search"
               className="flex flex-row border px-1.5 sm:px-2 rounded-[5px] border-transparent bg-white/5 justify-center items-center gap-1.5 sm:gap-2"
-              action=""
             >
               <Search size={16} color="#d6d6d6" strokeWidth={2.5} />
               <input
@@ -570,7 +581,6 @@ const Home = () => {
               value={selectedSeason}
             >
               <option value="">Any</option>
-
               {seasons.map((season) => (
                 <option
                   className="cursor-pointer font-medium"
@@ -589,14 +599,13 @@ const Home = () => {
             <div className=" flex text-white text-base flex-row gap-2">
               {selectedSeason && (
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
-                  <p className="">{selectedSeason}</p>
+                  <p>{selectedSeason}</p>
                   <button
                     onClick={() => {
                       setSelectedSeason("");
-                      setShowAllAnime(false);
                       saveToLocalStorage("season", "");
                     }}
-                    className=" cursor-pointer text-xl "
+                    className=" cursor-pointer text-xl"
                   >
                     <CircleX size={22} strokeWidth={1.75} />
                   </button>
@@ -604,14 +613,13 @@ const Home = () => {
               )}
               {selectedGenre && (
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
-                  <p className="">{selectedGenre}</p>
+                  <p>{selectedGenre}</p>
                   <button
                     onClick={() => {
                       setSelectedGenre("");
-                      setShowAllAnime(false);
                       saveToLocalStorage("genre", "");
                     }}
-                    className=" cursor-pointer text-xl "
+                    className=" cursor-pointer text-xl"
                   >
                     <CircleX size={22} strokeWidth={1.75} />
                   </button>
@@ -619,14 +627,13 @@ const Home = () => {
               )}
               {selectedYear && (
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
-                  <p className="">{selectedYear}</p>
+                  <p>{selectedYear}</p>
                   <button
                     onClick={() => {
                       setSelectedYear("");
-                      setShowAllAnime(false);
                       saveToLocalStorage("year", "");
                     }}
-                    className=" cursor-pointer text-xl "
+                    className=" cursor-pointer text-xl"
                   >
                     <CircleX size={22} strokeWidth={1.75} />
                   </button>
@@ -634,14 +641,13 @@ const Home = () => {
               )}
               {searchTerm && (
                 <div className=" border border-transparent bg-blue-400 rounded-sm px-2 py-1 flex flex-row justify-center items-center gap-1">
-                  <p className="">{searchTerm}</p>
+                  <p>{searchTerm}</p>
                   <button
                     onClick={() => {
                       setSearchTerm("");
-                      setShowAllAnime(false);
                       saveToLocalStorage("searchTerm", "");
                     }}
-                    className=" cursor-pointer text-xl "
+                    className=" cursor-pointer text-xl"
                   >
                     <CircleX size={22} strokeWidth={1.75} />
                   </button>
@@ -655,21 +661,25 @@ const Home = () => {
               Clear All
             </button>
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
 
         {anime.error ? (
           <p className="text-center text-red-500">Try again...</p>
         ) : anime.loading ? (
-          <Loader />
-        ) : !anime.data ? null : anime.data.length === 0 ? (
+          <div className="w-full mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
+                <Skeleton className="rounded-lg bg-gray-300/30 w-full aspect-[9/13]" />
+                <Skeleton className="h-4 w-3/4 bg-gray-300/30 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : !anime.data ? null : filteredAnime.length === 0 ? (
           <p className="text-center text-white">No anime found...</p>
         ) : (
-          <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-            {(showAllAnime ? anime.data : anime.data.slice(0, 400))
-              .filter((a) => a && a.animeId && a.animeImage && a.animeName)
-              .map((a) => (
+          <>
+            <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+              {visibleAnime.map((a) => (
                 <div key={a.animeId}>
                   <AnimeBox
                     animeId={a.animeId}
@@ -680,16 +690,38 @@ const Home = () => {
                     genres={
                       Array.isArray(a.genres)
                         ? a.genres.map((g) =>
-                            typeof g === "object" && g !== null ? g.name : g
+                            typeof g === "object" && g !== null ? g.name : g,
                           )
                         : []
                     }
                   />
                 </div>
               ))}
-          </div>
+            </div>
+
+            {/* Infinite scroll trigger */}
+            {hasMore && (
+              <div
+                ref={loaderRef}
+                className="w-full mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
+              >
+                {Array.from({
+                  length: Math.min(
+                    PAGE_SIZE,
+                    filteredAnime.length - visibleCount,
+                  ),
+                }).map((_, i) => (
+                  <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
+                    <div className="rounded-lg overflow-hidden border border-gray-700 w-full aspect-[9/13] bg-gray-800 animate-pulse" />
+                    <div className="h-4 bg-gray-700 rounded animate-pulse w-3/4" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </section>
+
       {showScrollTop && (
         <button
           onClick={scrollToFilters}
