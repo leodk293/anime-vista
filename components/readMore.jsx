@@ -11,7 +11,7 @@ const ReadMore = ({ text, maxLength, textSize }) => {
     <p className={` text-slate-200 leading-relaxed ${textSize}`}>
       {isReadMore ? `${text.slice(0, maxLength)}...` : text}
       <span
-        className="text-gray-100 text-lg font-medium italic cursor-pointer"
+        className="text-gray-100 text-sm font-medium italic cursor-pointer"
         onClick={toggleReadMore}
       >
         {isReadMore ? " read more" : "..less"}

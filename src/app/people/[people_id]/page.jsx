@@ -1,18 +1,17 @@
 "use client";
-import React from "react";
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import Loader from "../../../../components/loader/Loader";
-import AnimeBox from "../../../../components/AnimeBox";
 import Anonym from "../../../../public/anonym-profile-picture.jpeg";
 
 export default function PeoplePage({ params }) {
   const resolvedParams = use(params);
   const { people_id } = resolvedParams;
+
   const [peopleData, setPeopleData] = useState({
-    data: [],
+    data: null,
     loading: true,
     error: false,
   });
@@ -21,18 +20,14 @@ export default function PeoplePage({ params }) {
     setPeopleData((prev) => ({ ...prev, loading: true, error: false }));
     try {
       const response = await fetch(
-        `https://api.jikan.moe/v4/people/${people_id}/full`
+        `https://api.jikan.moe/v4/people/${people_id}/full`,
       );
       if (!response.ok) {
         setPeopleData((prev) => ({ ...prev, loading: false, error: true }));
         throw new Error(`Failed to fetch voice actor: ${response.status}`);
       }
       const result = await response.json();
-      setPeopleData({
-        data: result.data,
-        loading: false,
-        error: false,
-      });
+      setPeopleData({ data: result.data, loading: false, error: false });
     } catch (error) {
       console.error(error.message);
       setPeopleData((prev) => ({ ...prev, loading: false, error: true }));
@@ -40,19 +35,14 @@ export default function PeoplePage({ params }) {
   }
 
   function formatBirthday(isoDateString) {
+    if (!isoDateString) return "Unknown";
     const date = new Date(isoDateString);
-
-    if (isNaN(date.getTime())) {
-      throw new Error("Invalid date format");
-    }
-
-    const options = {
+    if (isNaN(date.getTime())) return "Unknown";
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    };
-
-    return date.toLocaleDateString("en-US", options);
+    });
   }
 
   useEffect(() => {
@@ -60,14 +50,14 @@ export default function PeoplePage({ params }) {
   }, [people_id]);
 
   if (!people_id) {
-    <div className="flex flex-col items-center justify-center gap-4">
-      <h1 className="text-xl text-red-500">Invalid Voice Actor Id</h1>
-    </div>;
+    return (
+      <div className="flex flex-col items-center mt-40 justify-center gap-4">
+        <h1 className="text-xl text-red-500">Invalid people Id</h1>
+      </div>
+    );
   }
 
-  if (peopleData.loading) {
-    return <Loader />;
-  }
+  if (peopleData.loading) return <Loader />;
 
   if (peopleData.error) {
     return (
@@ -78,138 +68,183 @@ export default function PeoplePage({ params }) {
       </div>
     );
   }
+
+  const data = peopleData.data;
+
   return (
     <>
-      {peopleData.data && (
-        <div className="relative max-w-6xl text-white pt-20 pb-12 mx-auto flex flex-col items-center gap-10 justify-center">
-          <section className="w-full flex flex-col md:flex-row items-center justify-center gap-8">
-            {peopleData?.data?.images.jpg.image_url && (
+      {data && (
+        <div className="relative max-w-5xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
+
+          {/* ── HERO ── */}
+          <section className="flex flex-col md:flex-row gap-10 items-start">
+
+            {/* Portrait */}
+            <div className="relative flex-shrink-0 self-center md:self-start">
+              <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-br from-blue-500/40 via-transparent to-blue-900/30 z-0" />
               <Image
-                width={250}
-                height={400}
+                width={220}
+                height={320}
                 src={
-                  peopleData?.data?.images.jpg.image_url ===
+                  data.images?.jpg?.image_url ===
                   "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png"
                     ? Anonym
-                    : peopleData?.data?.images.jpg.image_url
+                    : data.images?.jpg?.image_url
                 }
-                alt={peopleData?.data?.name}
-                className="rounded-lg border border-gray-300 object-cover"
+                alt={data.name}
+                className="relative z-10 rounded-xl object-cover w-[220px] h-[320px] shadow-2xl shadow-black/60"
               />
-            )}
+              {/* <span className="absolute bottom-3 left-3 z-20 bg-blue-600/80 backdrop-blur-sm text-white text-[10px] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-full">
+                Voice Actor
+              </span> */}
+            </div>
 
-            <div className="flex flex-col items-center md:items-start w-full md:w-[70%] gap-4">
-              <h1 className="text-gray-50 text-3xl font-extrabold md:text-4xl text-center md:text-left">
-                {peopleData?.data?.name}
-              </h1>
-              <p className="text-2xl font-bold text-gray-300 text-center md:text-left">
-                Family Name : {peopleData?.data?.family_name}
-              </p>
-              {peopleData?.data?.alternate_names.length > 0 ? (
-                <p className="text-gray-100 font-semibold text-lg text-center md:text-left">
-                  Alternate Names :{" "}
-                  {peopleData?.data?.alternate_names.join(", ")}
+            {/* Info */}
+            <div className="flex flex-col gap-5 flex-1">
+
+              {/* Name block */}
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400 flex items-center gap-2">
+                  <span className="inline-block w-6 h-px bg-blue-400" />
+                  Profile
+                </p>
+                <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+                  {data.name}
+                </h1>
+                {data.family_name && (
+                  <p className="text-lg text-gray-400 font-medium italic">
+                    {data.family_name}
+                  </p>
+                )}
+                {data.alternate_names?.length > 0 && (
+                  <p className="text-xs text-gray-500 tracking-widest mt-1">
+                    {data.alternate_names.join("  ·  ")}
+                  </p>
+                )}
+              </div>
+
+              {/* Divider */}
+              <div className="w-full h-px bg-gradient-to-r from-blue-800/60 to-transparent" />
+
+              {/* Meta */}
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-blue-400 w-16">
+                    Born
+                  </span>
+                  <span className="text-sm text-gray-300">
+                    {formatBirthday(data.birthday)}
+                  </span>
+                </div>
+                {data.website_url && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-blue-400 w-16">
+                      Web
+                    </span>
+                    <Link
+                      href={data.website_url}
+                      target="_blank"
+                      className="text-sm text-blue-300 hover:text-blue-200 underline underline-offset-2 decoration-blue-800 hover:decoration-blue-400 transition-all duration-200"
+                    >
+                      {data.website_url.replace(/^https?:\/\//, "")}
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* About */}
+              {data.about ? (
+                <p className="text-sm text-gray-400 leading-relaxed border-l-2 border-blue-800/60 pl-4 max-w-2xl">
+                  {data.about}
                 </p>
               ) : (
-                ""
-              )}
-
-              <p className="text-2xl font-bold text-gray-300 text-center md:text-left">
-                BirthDay : {formatBirthday(peopleData?.data?.birthday)}
-              </p>
-
-              {peopleData?.data?.website_url ? (
-                <p className=" font-medium  text-lg text-gray-200">
-                  Website :{" "}
-                  <Link
-                    className=" italic text-gray-300"
-                    target="_blank"
-                    href={peopleData?.data?.website_url}
-                  >
-                    {peopleData?.data?.website_url}
-                  </Link>
-                </p>
-              ) : (
-                ""
-              )}
-
-              {peopleData?.data?.about ? (
-                <p className=" font-medium pt-5 text-lg text-gray-200">
-                  {peopleData?.data?.about}
-                </p>
-              ) : (
-                <p className="text-xl italic text-gray-300">
-                  No information found
+                <p className="text-sm italic text-gray-600">
+                  No biography available.
                 </p>
               )}
             </div>
           </section>
 
-          {peopleData?.data?.voices.length > 0 ? (
-            <section className=" mt-5 flex flex-col gap-2">
-              <div className=" flex flex-col gap-2">
-                <h1 className=" text-2xl font-bold">Played as :</h1>
-                <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
-              </div>
-              <div className="w-full mt-5 self-center flex flex-wrap gap-4">
-                {peopleData?.data?.voices &&
-                  (() => {
-                    const seen = new Set();
-                    const uniqueVoices = peopleData.data.voices.filter(
-                      (element) => {
-                        const id = element?.character?.mal_id;
-                        if (!id || seen.has(id)) return false;
-                        seen.add(id);
-                        return true;
-                      }
-                    );
-                    return uniqueVoices.map((element) => (
+          {/* ── CHARACTERS ── */}
+          {data.voices?.length > 0 &&
+            (() => {
+              const seen = new Set();
+              const uniqueVoices = data.voices.filter((el) => {
+                const id = el?.character?.mal_id;
+                if (!id || seen.has(id)) return false;
+                seen.add(id);
+                return true;
+              });
+              return (
+                <section className="flex flex-col gap-6">
+                  <div className="flex items-baseline gap-4">
+                    <h2 className="text-2xl font-bold text-white">Characters</h2>
+                    <span className="text-xs font-semibold tracking-widest uppercase text-blue-400">
+                      {uniqueVoices.length} roles
+                    </span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-blue-800/50 to-transparent" />
+                  </div>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                    {uniqueVoices.map((el) => (
                       <Link
-                        href={`/${element?.anime?.mal_id}/character/${element?.character?.mal_id}`}
-                        key={element?.character?.mal_id || nanoid(10)}
-                        className="flex flex-col gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity duration-200"
+                        href={`/${el?.anime?.mal_id}/character/${el?.character?.mal_id}`}
+                        key={el?.character?.mal_id || nanoid(10)}
+                        className="group flex flex-col gap-2"
                       >
-                        <div className="flex flex-col gap-1.5 sm:gap-2 w-full">
-                          {element?.character?.images?.jpg?.image_url && (
+                        <div className="relative overflow-hidden rounded-lg aspect-[3/4] bg-gray-900 ring-1 ring-white/5 group-hover:ring-blue-500/40 transition-all duration-300">
+                          {el?.character?.images?.jpg?.image_url && (
                             <Image
-                              width={100}
-                              height={200}
-                              src={element?.character?.images?.jpg?.image_url}
-                              alt={element?.character?.name}
-                              className="rounded-lg border border-gray-300 object-contain"
+                              fill
+                              src={el.character.images.jpg.image_url}
+                              alt={el?.character?.name ?? "character"}
+                              className="object-cover transition-transform duration-500 group-hover:scale-105 saturate-[0.85] group-hover:saturate-100"
                             />
                           )}
-                          <p className="text-gray-300 max-w-[100px] text-xs sm:text-sm font-medium line-clamp-2">
-                            {element?.character?.name}
-                          </p>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
+                        <p className="text-[11px] text-gray-500 group-hover:text-gray-300 font-medium line-clamp-2 leading-snug transition-colors duration-200">
+                          {el?.character?.name}
+                        </p>
                       </Link>
-                    ));
-                  })()}
+                    ))}
+                  </div>
+                </section>
+              );
+            })()}
+
+          {/* ── FILMOGRAPHY ── */}
+          {data.anime?.length > 0 && (
+            <section className="flex flex-col gap-6">
+              <div className="flex items-baseline gap-4">
+                <h2 className="text-2xl font-bold text-white">Filmography</h2>
+                <span className="text-xs font-semibold tracking-widest uppercase text-blue-400">
+                  {data.anime.length} titles
+                </span>
+                <div className="flex-1 h-px bg-gradient-to-r from-blue-800/50 to-transparent" />
               </div>
-            </section>
-          ) : (
-            <section className=" mt-5 flex flex-col gap-2">
-              <div className=" flex flex-col gap-2">
-                <h1 className=" text-2xl font-bold">Contribute to :</h1>
-                <span className=" w-[10%] border border-transparent py-1 rounded-full bg-blue-900" />
-              </div>
-              <div className=" mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {Array.isArray(peopleData?.data?.anime) &&
-                  peopleData.data.anime.map((element) => (
-                    <AnimeBox
-                      key={element?.anime?.mal_id}
-                      animeId={element?.anime?.mal_id}
-                      animeImage={element?.anime?.images?.jpg?.large_image_url}
-                      animeName={element?.anime?.title}
-                    />
-                  ))}
-                {Array.isArray(peopleData?.data?.anime) &&
-                  peopleData.data.anime.length === 0 && (
-                    <p className="text-gray-300 text-center">
-                      No anime contributions found.
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                {data.anime.map((item) => (
+                  <Link
+                    href={`/anime/${item?.anime?.mal_id}`}
+                    key={item?.anime?.mal_id || nanoid(10)}
+                    className="group flex flex-col gap-2"
+                  >
+                    <div className="relative overflow-hidden rounded-lg aspect-[3/4] bg-gray-900 ring-1 ring-white/5 group-hover:ring-blue-500/40 transition-all duration-300">
+                      {item?.anime?.images?.jpg?.large_image_url && (
+                        <Image
+                          fill
+                          src={item.anime.images.jpg.large_image_url}
+                          alt={item?.anime?.title ?? "anime"}
+                          className="object-cover transition-transform duration-500 group-hover:scale-105 saturate-[0.85] group-hover:saturate-100"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <p className="text-[11px] text-gray-500 group-hover:text-gray-300 font-medium line-clamp-2 leading-snug transition-colors duration-200">
+                      {item?.anime?.title}
                     </p>
-                  )}
+                  </Link>
+                ))}
               </div>
             </section>
           )}
