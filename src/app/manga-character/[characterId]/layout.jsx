@@ -4,6 +4,11 @@ export async function generateMetadata({ params }, parent) {
   const id = params.characterId;
 
   const res = await fetch(`https://api.jikan.moe/v4/characters/${id}/full`);
+  if (!res.ok) {
+    return {
+      title: `Character`,
+    };
+  }
   const result = await res.json();
 
   if (result) {
@@ -13,7 +18,6 @@ export async function generateMetadata({ params }, parent) {
     };
   }
 }
-
 
 export default function layout({ children }) {
   return <>{children}</>;
