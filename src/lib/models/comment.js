@@ -1,5 +1,28 @@
 import mongoose, { Schema, models } from "mongoose";
 
+const replySchema = new Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        userName: {
+            type: String,
+            required: true,
+        },
+        avatar: {
+            type: String,
+            required: true,
+        },
+        reply: {
+            type: String,
+            required: true,
+        },
+    },
+    { timestamps: true },
+);
+
 const commentSchema = new Schema(
     {
         userId: {
@@ -18,6 +41,10 @@ const commentSchema = new Schema(
         comment: {
             type: String,
             required: true,
+        },
+        replies: {
+            type: [replySchema],
+            default: [],
         },
         animeId: {
             type: String,

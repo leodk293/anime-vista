@@ -14,6 +14,11 @@ export default function Community({ params }) {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const [actionLoading, setActionLoading] = useState(null);
+  const [replyingToId, setReplyingToId] = useState(null);
+  const [replyDrafts, setReplyDrafts] = useState({});
+  const [replyEditing, setReplyEditing] = useState(null); // { commentId, replyId }
+  const [replyEditText, setReplyEditText] = useState("");
+  const [replyActionLoading, setReplyActionLoading] = useState(null);
   const resolvedParams = use(params);
   const { animeId } = resolvedParams;
 
@@ -43,7 +48,9 @@ export default function Community({ params }) {
   async function fetchComments() {
     try {
       setLoadingComments(true);
-      const res = await fetch(`/api/comments?animeId=${encodeURIComponent(animeId)}`);
+      const res = await fetch(
+        `/api/comments?animeId=${encodeURIComponent(animeId)}`,
+      );
       if (!res.ok) throw new Error("Failed to load comments");
       const data = await res.json();
       setComments(data.comments ?? []);
@@ -58,13 +65,20 @@ export default function Community({ params }) {
   async function editComments(commentId, newCommentText) {
     if (!session?.user?.id) return;
     const trimmed = (newCommentText ?? editText).trim();
-    if (!trimmed) { toast.error("Comment cannot be empty"); return; }
+    if (!trimmed) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
     try {
       setActionLoading(commentId);
       const res = await fetch("/api/comments", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ commentId, userId: session.user.id, comment: trimmed }),
+        body: JSON.stringify({
+          commentId,
+          userId: session.user.id,
+          comment: trimmed,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
@@ -107,9 +121,15 @@ export default function Community({ params }) {
   }
 
   async function storeComments() {
-    if (!session?.user?.id) { toast.error("Please sign in to comment"); return; }
+    if (!session?.user?.id) {
+      toast.error("Please sign in to comment");
+      return;
+    }
     const trimmed = comment.trim();
-    if (!trimmed) { toast.error("Comment cannot be empty"); return; }
+    if (!trimmed) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
     try {
       setLoading(true);
       const animeName = await getAnimeTitle();
@@ -124,7 +144,9 @@ export default function Community({ params }) {
           animeName,
           avatar:
             session.user.image ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.name ?? "User")}`,
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              session.user.name ?? "User",
+            )}`,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -147,11 +169,114 @@ export default function Community({ params }) {
     await storeComments();
   }
 
-  useEffect(() => { fetchComments(); }, [animeId]);
+  async function createReply(commentId) {
+    if (!session?.user?.id) {
+      toast.error("Please sign in to reply");
+      return;
+    }
+    const draft = (replyDrafts?.[commentId] ?? "").trim();
+    if (!draft) {
+      toast.error("Reply cannot be empty");
+      return;
+    }
+
+    const loadingKey = `create:${commentId}`;
+    try {
+      setReplyActionLoading(loadingKey);
+      const res = await fetch(`/api/comments/${commentId}/replies`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: session.user.id,
+          userName: session.user.name ?? "Anonymous",
+          avatar:
+            session.user.image ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              session.user.name ?? "User",
+            )}`,
+          reply: draft,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        toast.success("Reply posted", { autoClose: 1000 });
+        setReplyDrafts((prev) => ({ ...prev, [commentId]: "" }));
+        setReplyingToId(null);
+        await fetchComments();
+      } else {
+        toast.error(data.error ?? "Failed to post reply");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setReplyActionLoading(null);
+    }
+  }
+
+  async function saveReplyEdit(commentId, replyId) {
+    if (!session?.user?.id) return;
+    const trimmed = (replyEditText ?? "").trim();
+    if (!trimmed) {
+      toast.error("Reply cannot be empty");
+      return;
+    }
+
+    const loadingKey = `edit:${commentId}:${replyId}`;
+    try {
+      setReplyActionLoading(loadingKey);
+      const res = await fetch(`/api/comments/${commentId}/replies/${replyId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: session.user.id, reply: trimmed }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        toast.success("Reply updated", { autoClose: 1000 });
+        setReplyEditing(null);
+        setReplyEditText("");
+        await fetchComments();
+      } else {
+        toast.error(data.error ?? "Failed to update reply");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setReplyActionLoading(null);
+    }
+  }
+
+  async function deleteReply(commentId, replyId) {
+    if (!session?.user?.id) return;
+    if (!confirm("Delete this reply?")) return;
+
+    const loadingKey = `delete:${commentId}:${replyId}`;
+    try {
+      setReplyActionLoading(loadingKey);
+      const res = await fetch(`/api/comments/${commentId}/replies/${replyId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: session.user.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        toast.success("Reply deleted", { autoClose: 1000 });
+        await fetchComments();
+      } else {
+        toast.error(data.error ?? "Failed to delete reply");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setReplyActionLoading(null);
+    }
+  }
+
+  useEffect(() => {
+    fetchComments();
+  }, [animeId]);
 
   return (
     <div className="w-full mx-auto px-4 py-8 text-gray-100">
-
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-white whitespace-nowrap">
@@ -159,7 +284,7 @@ export default function Community({ params }) {
         </h1>
         <div className="flex-1 h-px bg-gradient-to-r from-violet-500/50 to-transparent" />
         {!loadingComments && (
-          <span className="text-xs text-gray-400 bg-white/5 border border-white/10 rounded-full px-3 py-1 whitespace-nowrap">
+          <span className="text-xs text-gray-200 bg-white/5 border border-white/10 rounded-full px-3 py-1 whitespace-nowrap">
             {comments.length} {comments.length === 1 ? "comment" : "comments"}
           </span>
         )}
@@ -225,7 +350,9 @@ export default function Community({ params }) {
         {/* Empty */}
         {!loadingComments && comments.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-gray-200 text-sm">No comments yet. Be the first to share!</p>
+            <p className="text-gray-200 text-sm">
+              No comments yet. Be the first to share!
+            </p>
           </div>
         )}
 
@@ -255,9 +382,11 @@ export default function Community({ params }) {
                 {/* Body */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 mb-1 flex-wrap">
-                    <span className="text-sm font-semibold text-white">{c.userName}</span>
+                    <span className="text-sm font-semibold text-white">
+                      {c.userName}
+                    </span>
                     {c.createdAt && (
-                      <span className="text-xs text-gray-200">
+                      <span className="text-xs italic text-gray-200">
                         {new Date(c.createdAt).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
@@ -288,7 +417,10 @@ export default function Community({ params }) {
                         </button>
                         <button
                           type="button"
-                          onClick={() => { setEditingId(null); setEditText(""); }}
+                          onClick={() => {
+                            setEditingId(null);
+                            setEditText("");
+                          }}
                           disabled={actionLoading === c._id}
                           className="bg-white/10 hover:bg-white/15 text-gray-300 text-xs font-medium px-4 py-1.5 rounded-lg transition-colors"
                         >
@@ -297,33 +429,241 @@ export default function Community({ params }) {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-300 leading-relaxed break-words whitespace-pre-wrap">
-                      {c.comment}
-                    </p>
+                    <div className="mt-1">
+                      <p className="text-sm text-gray-300 leading-relaxed break-words whitespace-pre-wrap">
+                        {c.comment}
+                      </p>
+
+                      {/* Actions row */}
+                      <div className="mt-2 flex items-center gap-3">
+                        {status === "authenticated" && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setReplyEditing(null);
+                              setReplyEditText("");
+                              setReplyingToId((prev) =>
+                                prev === c._id ? null : c._id,
+                              );
+                            }}
+                            disabled={replyActionLoading?.startsWith("create:")}
+                            className="text-xs text-gray-200 hover:text-violet-400 bg-white/5 hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 disabled:opacity-40 px-3 py-1.5 rounded-lg transition-all"
+                          >
+                            Reply
+                          </button>
+                        )}
+
+                        {!!c.replies?.length && (
+                          <span className="text-xs text-gray-200">
+                            {c.replies.length}{" "}
+                            {c.replies.length === 1 ? "reply" : "replies"}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Reply composer */}
+                      {replyingToId === c._id && status === "authenticated" && (
+                        <div className="mt-3 pl-3 border-l border-white/10">
+                          <textarea
+                            value={replyDrafts?.[c._id] ?? ""}
+                            onChange={(e) =>
+                              setReplyDrafts((prev) => ({
+                                ...prev,
+                                [c._id]: e.target.value,
+                              }))
+                            }
+                            rows={2}
+                            placeholder="Write a reply…"
+                            className="w-full bg-white/5 border border-white/10 focus:border-violet-500 rounded-lg text-gray-100 text-sm px-3 py-2 outline-none resize-none transition-colors"
+                          />
+                          <div className="mt-2 flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => createReply(c._id)}
+                              disabled={
+                                replyActionLoading === `create:${c._id}`
+                              }
+                              className="bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white text-xs font-medium px-4 py-1.5 rounded-lg transition-colors"
+                            >
+                              {replyActionLoading === `create:${c._id}`
+                                ? "Posting…"
+                                : "Post reply"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setReplyingToId(null);
+                              }}
+                              disabled={
+                                replyActionLoading === `create:${c._id}`
+                              }
+                              className="bg-white/10 hover:bg-white/15 text-gray-300 text-xs font-medium px-4 py-1.5 rounded-lg transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Replies */}
+                      {!!c.replies?.length && (
+                        <ul className="mt-3 flex flex-col gap-2 pl-3 border-l border-white/10">
+                          {c.replies.map((r) => {
+                            const canManage =
+                              String(r.userId) === session?.user?.id;
+                            const isEditingReply =
+                              replyEditing?.commentId === c._id &&
+                              replyEditing?.replyId === r._id;
+                            const editKey = `edit:${c._id}:${r._id}`;
+                            const deleteKey = `delete:${c._id}:${r._id}`;
+
+                            return (
+                              <li key={r._id} className="flex gap-2.5">
+                                {r.avatar ? (
+                                  <Image
+                                    src={r.avatar}
+                                    alt={r.userName}
+                                    width={28}
+                                    height={28}
+                                    className="rounded-full object-cover ring-1 ring-white/10 shrink-0 self-start mt-0.5"
+                                  />
+                                ) : (
+                                  <div className="w-7 h-7 rounded-full bg-violet-900/50 border border-violet-500/20 flex items-center justify-center shrink-0 self-start mt-0.5 text-xs font-medium text-violet-300">
+                                    {r.userName?.[0]?.toUpperCase() ?? "?"}
+                                  </div>
+                                )}
+
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-baseline gap-2 flex-wrap">
+                                    <span className="text-xs font-semibold text-white">
+                                      {r.userName}
+                                    </span>
+                                    {r.createdAt && (
+                                      <span className="text-[11px] italic text-gray-200">
+                                        {new Date(
+                                          r.createdAt,
+                                        ).toLocaleDateString("en-US", {
+                                          month: "short",
+                                          day: "numeric",
+                                          year: "numeric",
+                                        })}
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {isEditingReply ? (
+                                    <div className="mt-1 flex flex-col gap-2">
+                                      <textarea
+                                        value={replyEditText}
+                                        onChange={(e) =>
+                                          setReplyEditText(e.target.value)
+                                        }
+                                        autoFocus
+                                        rows={2}
+                                        className="w-full bg-white/5 border border-white/10 focus:border-violet-500 rounded-lg text-gray-100 text-sm px-3 py-2 outline-none resize-none transition-colors"
+                                        placeholder="Edit your reply…"
+                                      />
+                                      <div className="flex gap-2">
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            saveReplyEdit(c._id, r._id)
+                                          }
+                                          disabled={
+                                            replyActionLoading === editKey
+                                          }
+                                          className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white text-xs font-medium px-4 py-1.5 rounded-lg transition-colors"
+                                        >
+                                          {replyActionLoading === editKey
+                                            ? "Saving…"
+                                            : "Save"}
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setReplyEditing(null);
+                                            setReplyEditText("");
+                                          }}
+                                          disabled={
+                                            replyActionLoading === editKey
+                                          }
+                                          className="bg-white/10 hover:bg-white/15 text-gray-300 text-xs font-medium px-4 py-1.5 rounded-lg transition-colors"
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <p className="mt-1 text-sm text-gray-300 leading-relaxed break-words whitespace-pre-wrap">
+                                      {r.reply}
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Reply edit/delete */}
+                                {!isEditingReply && canManage && (
+                                  <div className="flex flex-col gap-1 shrink-0 self-start">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setReplyingToId(null);
+                                        setReplyEditing({
+                                          commentId: c._id,
+                                          replyId: r._id,
+                                        });
+                                        setReplyEditText(r.reply);
+                                      }}
+                                      disabled={replyActionLoading != null}
+                                      className="text-[11px] cursor-pointer text-gray-400 hover:text-violet-400 bg-white/5 hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 disabled:opacity-40 px-2.5 py-1 rounded-lg transition-all"
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => deleteReply(c._id, r._id)}
+                                      disabled={replyActionLoading != null}
+                                      className="text-[11px] cursor-pointer text-red-400 hover:text-red-300 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 disabled:opacity-40 px-2.5 py-1 rounded-lg transition-all"
+                                    >
+                                      {replyActionLoading === deleteKey
+                                        ? "…"
+                                        : "Delete"}
+                                    </button>
+                                  </div>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
+                    </div>
                   )}
                 </div>
 
                 {/* Edit / Delete — visible on hover */}
-                {editingId !== c._id && String(c.userId) === session?.user?.id && (
-                  <div className="flex flex-col gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity self-start">
-                    <button
-                      type="button"
-                      onClick={() => { setEditingId(c._id); setEditText(c.comment); }}
-                      disabled={actionLoading != null}
-                      className="text-xs text-gray-400 hover:text-violet-400 bg-white/5 hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 disabled:opacity-40 px-3 py-1.5 rounded-lg transition-all"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteComments(c._id)}
-                      disabled={actionLoading != null}
-                      className="text-xs text-red-400 hover:text-red-300 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 disabled:opacity-40 px-3 py-1.5 rounded-lg transition-all"
-                    >
-                      {actionLoading === c._id ? "…" : "Delete"}
-                    </button>
-                  </div>
-                )}
+                {editingId !== c._id &&
+                  String(c.userId) === session?.user?.id && (
+                    <div className="flex flex-col gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity self-start">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingId(c._id);
+                          setEditText(c.comment);
+                        }}
+                        disabled={actionLoading != null}
+                        className="text-xs cursor-pointer text-gray-400 hover:text-violet-400 bg-white/5 hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 disabled:opacity-40 px-3 py-1.5 rounded-lg transition-all"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteComments(c._id)}
+                        disabled={actionLoading != null}
+                        className="text-xs cursor-pointer text-red-400 hover:text-red-300 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 disabled:opacity-40 px-3 py-1.5 rounded-lg transition-all"
+                      >
+                        {actionLoading === c._id ? "…" : "Delete"}
+                      </button>
+                    </div>
+                  )}
               </li>
             ))}
           </ul>

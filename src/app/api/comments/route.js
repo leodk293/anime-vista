@@ -33,7 +33,6 @@ export const POST = async (request) => {
         const body = await request.json();
         const { userId, userName, avatar, comment, animeId, animeName } = body;
 
-        // Validate required fields
         if (!userId || !userName || !avatar || !comment || !animeId || !animeName) {
             return NextResponse.json(
                 {
