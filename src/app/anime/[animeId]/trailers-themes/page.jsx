@@ -9,6 +9,7 @@ import { Youtube } from "lucide-react";
 export default function TrailerThemePage({ params }) {
   const resolvedParams = use(params);
   const { animeId } = resolvedParams;
+  const [animeTitle, setAnimeTitle] = useState("");
 
   const [animeVideos, setAnimeVideos] = useState({
     error: false,
@@ -17,11 +18,23 @@ export default function TrailerThemePage({ params }) {
     musicVideos: [],
   });
 
+  async function getAnimeTitle() {
+    try {
+      const res = await fetch(`https://api.jikan.moe/v4/anime/${animeId}`);
+      if (!res.ok) throw new Error("An error has occurred");
+      const result = await res.json();
+      setAnimeTitle(result.data?.title);
+    } catch (error) {
+      console.error(error.message);
+      setAnimeTitle("");
+    }
+  }
+
   async function getAnimeVideos() {
     setAnimeVideos((prev) => ({ ...prev, loading: true, error: false }));
     try {
       const response = await fetch(
-        `https://api.jikan.moe/v4/anime/${animeId}/videos`
+        `https://api.jikan.moe/v4/anime/${animeId}/videos`,
       );
       if (!response.ok) {
         throw new Error(`An error has occurred ${response.status}`);
@@ -41,6 +54,7 @@ export default function TrailerThemePage({ params }) {
 
   useEffect(() => {
     getAnimeVideos();
+    getAnimeTitle();
   }, [animeId]);
 
   if (animeVideos.error) {
@@ -77,7 +91,7 @@ export default function TrailerThemePage({ params }) {
                     className="w-full rounded-sm h-[10rem]"
                     src={element.trailer.embed_url.replace(
                       "autoplay=1",
-                      "autoplay=0"
+                      "autoplay=0",
                     )}
                     title={`${element?.title} trailer`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -85,10 +99,7 @@ export default function TrailerThemePage({ params }) {
                   />
                   <div className=" flex flex-col gap-1">
                     <p className=" font-medium">{element?.title}</p>
-                    <Link
-                      target="_blank"
-                      href={element.trailer.url || "#"}
-                    >
+                    <Link target="_blank" href={element.trailer.url || "#"}>
                       <button className=" border border-white bg-transparent px-4 py-1 rounded-sm cursor-pointer flex flex-row justify-center items-center gap-1 text-white">
                         <p>Watch on Youtube</p>
                         <Youtube size={20} color="#ffffff" strokeWidth={1.5} />
@@ -122,7 +133,7 @@ export default function TrailerThemePage({ params }) {
                     className="w-full rounded-sm h-[10rem]"
                     src={element.video.embed_url.replace(
                       "autoplay=1",
-                      "autoplay=0"
+                      "autoplay=0",
                     )}
                     title={`${element?.title} trailer`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -132,7 +143,10 @@ export default function TrailerThemePage({ params }) {
                     <p className=" font-medium">{element?.title}</p>
                     <Link
                       target="_blank"
-                      href={element?.video?.url || "#"}
+                      href={
+                        element?.video?.url ||
+                        `https://www.youtube.com/results?search_query=${animeTitle} ${element?.title}`
+                      }
                     >
                       <button className=" border border-white bg-transparent px-4 py-1 rounded-sm cursor-pointer flex flex-row justify-center items-center gap-1 text-white">
                         <p>Watch on Youtube</p>
