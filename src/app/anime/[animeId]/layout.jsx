@@ -143,7 +143,7 @@ export default async function layout({ children, params }) {
                       ? animeData.data.genres.map((g) =>
                           typeof g === "object" && g !== null
                             ? g.name || String(g)
-                            : String(g)
+                            : String(g),
                         )
                       : []
                   }
@@ -325,7 +325,7 @@ export default async function layout({ children, params }) {
           {/* Navigation Tabs */}
           <div className="mb-8">
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-2 border border-white/10">
-              <nav className="flex flex-wrap justify-evenly gap-1">
+              <nav className="flex flex-wrap justify-evenly gap-1 text-xs md:text-[17px]">
                 <Link
                   href={`/anime/${animeId}`}
                   className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
@@ -382,6 +382,12 @@ export default async function layout({ children, params }) {
                   className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
                 >
                   Recommendations
+                </Link>
+                <Link
+                  href={`/anime/${animeId}/community`}
+                  className={` ${allerta.className} px-6 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-all duration-200 hover:text-white`}
+                >
+                  Community
                 </Link>
               </nav>
             </div>
