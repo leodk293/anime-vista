@@ -278,46 +278,60 @@ export default function Community({ params }) {
   return (
     <div className="w-full mx-auto px-4 py-8 text-gray-100">
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-white whitespace-nowrap">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-3 mb-8">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white whitespace-nowrap">
           Community
         </h1>
-        <div className="flex-1 h-px bg-gradient-to-r from-violet-500/50 to-transparent" />
+        <div className="hidden sm:block flex-1 h-px bg-gradient-to-r from-violet-500/50 to-transparent" />
+        {/* On mobile, move comment count below, on desktop keep inline */}
         {!loadingComments && (
-          <span className="text-xs text-gray-200 bg-white/5 border border-white/10 rounded-full px-3 py-1 whitespace-nowrap">
+          <span className="text-xs text-gray-200 bg-white/5 border border-white/10 rounded-full px-3 py-1 whitespace-nowrap mt-2 sm:mt-0">
             {comments.length} {comments.length === 1 ? "comment" : "comments"}
           </span>
         )}
       </div>
 
       {/* ── Composer ── */}
-      <div className="mb-8 rounded-xl bg-white/5 border border-white/10 p-4">
+      <div className="mb-8 rounded-xl bg-white/5 border border-white/10 p-3 sm:p-4">
         {status === "authenticated" ? (
           <form onSubmit={handelSubmit} className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col xs:flex-row xs:items-center gap-3">
               {session.user?.image && (
                 <Image
                   src={session.user.image}
                   alt={session.user.name ?? "You"}
                   width={36}
                   height={36}
-                  className="rounded-full object-cover ring-2 ring-violet-500/40 shrink-0"
+                  className="rounded-full object-cover ring-2 ring-violet-500/40 shrink-0 hidden xs:block"
                 />
               )}
-              <input
-                onChange={(e) => setComment(e.target.value)}
-                value={comment}
-                type="text"
-                placeholder="Share your thoughts with the community…"
-                disabled={loading}
-                className="flex-1 bg-transparent text-gray-100 placeholder-gray-200 text-sm outline-none py-1 border-b border-white/10 focus:border-violet-500 transition-colors disabled:opacity-50"
-              />
+              <div className="flex-1 flex items-center gap-2">
+                {/* On small screens, show avatar inline with input */}
+                {session.user?.image && (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name ?? "You"}
+                    width={32}
+                    height={32}
+                    className="rounded-full object-cover ring-2 ring-violet-500/40 shrink-0 xs:hidden mr-2"
+                  />
+                )}
+                <input
+                  onChange={(e) => setComment(e.target.value)}
+                  value={comment}
+                  type="text"
+                  placeholder="Share your thoughts with the community…"
+                  disabled={loading}
+                  className="w-full sm:w-auto flex-1 bg-transparent text-gray-100 placeholder-gray-200 text-sm sm:text-base outline-none py-2 sm:py-1 border-b border-white/10 focus:border-violet-500 transition-colors disabled:opacity-50"
+                  style={{ minWidth: 0 }}
+                />
+              </div>
             </div>
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={loading || !comment.trim()}
-                className="bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors"
+                className="bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 sm:px-5 py-2 rounded-lg transition-colors"
               >
                 {loading ? "Posting…" : "Post Comment"}
               </button>
@@ -362,7 +376,7 @@ export default function Community({ params }) {
             {comments.map((c) => (
               <li
                 key={c._id}
-                className="group flex gap-3 rounded-xl bg-white/5 hover:bg-white/[0.07] border border-white/[0.06] hover:border-violet-500/20 p-4 transition-all"
+                className="group flex flex-col sm:flex-row gap-3 sm:items-start rounded-xl bg-white/5 hover:bg-white/[0.07] border border-white/[0.06] hover:border-violet-500/20 p-4 transition-all"
               >
                 {/* Avatar */}
                 {c.avatar ? (
@@ -435,7 +449,7 @@ export default function Community({ params }) {
                       </p>
 
                       {/* Actions row */}
-                      <div className="mt-2 flex items-center gap-3">
+                      <div className="mt-2 flex items-center gap-3 flex-wrap">
                         {status === "authenticated" && (
                           <button
                             type="button"
@@ -518,7 +532,10 @@ export default function Community({ params }) {
                             const deleteKey = `delete:${c._id}:${r._id}`;
 
                             return (
-                              <li key={r._id} className="flex gap-2.5">
+                              <li
+                                key={r._id}
+                                className="flex flex-col sm:flex-row gap-2.5 sm:items-start"
+                              >
                                 {r.avatar ? (
                                   <Image
                                     src={r.avatar}
@@ -539,7 +556,7 @@ export default function Community({ params }) {
                                       {r.userName}
                                     </span>
                                     {r.createdAt && (
-                                      <span className="text-[11px] italic text-gray-200">
+                                      <span className="text-[10px] italic text-gray-200">
                                         {new Date(
                                           r.createdAt,
                                         ).toLocaleDateString("en-US", {
@@ -602,7 +619,7 @@ export default function Community({ params }) {
 
                                 {/* Reply edit/delete */}
                                 {!isEditingReply && canManage && (
-                                  <div className="flex flex-col gap-1 shrink-0 self-start">
+                                  <div className="flex flex-row gap-1 shrink-0 self-start">
                                     <button
                                       type="button"
                                       onClick={() => {
