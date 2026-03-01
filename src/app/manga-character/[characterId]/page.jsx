@@ -22,7 +22,7 @@ export default function MangaCharacter({ params }) {
     setCharacter({ error: false, data: null, loading: true });
     try {
       const res = await fetch(
-        `https://api.jikan.moe/v4/characters/${characterId}`
+        `https://api.jikan.moe/v4/characters/${characterId}`,
       );
       if (!res.ok) throw new Error("An error has occurred");
       const result = await res.json();
@@ -36,7 +36,7 @@ export default function MangaCharacter({ params }) {
   async function getManga() {
     try {
       const res = await fetch(
-        `https://api.jikan.moe/v4/characters/${characterId}/manga`
+        `https://api.jikan.moe/v4/characters/${characterId}/manga`,
       );
       if (!res.ok) throw new Error("Error occurred");
       const result = await res.json();
@@ -69,11 +69,9 @@ export default function MangaCharacter({ params }) {
   const data = character.data;
 
   return (
-    <div className="relative max-w-5xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
-
+    <div className="relative max-w-6xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
       {/* ── HERO ── */}
       <section className="flex flex-col md:flex-row gap-10 items-start">
-
         {/* Portrait */}
         {data.images?.jpg?.image_url && (
           <div className="relative flex-shrink-0 self-center md:self-start">
@@ -93,7 +91,6 @@ export default function MangaCharacter({ params }) {
 
         {/* Info */}
         <div className="flex flex-col gap-5 flex-1">
-
           {/* Name block */}
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400 flex items-center gap-2">
@@ -180,7 +177,6 @@ export default function MangaCharacter({ params }) {
           </div>
         </section>
       )}
-
     </div>
   );
 }

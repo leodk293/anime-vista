@@ -19,7 +19,7 @@ const saveStateToStorage = (userId, state) => {
   try {
     localStorage.setItem(
       getStorageKey(userId),
-      JSON.stringify({ ...state, timestamp: Date.now() })
+      JSON.stringify({ ...state, timestamp: Date.now() }),
     );
   } catch (error) {
     console.error("Error saving state to storage:", error);
@@ -76,7 +76,7 @@ export default function MangaPage() {
   const statusOptions = [
     { name: "Finished", value: "Finished" },
     { name: "Still ongoing", value: "Publishing" },
-    { name: "On pause", value: "On Hiatus" },
+    { name: "On Hiatus / Pause", value: "On Hiatus" },
   ];
 
   async function getMangaGenres() {
@@ -84,7 +84,8 @@ export default function MangaPage() {
     setError(null);
     try {
       const response = await fetch(`https://api.jikan.moe/v4/genres/manga`);
-      if (!response.ok) throw new Error(`Failed to fetch genres (${response.status})`);
+      if (!response.ok)
+        throw new Error(`Failed to fetch genres (${response.status})`);
       const result = await response.json();
       if (result.data && Array.isArray(result.data)) {
         setMangaGenres(result.data);
@@ -111,7 +112,7 @@ export default function MangaPage() {
       if (selectedStatus) params.append("status", selectedStatus);
 
       const response = await fetch(
-        `https://manga-db-management.vercel.app/api/manga-list?${params.toString()}`
+        `https://manga-db-management.vercel.app/api/manga-list?${params.toString()}`,
       );
       if (!response.ok) throw new Error("An error has occurred");
       const result = await response.json();
@@ -161,7 +162,7 @@ export default function MangaPage() {
         });
       }
     },
-    [mangaList.loading, mangaList.data.length]
+    [mangaList.loading, mangaList.data.length],
   );
 
   useEffect(() => {
@@ -187,7 +188,7 @@ export default function MangaPage() {
   const hasMore = visibleCount < mangaList.data.length;
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       <div className="text-center mb-8 sm:mb-12">
         <h1 className="font-bold text-white text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-3">
           Explore Manga
@@ -201,25 +202,37 @@ export default function MangaPage() {
         <div className="w-full flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch">
           <Link className="flex-1 md:w-[30%]" href={`/popular-manga`}>
             <button className="group transition-all duration-200 w-full h-full cursor-pointer relative border border-blue-500/70 bg-gradient-to-tr from-blue-700/20 to-blue-500/10 hover:from-blue-600/60 hover:to-blue-400/20 px-8 py-6 rounded-2xl text-xl font-semibold text-white shadow-xl hover:text-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400/40 flex flex-col items-center justify-center">
-              <span className="text-3xl mb-2 animate-bounce group-hover:scale-110 transition-transform duration-200">💖</span>
+              <span className="text-3xl mb-2 animate-bounce group-hover:scale-110 transition-transform duration-200">
+                💖
+              </span>
               <span className="font-bold tracking-wide">Most Popular</span>
-              <span className="mt-1 text-blue-200/70 text-xs">See trending manga</span>
+              <span className="mt-1 text-blue-200/70 text-xs">
+                See trending manga
+              </span>
             </button>
           </Link>
 
           <Link className="flex-1 md:w-[30%]" href={`/top-rated-manga`}>
             <button className="group transition-all duration-200 w-full h-full cursor-pointer relative border border-yellow-400/70 bg-gradient-to-tr from-yellow-700/20 to-yellow-500/10 hover:from-yellow-600/50 hover:to-yellow-400/20 px-8 py-6 rounded-2xl text-xl font-semibold text-white shadow-xl hover:text-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-300/40 flex flex-col items-center justify-center">
-              <span className="text-3xl mb-2 animate-pulse group-hover:scale-110 transition-transform duration-200">⭐</span>
+              <span className="text-3xl mb-2 animate-pulse group-hover:scale-110 transition-transform duration-200">
+                ⭐
+              </span>
               <span className="font-bold tracking-wide">Top Rated</span>
-              <span className="mt-1 text-yellow-200/80 text-xs">Highest rated manga</span>
+              <span className="mt-1 text-yellow-200/80 text-xs">
+                Highest rated manga
+              </span>
             </button>
           </Link>
 
           <Link className="flex-1 md:w-[30%]" href={`/ongoing-manga`}>
             <button className="group transition-all duration-200 w-full h-full cursor-pointer relative border border-green-300/70 bg-gradient-to-tr from-green-700/20 to-green-500/10 hover:from-green-600/60 hover:to-green-400/20 px-8 py-6 rounded-2xl text-xl font-semibold text-white shadow-xl hover:text-green-200 focus:outline-none focus:ring-2 focus:ring-green-400/40 flex flex-col items-center justify-center">
-              <span className="text-3xl mb-2 group-hover:rotate-6 transition-transform duration-200">📖</span>
+              <span className="text-3xl mb-2 group-hover:rotate-6 transition-transform duration-200">
+                📖
+              </span>
               <span className="font-bold tracking-wide">Still ongoing</span>
-              <span className="mt-1 text-green-200/80 text-xs">Ongoing releases</span>
+              <span className="mt-1 text-green-200/80 text-xs">
+                Ongoing releases
+              </span>
             </button>
           </Link>
         </div>
@@ -244,7 +257,9 @@ export default function MangaPage() {
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-red-400 text-sm font-medium mb-1">Error Loading Genres</p>
+              <p className="text-red-400 text-sm font-medium mb-1">
+                Error Loading Genres
+              </p>
               <p className="text-red-300/80 text-xs sm:text-sm">{error}</p>
               <button
                 type="button"
@@ -259,7 +274,9 @@ export default function MangaPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="block text-white/80 text-sm font-medium pl-1">Genres</label>
+            <label className="block text-white/80 text-sm font-medium pl-1">
+              Genres
+            </label>
             <div className="relative">
               <Filter className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
               <select
@@ -272,7 +289,11 @@ export default function MangaPage() {
                   {genresLoading ? "Loading genres..." : "All Genres"}
                 </option>
                 {mangaGenres.map((genre) => (
-                  <option key={nanoid(10)} value={genre.name} className="bg-gray-900">
+                  <option
+                    key={nanoid(10)}
+                    value={genre.name}
+                    className="bg-gray-900"
+                  >
                     {genre.name}
                   </option>
                 ))}
@@ -284,7 +305,9 @@ export default function MangaPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-white/80 text-sm font-medium pl-1">Status</label>
+            <label className="block text-white/80 text-sm font-medium pl-1">
+              Status
+            </label>
             <div className="relative">
               <Filter className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
               <select
@@ -292,7 +315,9 @@ export default function MangaPage() {
                 onChange={(e) => setSelectedStatus(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-white/5 border border-gray-300/10 rounded-xl text-white appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all duration-200 text-sm sm:text-base"
               >
-                <option value="" className="bg-gray-900">All Status</option>
+                <option value="" className="bg-gray-900">
+                  All Status
+                </option>
                 {statusOptions.map((s) => (
                   <option key={s.value} value={s.value} className="bg-gray-900">
                     {s.name}
@@ -306,7 +331,9 @@ export default function MangaPage() {
 
       {(searchTerm || selectedGenre || selectedStatus) && (
         <div className="mt-6 sm:mt-8 p-4 bg-white/5 rounded-xl border border-gray-300/10">
-          <p className="text-white/60 text-xs sm:text-sm font-medium mb-2">Active Filters:</p>
+          <p className="text-white/60 text-xs sm:text-sm font-medium mb-2">
+            Active Filters:
+          </p>
           <div className="flex flex-wrap gap-2">
             {searchTerm && (
               <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/10 text-white rounded-full text-xs sm:text-sm">
@@ -364,7 +391,12 @@ export default function MangaPage() {
               ref={loaderRef}
               className="w-full mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
             >
-              {Array.from({ length: Math.min(PAGE_SIZE, mangaList.data.length - visibleCount) }).map((_, i) => (
+              {Array.from({
+                length: Math.min(
+                  PAGE_SIZE,
+                  mangaList.data.length - visibleCount,
+                ),
+              }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
                   <Skeleton className="rounded-lg bg-gray-300/30 w-full aspect-[9/13]" />
                   <Skeleton className="h-4 w-3/4 bg-gray-300/30 rounded" />
@@ -381,8 +413,19 @@ export default function MangaPage() {
         title="Back to Top"
         aria-label="Back to Top"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5 15l7-7 7 7"
+          />
         </svg>
       </button>
     </div>

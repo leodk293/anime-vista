@@ -33,17 +33,29 @@ export default function CharacterPage({ params }) {
     setAnimeCharacterData((prev) => ({ ...prev, loading: true, error: false }));
     try {
       const response = await fetch(
-        `https://api.jikan.moe/v4/characters/${characterId}/full`
+        `https://api.jikan.moe/v4/characters/${characterId}/full`,
       );
       if (!response.ok) {
-        setAnimeCharacterData((prev) => ({ ...prev, loading: false, error: true }));
+        setAnimeCharacterData((prev) => ({
+          ...prev,
+          loading: false,
+          error: true,
+        }));
         throw new Error("Failed to fetch character data");
       }
       const result = await response.json();
-      setAnimeCharacterData((prev) => ({ ...prev, loading: false, data: result.data }));
+      setAnimeCharacterData((prev) => ({
+        ...prev,
+        loading: false,
+        data: result.data,
+      }));
     } catch (error) {
       console.error(error.message);
-      setAnimeCharacterData((prev) => ({ ...prev, loading: false, error: true }));
+      setAnimeCharacterData((prev) => ({
+        ...prev,
+        loading: false,
+        error: true,
+      }));
     }
   }
 
@@ -53,8 +65,12 @@ export default function CharacterPage({ params }) {
     setGenresMap((prev) => ({ ...prev, [id]: data.data?.genres ?? [] }));
   }
 
-  useEffect(() => { getAnimePoster(); }, [animeId]);
-  useEffect(() => { getAnimeCharacterData(); }, [characterId]);
+  useEffect(() => {
+    getAnimePoster();
+  }, [animeId]);
+  useEffect(() => {
+    getAnimeCharacterData();
+  }, [characterId]);
 
   useEffect(() => {
     if (animeCharacterData?.data?.anime?.length > 0) {
@@ -103,11 +119,9 @@ export default function CharacterPage({ params }) {
       )}
 
       {data && (
-        <div className="relative max-w-5xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
-
+        <div className="relative max-w-6xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
           {/* ── HERO ── */}
           <section className="flex flex-col md:flex-row gap-10 items-start">
-
             {/* Portrait */}
             {data.images?.jpg?.image_url && (
               <div className="relative flex-shrink-0 self-center md:self-start">
@@ -127,7 +141,6 @@ export default function CharacterPage({ params }) {
 
             {/* Info */}
             <div className="flex flex-col gap-5 flex-1">
-
               {/* Name block */}
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400 flex items-center gap-2">
@@ -214,7 +227,7 @@ export default function CharacterPage({ params }) {
                       Array.isArray(genresMap[element?.anime?.mal_id]) &&
                       genresMap[element?.anime?.mal_id].length > 0
                         ? genresMap[element?.anime?.mal_id].map((g) =>
-                            typeof g === "object" && g !== null ? g.name : g
+                            typeof g === "object" && g !== null ? g.name : g,
                           )
                         : []
                     }
@@ -223,7 +236,6 @@ export default function CharacterPage({ params }) {
               </div>
             </section>
           )}
-
         </div>
       )}
     </>

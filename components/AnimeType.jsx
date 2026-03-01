@@ -39,7 +39,7 @@ const AnimeType = ({ animeTypeName, url }) => {
   }, []);
 
   return (
-    <div className=" mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto">
+    <div className=" mt-[4rem] max-w-6xl flex flex-col gap-7 items-center mx-auto">
       <div className=" flex flex-row justify-between w-full">
         <div className=" self-center w-full flex flex-col gap-1">
           <h1
@@ -63,7 +63,7 @@ const AnimeType = ({ animeTypeName, url }) => {
                     : ""
           }
         >
-          <p className=" self-center text-lg md:text-2xl">
+          <p className=" self-center font-medium text-lg">
             {animeTypeName === "Top Anime"
               ? "Recent"
               : animeTypeName === "Upcoming Next Season"
@@ -75,11 +75,12 @@ const AnimeType = ({ animeTypeName, url }) => {
                     : ""}
           </p>
           {animeTypeName !== "New Releases" && (
-            <ArrowBigRight
-              className=" self-center"
-              size={35}
-              strokeWidth={1.65}
-            />
+            // <ArrowBigRight
+            //   className=" self-center"
+            //   size={25}
+            //   strokeWidth={1.65}
+            // />
+            <span>⏭️</span>
           )}
         </Link>
       </div>

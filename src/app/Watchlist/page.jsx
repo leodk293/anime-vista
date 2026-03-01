@@ -77,7 +77,7 @@ export default function WatchListPage() {
 
   if (status === "loading") {
     return (
-      <div className="mt-[4rem] max-w-5xl text-gray-300 text-2xl font-medium text-center items-center mx-auto px-4">
+      <div className="mt-[4rem] max-w-6xl text-gray-300 text-2xl font-medium text-center items-center mx-auto px-4">
         Checking your identity...
       </div>
     );
@@ -121,7 +121,7 @@ export default function WatchListPage() {
   // ✅ Fixed: was missing `return`
   if (watchList.loading) {
     return (
-      <div className="mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto px-4">
+      <div className="mt-[4rem] max-w-6xl flex flex-col gap-7 items-center mx-auto px-4">
         <div className="w-full flex flex-col gap-1">
           <h1 className="text-white text-3xl font-bold">Watchlist</h1>
           <span className="p-1 rounded-xl bg-gray-800 w-[10%]" />
@@ -139,7 +139,7 @@ export default function WatchListPage() {
   }
 
   return (
-    <div className="mt-[4rem] max-w-5xl flex flex-col gap-7 items-center mx-auto px-4">
+    <div className="mt-[4rem] max-w-6xl flex flex-col gap-7 items-center mx-auto px-4">
       <div className="w-full flex flex-col gap-1">
         <h1 className="text-white text-3xl font-bold">Watchlist</h1>
         <span className="p-1 rounded-xl bg-gray-800 w-[10%]" />

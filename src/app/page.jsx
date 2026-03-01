@@ -1,6 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { CircleX, MoveRight, RefreshCw, Search } from "lucide-react";
+import {
+  CircleX,
+  MoveRight,
+  RefreshCw,
+  Search,
+  ListFilter,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
@@ -310,7 +316,7 @@ const Home = () => {
           Kickstart Your Anime Journey on AnimeVista
         </h1>
         <p
-          className={`text-blue-100 ${allerta.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
+          className={`text-blue-100 mt-2 ${allerta.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
         >
           Track, share and discover <br className="hidden sm:block" /> your
           favorite anime among severals
@@ -319,10 +325,14 @@ const Home = () => {
 
       <SearchAnime />
 
-      <section className="w-full max-w-5xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
+      <section className="w-full max-w-6xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
         <div className=" text-white self-start flex flex-col gap-2">
           <div className=" flex flex-row gap-2">
-            <h1 className=" text-2xl font-bold self-center">Filter : </h1>
+            <h1
+              className={` text-2xl font-bold self-center ${allerta.className}`}
+            >
+              Filter :{" "}
+            </h1>
             <Select
               value={selectedAnimeType}
               onValueChange={setSelectedAnimeType}
@@ -367,12 +377,14 @@ const Home = () => {
               </SelectContent>
             </Select>
           </div>
-          <span className=" w-[35%] border border-transparent py-1 rounded-full bg-blue-900" />
+          <span className=" w-[35%] border border-transparent py-1 rounded-full bg-gray-800" />
         </div>
 
         <div className="flex flex-col w-full gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-row justify-between items-center">
-            <h1 className="text-gray-300 uppercase font-bold text-base sm:text-lg md:text-xl">
+            <h1
+              className={`${allerta.className} text-gray-300 uppercase font-bold text-base sm:text-lg md:text-xl`}
+            >
               {selectedAnimeType === "popular"
                 ? "all time popular"
                 : selectedAnimeType}
@@ -389,7 +401,7 @@ const Home = () => {
           </div>
           {animeData.loading === true ? (
             <div className="flex flex-row gap-3 sm:gap-4 md:gap-5">
-              {Array.from({ length: 5 }).map((_, i) => (
+              {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
                   <Skeleton className="rounded-lg bg-gray-300/30 w-[180px] h-[200px]" />
                   <Skeleton className="h-4 w-[140px] bg-gray-300/30 rounded" />
@@ -418,7 +430,7 @@ const Home = () => {
                       index ===
                       self.findIndex((a) => a.mal_id === anime.mal_id),
                   )
-                  .slice(0, 5)
+                  .slice(0, 6)
                   ?.map((anime) => (
                     <Link
                       key={nanoid(10)}
@@ -451,6 +463,24 @@ const Home = () => {
         </div>
       </section>
 
+      <div className=" h-px mt-5 max-w-6xl w-full bg-gradient-to-r from-blue-900 via-gray-700 to-transparent md:mt-0" />
+
+      <Link
+        href="/alphabetical/A"
+        className="group inline-flex items-center gap-2.5 px-4 py-2.5 rounded-sm border border-white/10 bg-white/5 hover:bg-blue-600/10 hover:border-blue-500/50 transition-all duration-200 hover:shadow-[0_0_16px_rgba(225,29,72,0.2)]"
+      >
+        <ListFilter
+          size={16}
+          strokeWidth={1.5}
+          className="text-white/50 group-hover:text-blue-400 transition-colors duration-200"
+        />
+        <span
+          className={`text-xs tracking-widest uppercase font-black text-white/60 group-hover:text-white transition-colors duration-200 ${allerta.className} md:text-[16px]`}
+        >
+          Alphabetical Order
+        </span>
+      </Link>
+
       <div className="text-center mt-8 sm:mt-12 md:mt-16 space-y-2">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
           More than {NUMBER_ANIME} to dive into
@@ -461,7 +491,7 @@ const Home = () => {
       <section
         id="genres"
         ref={filterRef}
-        className="w-full max-w-5xl mt-2 flex flex-col gap-3 sm:gap-5 md:gap-8"
+        className="w-full max-w-6xl mt-2 flex flex-col gap-3 sm:gap-5 md:gap-8"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-col gap-1.5 sm:gap-2 w-full">

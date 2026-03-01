@@ -4,8 +4,14 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Allerta } from "next/font/google";
 
 const PAGE_SIZE = 20;
+
+const allerta = Allerta({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export default function MangaCategory({ category, api }) {
   const [manga, setManga] = useState({
@@ -44,7 +50,7 @@ export default function MangaCategory({ category, api }) {
         });
       }
     },
-    [manga.loading, manga.data.length]
+    [manga.loading, manga.data.length],
   );
 
   useEffect(() => {
@@ -59,7 +65,7 @@ export default function MangaCategory({ category, api }) {
 
   if (manga.error) {
     return (
-      <div className="flex flex-col gap-3 items-center text-white w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="flex flex-col gap-3 items-center text-white w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <h1 className="text-xl font-semibold">Something went wrong</h1>
         <button
           className="border border-transparent font-medium rounded-xl text-white bg-blue-900 px-4 py-2 cursor-pointer"
@@ -73,10 +79,10 @@ export default function MangaCategory({ category, api }) {
 
   if (manga.loading) {
     return (
-      <div className="text-white w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="text-white w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex flex-col gap-3">
           <Skeleton className="h-9 w-48 rounded bg-gray-300/30" />
-          <span className="w-[150px] h-3 rounded-full bg-indigo-900" />
+          <span className="w-[150px] h-3 rounded-full bg-gray-700" />
         </div>
         <div className="w-full mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
           {Array.from({ length: 20 }).map((_, i) => (
@@ -93,19 +99,21 @@ export default function MangaCategory({ category, api }) {
   if (manga.data && manga.data.length > 0) {
     const filtered = manga.data.filter(
       (m, index, self) =>
-        index === self.findIndex((a) => a.mal_id === m.mal_id)
+        index === self.findIndex((a) => a.mal_id === m.mal_id),
     );
     const visibleManga = filtered.slice(0, visibleCount);
     const hasMore = visibleCount < filtered.length;
 
     return (
-      <div className="text-white w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="text-white w-full max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex flex-col gap-3">
-          <h1 className="text-3xl font-bold">{category}</h1>
-          <span className="w-[150px] h-3 rounded-full bg-indigo-900" />
+          <h1 className={`${allerta.className} text-3xl font-bold`}>
+            {category}
+          </h1>
+          <span className="w-[150px] h-3 rounded-full bg-gray-700" />
         </div>
 
-        <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
+        <div className="w-full mt-10 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
           {visibleManga.map((m) => (
             <MangaCategoryCard key={nanoid(10)} manga={m} />
           ))}
@@ -116,7 +124,9 @@ export default function MangaCategory({ category, api }) {
             ref={loaderRef}
             className="w-full mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5"
           >
-            {Array.from({ length: Math.min(PAGE_SIZE, filtered.length - visibleCount) }).map((_, i) => (
+            {Array.from({
+              length: Math.min(PAGE_SIZE, filtered.length - visibleCount),
+            }).map((_, i) => (
               <div key={i} className="flex flex-col gap-1.5 sm:gap-2">
                 <Skeleton className="rounded-lg w-full aspect-[9/13] bg-gray-300/30" />
                 <Skeleton className="h-4 w-3/4 rounded bg-gray-300/30" />

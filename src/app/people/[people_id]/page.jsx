@@ -74,11 +74,9 @@ export default function PeoplePage({ params }) {
   return (
     <>
       {data && (
-        <div className="relative max-w-5xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
-
+        <div className="relative max-w-6xl text-white pt-24 pb-16 mx-auto px-4 flex flex-col gap-16">
           {/* ── HERO ── */}
           <section className="flex flex-col md:flex-row gap-10 items-start">
-
             {/* Portrait */}
             <div className="relative flex-shrink-0 self-center md:self-start">
               <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-br from-blue-500/40 via-transparent to-blue-900/30 z-0" />
@@ -101,7 +99,6 @@ export default function PeoplePage({ params }) {
 
             {/* Info */}
             <div className="flex flex-col gap-5 flex-1">
-
               {/* Name block */}
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-semibold tracking-[0.25em] uppercase text-blue-400 flex items-center gap-2">
@@ -178,7 +175,9 @@ export default function PeoplePage({ params }) {
               return (
                 <section className="flex flex-col gap-6">
                   <div className="flex items-baseline gap-4">
-                    <h2 className="text-2xl font-bold text-white">Characters</h2>
+                    <h2 className="text-2xl font-bold text-white">
+                      Characters
+                    </h2>
                     <span className="text-xs font-semibold tracking-widest uppercase text-blue-400">
                       {uniqueVoices.length} roles
                     </span>
