@@ -158,9 +158,9 @@ export default function AnimeBox({
             {!imageLoaded && (
               <Skeleton className="absolute bg-gray-300/30 inset-0 w-full h-full rounded-lg" />
             )}
-            <Image
+            <img
               src={animeImage}
-              fill
+              //fill
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               alt={animeName}
               className={`object-cover hover:scale-105 transition-all duration-300 `}

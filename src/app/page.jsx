@@ -438,14 +438,14 @@ const Home = () => {
                       className="hover:opacity-90 transition-opacity duration-200"
                     >
                       <div className="flex flex-col gap-1.5 sm:gap-2">
-                        <Image
+                        <img
                           src={
                             anime.images.jpg.large_image_url
                               ? anime.images.jpg.large_image_url
                               : anime.images.jpg.image_url
                           }
-                          width={180}
-                          height={200}
+                          // width={180}
+                          // height={200}
                           alt={anime.title}
                           className="rounded-lg bg-gray-900 border border-gray-700 object-cover"
                         />
