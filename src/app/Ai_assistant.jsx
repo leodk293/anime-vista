@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Send, Bot, Trash2, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Logo from "../../components/logo/Logo";
 import { Onest } from "next/font/google";
+import ReactMarkdown from "react-markdown";
 
 const onest = Onest({
   subsets: ["latin"],
@@ -26,7 +26,8 @@ export default function AiAssistant() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const scrollRef = useRef(null);
 
-  async function fetchAiResponse() {
+  // ✅ FIX: Accept userMessage as parameter instead of reading from stale state
+  async function fetchAiResponse(userMessage) {
     try {
       const response = await fetch(`/api/ai-process`, {
         method: "POST",
@@ -34,17 +35,18 @@ export default function AiAssistant() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          input,
+          input: userMessage, // ✅ use param, not state
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch response from AI");
+        const err = await response.json().catch(() => null);
+        console.error("AI API error payload:", err);
+        throw new Error(err?.error || "Failed to fetch response from AI");
       }
 
       const result = await response.json();
-      const aiResponse =
-        result.message || "Sorry, I couldn't generate a response.";
+      const aiResponse = result.message;
 
       await fetch("/api/chats", {
         method: "POST",
@@ -52,7 +54,7 @@ export default function AiAssistant() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userRequest: input,
+          userRequest: userMessage, // ✅ use param, not state
           aiResponse,
           userId: session?.user?.id,
           userName: session?.user?.name,
@@ -80,7 +82,6 @@ export default function AiAssistant() {
       const result = await response.json();
       const chats = result.chats || [];
 
-      // Convert chat history to messages format
       const chatMessages = [];
 
       if (chats.length === 0) {
@@ -98,7 +99,6 @@ export default function AiAssistant() {
       setMessages(chatMessages);
     } catch (error) {
       console.error("Error loading chat history:", error.message);
-
       setMessages([
         { sender: "bot", text: "Hello! How can I help you today?" },
       ]);
@@ -109,7 +109,7 @@ export default function AiAssistant() {
 
   async function deleteChats() {
     const confirmed = window.confirm(
-      "Are you sure you want to delete the chat? This action cannot be undone."
+      "Are you sure you want to delete the chat? This action cannot be undone.",
     );
     if (!confirmed) return;
 
@@ -122,7 +122,6 @@ export default function AiAssistant() {
         throw new Error("Failed to delete chats");
       }
 
-      // Reset messages to initial state
       setMessages([
         { sender: "bot", text: "Hello! How can I help you today?" },
       ]);
@@ -136,16 +135,14 @@ export default function AiAssistant() {
     e.preventDefault();
     if (!input.trim() || isLoading || !session?.user?.id) return;
 
-    const userMessage = input.trim();
+    const userMessage = input.trim(); // ✅ capture before clearing
     setInput("");
     setIsLoading(true);
 
     setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
 
     try {
-      
-      const aiResponse = await fetchAiResponse();
-
+      const aiResponse = await fetchAiResponse(userMessage); // ✅ pass captured value
       setMessages((prev) => [...prev, { sender: "bot", text: aiResponse }]);
     } catch (error) {
       console.error("Error in handleSubmit:", error);
@@ -161,7 +158,14 @@ export default function AiAssistant() {
     }
   };
 
-  
+  // ✅ NEW: Handle Enter to send, Shift+Enter for new line
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
       loadChatHistory();
@@ -205,7 +209,7 @@ export default function AiAssistant() {
       <div className="flex flex-col h-[400px]">
         {messages.length > 1 && (
           <div className="flex justify-between items-center mb-3">
-            <Logo mobileSize={'text-lg'} LaptopSize={'text-xl'}/>
+            <Logo mobileSize={"text-lg"} LaptopSize={"text-xl"} />
             <Button
               onClick={deleteChats}
               variant="outline"
@@ -236,13 +240,71 @@ export default function AiAssistant() {
                   </Avatar>
                 )}
                 <div
-                  className={`rounded-lg ${onest.className} px-3 py-2 leading-6 max-w-[80%] text-sm ${
+                  className={`rounded-lg ${
+                    onest.className
+                  } px-3 py-2 leading-6 max-w-[80%] text-sm ${
                     msg.sender === "user"
                       ? "bg-sky-600 text-white"
                       : "bg-slate-800 text-gray-100"
                   }`}
                 >
-                  {msg.text}
+                  {/* ✅ FIX: Render markdown for bot messages */}
+                  {msg.sender === "bot" ? (
+                    <ReactMarkdown
+                      components={{
+                        // Style markdown elements to match the dark theme
+                        p: ({ children }) => (
+                          <p className="mb-1 last:mb-0">{children}</p>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="list-disc pl-4 mb-1 space-y-0.5">
+                            {children}
+                          </ul>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="list-decimal pl-4 mb-1 space-y-0.5">
+                            {children}
+                          </ol>
+                        ),
+                        li: ({ children }) => <li>{children}</li>,
+                        strong: ({ children }) => (
+                          <strong className="font-semibold text-white">
+                            {children}
+                          </strong>
+                        ),
+                        em: ({ children }) => (
+                          <em className="italic">{children}</em>
+                        ),
+                        code: ({ children }) => (
+                          <code className="bg-slate-700 text-sky-300 px-1 py-0.5 rounded text-xs font-mono">
+                            {children}
+                          </code>
+                        ),
+                        pre: ({ children }) => (
+                          <pre className="bg-slate-700 rounded p-2 my-1 overflow-x-auto text-xs font-mono">
+                            {children}
+                          </pre>
+                        ),
+                        h1: ({ children }) => (
+                          <h1 className="text-base font-bold mb-1">
+                            {children}
+                          </h1>
+                        ),
+                        h2: ({ children }) => (
+                          <h2 className="text-sm font-bold mb-1">{children}</h2>
+                        ),
+                        h3: ({ children }) => (
+                          <h3 className="text-sm font-semibold mb-1">
+                            {children}
+                          </h3>
+                        ),
+                      }}
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
+                  ) : (
+                    msg.text
+                  )}
                 </div>
                 {msg.sender === "user" && session?.user?.image && (
                   <Image
@@ -280,10 +342,11 @@ export default function AiAssistant() {
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="flex gap-2">
           <textarea
-            placeholder="Type your message..."
-            className="flex-1 h-[80px] rounded-[10px] p-1 bg-slate-800 border-slate-700 text-white placeholder:text-gray-400"
+            placeholder="Type your message... (Enter to send, Shift+Enter for new line)"
+            className="flex-1 h-[80px] rounded-[10px] p-2 bg-slate-800 border border-slate-700 text-white placeholder:text-gray-400 resize-none focus:outline-none focus:border-sky-600 transition-colors"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown} // ✅ NEW: Enter to send
             disabled={isLoading}
           />
           <Button
