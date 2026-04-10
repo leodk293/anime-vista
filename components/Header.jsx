@@ -34,7 +34,7 @@ export default function Header() {
     { href: "/popular-anime", label: "Popular", icon: Heart },
     { href: "/manga", label: "Manga", icon: BookOpen },
     { href: "/Watchlist", label: "Watchlist", icon: Bookmark },
-    { href: "/contact", label: "contact", icon: PhoneCall },
+    { href: "/contact", label: "Contact", icon: PhoneCall },
     {
       href: "https://anime-vista-api-showcase.vercel.app",
       label: "API",
@@ -42,77 +42,78 @@ export default function Header() {
     },
   ];
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-md border-b border-b-gray-400/10 w-full">
       <header className="flex flex-col mx-auto py-5 max-w-6xl gap-4">
-        <div className="flex flex-wrap justify-center gap-5 md:justify-between md:gap-0">
+        {/* Top row */}
+        <div className="flex flex-wrap justify-center gap-5 md:justify-between md:gap-0 px-4 md:px-0">
           <Logo mobileSize={"text-3xl"} LaptopSize={"text-4xl"} />
 
-          <div className="hidden sm:flex self-center text-sm lg:text-base text-gray-300 font-medium gap-3 lg:gap-5">
-            <Link
-              target="_blank"
-              className="hover:text-white duration-200 whitespace-nowrap"
-              href={"https://www.youtube.com/@aboubacartraore5831"}
-            >
-              Youtube
-            </Link>
-            <Link
-              className="hover:text-white duration-200 whitespace-nowrap"
-              href="https://x.com/Aboubac48530295"
-              aria-label="Twitter"
-              target="_blank"
-            >
-              X/Twitter
-            </Link>
-            <Link
-              className="hover:text-white duration-200 whitespace-nowrap"
-              href="https://github.com/leodk293"
-              aria-label="GitHub"
-              target="_blank"
-            >
-              Github
-            </Link>
+          {/* Search — center on desktop */}
+          <div className="hidden md:flex self-center">
+            <SearchAnime />
           </div>
 
-          {status === "unauthenticated" ? (
-            <LoginButton />
-          ) : status === "loading" ? (
-            <div className="flex items-center gap-3 px-3 py-2 bg-white/10 rounded-full border border-gray-300/10 min-w-[160px] animate-pulse">
-              <Skeleton className="h-8 w-8 rounded-full bg-gray-300/30" />
-              <div className="flex flex-col gap-2 flex-1">
-                <Skeleton className="h-3 w-20 rounded bg-gray-300/30" />
-                <Skeleton className="h-2 w-14 rounded bg-gray-300/20" />
-              </div>
+          {/* Right side: social + auth */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex text-sm lg:text-base text-gray-300 font-medium gap-3 lg:gap-5">
+              <Link
+                target="_blank"
+                className="hover:text-white duration-200 whitespace-nowrap"
+                href={"https://www.youtube.com/@aboubacartraore5831"}
+              >
+                Youtube
+              </Link>
+              <Link
+                className="hover:text-white duration-200 whitespace-nowrap"
+                href="https://x.com/Aboubac48530295"
+                target="_blank"
+              >
+                X/Twitter
+              </Link>
+              <Link
+                className="hover:text-white duration-200 whitespace-nowrap"
+                href="https://github.com/leodk293"
+                target="_blank"
+              >
+                Github
+              </Link>
             </div>
-          ) : (
-            <div className="flex flex-row gap-2">
-              {session?.user && (
-                <div className="border border-gray-300 rounded-full px-3 py-1 flex flex-row gap-2">
-                  <Image
-                    src={session?.user?.image}
-                    alt={session?.user?.name}
-                    width={30}
-                    height={30}
-                    title={session?.user?.name}
-                    className="self-center border border-gray-950/10 rounded-full object-cover"
-                  />
-                  <p className="text-white self-center">
-                    {session?.user?.name?.split(" ")[0]}
-                  </p>
-                </div>
-              )}
 
-              <LogoutButton />
-            </div>
-          )}
+            {status === "unauthenticated" ? (
+              <LoginButton />
+            ) : status === "loading" ? (
+              <div className="flex items-center gap-3 px-3 py-2 bg-white/10 rounded-full border border-gray-300/10 min-w-[160px] animate-pulse">
+                <Skeleton className="h-8 w-8 rounded-full bg-gray-300/30" />
+                <div className="flex flex-col gap-2 flex-1">
+                  <Skeleton className="h-3 w-20 rounded bg-gray-300/30" />
+                  <Skeleton className="h-2 w-14 rounded bg-gray-300/20" />
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-row gap-2">
+                {session?.user && (
+                  <div className="border border-gray-300 rounded-full px-3 py-1 flex flex-row gap-2">
+                    <Image
+                      src={session?.user?.image}
+                      alt={session?.user?.name}
+                      width={30}
+                      height={30}
+                      title={session?.user?.name}
+                      className="self-center border border-gray-950/10 rounded-full object-cover"
+                    />
+                    <p className="text-white self-center">
+                      {session?.user?.name?.split(" ")[0]}
+                    </p>
+                  </div>
+                )}
+                <LogoutButton />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Desktop Navigation */}
@@ -133,8 +134,9 @@ export default function Header() {
           })}
         </nav>
 
-        {/* Mobile Hamburger Button */}
-        <div className="md:hidden flex justify-center">
+        {/* Mobile: search + hamburger */}
+        <div className="md:hidden flex items-center justify-between px-4 gap-3">
+          <SearchAnime />
           <button
             onClick={toggleMobileMenu}
             className="flex items-center justify-center w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200"
@@ -173,30 +175,24 @@ export default function Header() {
 
               {/* Mobile Social Links */}
               <div className="pt-3 mt-2 border-t border-gray-300/10 flex flex-col space-y-1">
-                <Link
-                  target="_blank"
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
-                  href={"https://www.youtube.com/@aboubacartraore5831"}
-                >
-                  <span>Youtube</span>
-                </Link>
-                <Link
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
-                  href="https://x.com/Aboubac48530295"
-                  target="_blank"
-                >
-                  <span>X/Twitter</span>
-                </Link>
-                <Link
-                  onClick={closeMobileMenu}
-                  className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
-                  href="https://github.com/leodk293"
-                  target="_blank"
-                >
-                  <span>Github</span>
-                </Link>
+                {[
+                  {
+                    label: "Youtube",
+                    href: "https://www.youtube.com/@aboubacartraore5831",
+                  },
+                  { label: "X/Twitter", href: "https://x.com/Aboubac48530295" },
+                  { label: "Github", href: "https://github.com/leodk293" },
+                ].map(({ label, href }) => (
+                  <Link
+                    key={href}
+                    target="_blank"
+                    onClick={closeMobileMenu}
+                    className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 text-sm sm:text-base font-medium"
+                    href={href}
+                  >
+                    <span>{label}</span>
+                  </Link>
+                ))}
               </div>
             </div>
           </nav>

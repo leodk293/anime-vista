@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Logo from "./logo/Logo";
 import Medias from "./Medias";
-import SearchAnime from "./SearchAnime";
+//import SearchAnime from "./SearchAnime";
 
 export default function Footer() {
   const date = new Date();
@@ -87,10 +87,7 @@ export default function Footer() {
 
         <div className=" flex flex-col gap-3">
           <h1 className=" font-bold text-2xl">Connect with us</h1>
-          <Medias />
-          <span className=" w-auto mt-4">
-            <SearchAnime />
-          </span>
+          <Medias /> 
         </div>
       </footer>
     </div>

@@ -12,7 +12,6 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import Image from "next/image";
 import AnimeBox from "../../components/AnimeBox";
-import SearchAnime from "../../components/SearchAnime";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Allerta } from "next/font/google";
 
@@ -322,8 +321,6 @@ const Home = () => {
           favorite anime among severals
         </p>
       </div>
-
-      <SearchAnime />
 
       <section className="w-full max-w-6xl mt-5 sm:mt-8 md:mt-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8">
         <div className=" text-white self-start flex flex-col gap-2">

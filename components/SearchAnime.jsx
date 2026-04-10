@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import animeList from "../utils/animeArray";
 import { nanoid } from "nanoid";
+import { Search } from "lucide-react";
 
 export default function SearchAnime() {
   const [animeName, setAnimeName] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (event) => {
@@ -19,25 +21,40 @@ export default function SearchAnime() {
   return (
     <form
       onSubmit={handleSubmit}
-      className=" border border-gray-500 rounded-lg flex flex-row p-1"
+      className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 ${
+        isFocused
+          ? "border-blue-500/60 bg-white/10 shadow-[0_0_12px_rgba(244,63,94,0.15)]"
+          : "border-white/15 bg-white/5"
+      }`}
     >
+      <Search
+        size={15}
+        strokeWidth={1.8}
+        className={`shrink-0 transition-colors duration-200 ${
+          isFocused ? "text-blue-400" : "text-white/40"
+        }`}
+      />
       <input
-        className=" text-gray-100 font-medium px-4 py-1 self-center bg-transparent outline-0 "
-        placeholder="Search for an anime..."
+        className="w-36 md:w-44 bg-transparent text-sm text-white/90 placeholder-white/30 outline-none font-medium"
+        placeholder="Search anime..."
         type="text"
         onChange={(e) => setAnimeName(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         value={animeName}
         list="anime-list"
         required
       />
-
       <datalist id="anime-list">
         {animeList.map((anime) => (
           <option key={nanoid(10)} value={anime} />
         ))}
       </datalist>
-      <button className=" cursor-pointer text-white font-medium px-2 py-1 border border-gray-700 bg-gray-800 rounded-sm self-center">
-        Search
+      <button
+        type="submit"
+        className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-500/80 hover:bg-blue-500 text-white transition-colors duration-200"
+      >
+        Go
       </button>
     </form>
   );
