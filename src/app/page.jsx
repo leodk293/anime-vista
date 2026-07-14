@@ -30,6 +30,8 @@ const allerta = Allerta({
 
 const NUMBER_ANIME = "4,000";
 const PAGE_SIZE = 20;
+const CURRENT_YEAR = new Date().getFullYear();
+const START_YEAR = 1917; // Jikan's earliest season data
 
 const Home = () => {
   const [genres, setGenres] = useState([]);
@@ -38,37 +40,62 @@ const Home = () => {
 
   async function getAnimeGenres() {
     try {
-      const response = await fetch("https://api.jikan.moe/v4/genres/anime");
-      if (!response.ok) throw new Error("Failed to fetch anime genres");
-      const data = await response.json();
-      setGenres(data.data);
+      const data = await fetchWithRetry(
+        "https://api.jikan.moe/v4/genres/anime",
+      );
+      setGenres(data.data || []);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch anime genres:", error);
       setGenres([]);
     }
   }
 
-  async function getAnimeYears() {
-    try {
-      const response = await fetch("https://api.jikan.moe/v4/seasons");
-      if (!response.ok) throw new Error("Failed to fetch anime years");
-      const data = await response.json();
-      setYears(data.data);
-    } catch (error) {
-      console.error(error);
-      setYears([]);
+  const getAnimeYearsList = () => {
+    const list = [];
+    for (let y = CURRENT_YEAR + 1; y >= START_YEAR; y--) {
+      list.push({ year: y });
     }
-  }
+    return list;
+  };
 
   useEffect(() => {
+    setYears(getAnimeYearsList());
     const timer = setTimeout(() => {
-      getAnimeGenres();
-      getAnimeYears();
+      getAnimeGenres(); // only genres actually need the API now
     }, 500);
     return () => clearTimeout(timer);
   }, []);
 
   const seasons = ["Spring", "Fall", "Winter", "Summer"];
+
+  const fetchWithRetry = async (
+    url,
+    { retries = 3, delay = 500, signal } = {},
+  ) => {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(url, { signal, cache: "no-cache" });
+        if (!response.ok) {
+          if (
+            (response.status === 429 || response.status >= 500) &&
+            attempt < retries
+          ) {
+            await new Promise((resolve) =>
+              setTimeout(resolve, delay * Math.pow(2, attempt)),
+            );
+            continue;
+          }
+          throw new Error(`Failed to fetch ${url} (status ${response.status})`);
+        }
+        return await response.json();
+      } catch (error) {
+        if (attempt === retries) throw error;
+        await new Promise((resolve) =>
+          setTimeout(resolve, delay * Math.pow(2, attempt)),
+        );
+      }
+    }
+  };
 
   const [animeData, setAnimeData] = useState({
     error: false,
@@ -310,15 +337,16 @@ const Home = () => {
     <div className="mt-3 sm:mt-5 md:mt-8 flex flex-col items-center gap-3 sm:gap-5 md:gap-8 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="mt-3 sm:mt-5 md:mt-8 text-center flex flex-col items-center justify-center gap-2 sm:gap-3 md:gap-5">
         <h1
-          className={`text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl ${allerta.className}`}
+          className={`text-blue-200 text-xl sm:text-2xl md:text-3xl lg:text-4xl ${allerta.className}`}
         >
-          Kickstart Your Anime Journey on AnimeVista
+          Discover Your Next Favorite Anime on AnimeVista
         </h1>
         <p
           className={`text-blue-100 mt-2 ${allerta.className} leading-5 sm:leading-6 md:leading-7 lg:leading-8 font-medium text-base sm:text-lg md:text-xl`}
         >
-          Track, share and discover <br className="hidden sm:block" /> your
-          favorite anime among severals
+          Browse, track, and share anime across genres, seasons, and trends.
+          <br className="hidden sm:block" />
+          Start exploring thousands of titles with smarter recommendations.
         </p>
       </div>
 
