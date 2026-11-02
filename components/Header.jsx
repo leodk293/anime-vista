@@ -32,7 +32,7 @@ export default function Header() {
     { href: "/top-anime", label: "Top Rated", icon: Star },
     { href: "/upcoming-anime", label: "Upcoming", icon: Rocket },
     { href: "/popular-anime", label: "Popular", icon: Heart },
-    { href: "/manga", label: "Manga", icon: BookOpen },
+    //{ href: "/manga", label: "Manga", icon: BookOpen },
     { href: "/Watchlist", label: "Watchlist", icon: Bookmark },
     { href: "/contact", label: "Contact", icon: PhoneCall },
     {

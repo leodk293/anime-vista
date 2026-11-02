@@ -4,7 +4,9 @@ const TopAnimePage = () => {
   return (
     <AnimeType
       animeTypeName={"Top Anime"}
-      url={"https://api.jikan.moe/v4/top/anime"}
+      url={
+        "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=100&fields=id,title,main_picture,alternative_titles,start_season,genres"
+      }
     />
   )
 }

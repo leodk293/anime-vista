@@ -102,8 +102,21 @@ const Home = () => {
     loading: false,
     data: [],
   });
+  const date = new Date();
   const [selectedAnimeType, setSelectedAnimeType] = useState("recent");
   const [animeTypeLink, setAnimeTypeLink] = useState("");
+  //const [season, setSeason] = useState("");
+  let season = "";
+  const month = date.getMonth() + 1;
+  if (month >= 1 && month <= 3) {
+    season = "winter";
+  } else if (month >= 4 && month <= 6) {
+    season = "spring";
+  } else if (month >= 7 && month <= 9) {
+    season = "summer";
+  } else {
+    season = "fall";
+  }
 
   async function getSelectedAnime() {
     try {
@@ -111,26 +124,34 @@ const Home = () => {
       let url = "";
       switch (selectedAnimeType.toLowerCase()) {
         case "recent":
-          url = "https://api.jikan.moe/v4/seasons/now";
+          url = `https://api.myanimelist.net/v2/anime/season/${CURRENT_YEAR}/${season.toLowerCase()}`;
           setAnimeTypeLink("/recent-anime");
           break;
         case "popular":
-          url = "https://api.jikan.moe/v4/top/anime?filter=bypopularity";
+          url =
+            "https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&limit=25&fields=id,title,main_picture,alternative_titles,start_season,genres";
           setAnimeTypeLink("/popular-anime");
           break;
         case "upcoming":
-          url = "https://api.jikan.moe/v4/seasons/upcoming";
+          url =
+            "https://api.myanimelist.net/v2/anime/ranking?ranking_type=upcoming&limit=25&fields=id,title,main_picture,alternative_titles,start_season,genres";
           setAnimeTypeLink("/upcoming-anime");
           break;
         case "top":
-          url = "https://api.jikan.moe/v4/top/anime";
+          url =
+            "https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=25&fields=id,title,main_picture,alternative_titles,start_season,genres";
           setAnimeTypeLink("/top-anime");
           break;
         default:
           url = "https://api.jikan.moe/v4/seasons/now";
           setAnimeTypeLink("/");
       }
-      const response = await fetch(url);
+      const isMal =
+        typeof url === "string" && url.includes("api.myanimelist.net");
+      const fetchUrl = isMal
+        ? `/api/mal?url=${encodeURIComponent(url)}`
+        : url;
+      const response = await fetch(fetchUrl);
       if (!response.ok) throw new Error("Failed to fetch anime data");
       const data = await response.json();
       setAnimeData({ error: false, loading: false, data: data.data });
@@ -450,38 +471,49 @@ const Home = () => {
             animeData && (
               <div className="flex flex-row gap-3 sm:gap-4 md:gap-5 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 sm:overflow-x-visible">
                 {animeData.data
-                  .filter(
-                    (anime, index, self) =>
+                  .filter((anime, index, self) => {
+                    const id = anime.node?.id ?? anime.mal_id;
+                    return (
                       index ===
-                      self.findIndex((a) => a.mal_id === anime.mal_id),
-                  )
+                      self.findIndex((a) => (a.node?.id ?? a.mal_id) === id)
+                    );
+                  })
                   .slice(0, 6)
-                  ?.map((anime) => (
-                    <Link
-                      key={nanoid(10)}
-                      href={`/anime/${anime.mal_id}`}
-                      className="hover:opacity-90 transition-opacity duration-200"
-                    >
-                      <div className="flex flex-col gap-1.5 sm:gap-2">
-                        <Image
-                          src={
-                            anime.images.jpg.large_image_url
-                              ? anime.images.jpg.large_image_url
-                              : anime.images.jpg.image_url
-                          }
-                          width={180}
-                          height={200}
-                          alt={anime.title}
-                          className="rounded-lg bg-gray-900 border border-gray-700 object-cover"
-                        />
-                        <h2 className="text-gray-300 text-xs sm:text-sm font-medium w-[140px] sm:w-[160px] md:w-[180px] line-clamp-2">
-                          {anime.title_english
-                            ? anime.title_english
-                            : anime.title}
-                        </h2>
-                      </div>
-                    </Link>
-                  ))}
+                  ?.map((anime) => {
+                    const node = anime.node;
+                    const animeId = node?.id ?? anime.mal_id;
+                    const animeImage =
+                      node?.main_picture?.large ||
+                      node?.main_picture?.medium ||
+                      anime.images?.jpg?.large_image_url ||
+                      anime.images?.jpg?.image_url;
+                    const animeTitle =
+                      node?.alternative_titles?.en ||
+                      node?.title ||
+                      anime.title_english ||
+                      anime.title;
+
+                    return (
+                      <Link
+                        key={nanoid(10)}
+                        href={`/anime/${animeId}`}
+                        className="hover:opacity-90 transition-opacity duration-200"
+                      >
+                        <div className="flex flex-col gap-1.5 sm:gap-2">
+                          <Image
+                            src={animeImage}
+                            width={180}
+                            height={200}
+                            alt={animeTitle}
+                            className="rounded-lg bg-gray-900 border border-gray-700 object-cover"
+                          />
+                          <h2 className="text-gray-300 text-xs sm:text-sm font-medium w-[140px] sm:w-[160px] md:w-[180px] line-clamp-2">
+                            {animeTitle}
+                          </h2>
+                        </div>
+                      </Link>
+                    );
+                  })}
               </div>
             )
           )}

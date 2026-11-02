@@ -22,12 +22,21 @@ const AnimeType = ({ animeTypeName, url }) => {
   async function getAnime() {
     try {
       setAnimeData((prev) => ({ ...prev, loading: true }));
-      const response = await fetch(`${url}`);
+      const isMal =
+        typeof url === "string" && url.includes("api.myanimelist.net");
+      const fetchUrl = isMal
+        ? `/api/mal?url=${encodeURIComponent(url)}`
+        : url;
+      const response = await fetch(fetchUrl);
       if (!response.ok) {
         throw new Error("Failed to fetch anime data");
       }
       const data = await response.json();
-      setAnimeData({ error: false, loading: false, data: data.data });
+      setAnimeData({
+        error: false,
+        loading: false,
+        data: Array.isArray(data.data) ? data.data : [],
+      });
     } catch (error) {
       console.log(error);
       setAnimeData({ error: true, loading: false, data: [] });
@@ -36,7 +45,7 @@ const AnimeType = ({ animeTypeName, url }) => {
 
   useEffect(() => {
     getAnime();
-  }, []);
+  }, [url]);
 
   return (
     <div className=" mt-[4rem] max-w-6xl flex flex-col gap-7 items-center mx-auto">
@@ -74,14 +83,7 @@ const AnimeType = ({ animeTypeName, url }) => {
                     ? "Popular"
                     : ""}
           </p>
-          {animeTypeName !== "New Releases" && (
-            // <ArrowBigRight
-            //   className=" self-center"
-            //   size={25}
-            //   strokeWidth={1.65}
-            // />
-            <span>⏭️</span>
-          )}
+          {animeTypeName !== "New Releases" && <span>⏭️</span>}
         </Link>
       </div>
       {animeData.error === true ? (
@@ -106,32 +108,54 @@ const AnimeType = ({ animeTypeName, url }) => {
         ) : (
           <div className="w-full mt-5 self-center grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
             {animeData.data
-              .filter(
-                (anime, index, self) =>
-                  index === self.findIndex((a) => a.mal_id === anime.mal_id),
-              )
-              .map((anime) => (
-                <div key={nanoid(10)}>
-                  <AnimeBox
-                    animeId={anime.mal_id}
-                    animeImage={
-                      anime.images?.jpg?.large_image_url
-                        ? anime.images.jpg.large_image_url
-                        : anime.images?.jpg?.image_url || ""
-                    }
-                    animeName={anime.title_english || anime.title}
-                    year={anime.year || (anime.aired?.prop?.from?.year ?? "")}
-                    season={anime?.season}
-                    genres={
-                      Array.isArray(anime.genres)
-                        ? anime.genres.map((g) =>
-                            typeof g === "object" && g !== null ? g.name : g,
-                          )
-                        : []
-                    }
-                  />
-                </div>
-              ))}
+              .filter((anime, index, self) => {
+                const id = anime.node?.id ?? anime.mal_id;
+                return (
+                  index ===
+                  self.findIndex((a) => (a.node?.id ?? a.mal_id) === id)
+                );
+              })
+              .map((anime) => {
+                const node = anime.node;
+                const animeId = node?.id ?? anime.mal_id;
+                const animeImage =
+                  node?.main_picture?.large ||
+                  node?.main_picture?.medium ||
+                  anime.images?.jpg?.large_image_url ||
+                  anime.images?.jpg?.image_url;
+                const animeName =
+                  node?.alternative_titles?.en ||
+                  node?.title ||
+                  anime.title_english ||
+                  anime.title;
+                const year =
+                  node?.start_season?.year ??
+                  anime.year ??
+                  anime.aired?.prop?.from?.year ??
+                  0;
+                const season =
+                  node?.start_season?.season ?? anime.season ?? "Unknown";
+                const genres = Array.isArray(node?.genres)
+                  ? node.genres.map((g) => g.name)
+                  : Array.isArray(anime.genres)
+                    ? anime.genres.map((g) =>
+                        typeof g === "object" && g !== null ? g.name : g,
+                      )
+                    : [];
+
+                return (
+                  <div key={nanoid(10)}>
+                    <AnimeBox
+                      animeId={animeId}
+                      animeImage={animeImage}
+                      animeName={animeName}
+                      year={year}
+                      season={season}
+                      genres={genres}
+                    />
+                  </div>
+                );
+              })}
           </div>
         ))
       )}
