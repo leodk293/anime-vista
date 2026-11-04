@@ -56,34 +56,36 @@ export default function RecommendationsPage({ params }) {
           </p>
         )}
         {!state.loading && !state.error && state.data.length === 0 && (
-          <p className="text-zinc-400">No recommendations found.</p>
+          <p className="text-zinc-400">No recommendations yet.</p>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-          {state.data.map(({ node, num_recommendations }) => (
-            <div
-              key={node.id}
-              className="bg-zinc-900/10 backdrop-blur-sm border border-white/10 rounded-lg p-2"
-            >
-              <Link href={`/anime/${node.id}`}>
-                <Image
-                  src={node.main_picture?.medium ?? "/placeholder.png"}
-                  alt={node.title}
-                  width={225}
-                  height={320}
-                  className="w-full h-auto object-cover rounded-md"
-                />
-              </Link>
-              <h2 className="text-sm font-semibold mt-2">{node.title}</h2>
-              {num_recommendations > 0 && (
-                <p className="text-xs text-zinc-400">
-                  {num_recommendations} recommendation
-                  {num_recommendations > 1 ? "s" : ""}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+        {state.data.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {state.data.map(({ node, num_recommendations }) => (
+              <div
+                key={node.id}
+                className="bg-zinc-900/10 backdrop-blur-sm border border-white/10 rounded-lg p-2"
+              >
+                <Link href={`/anime/${node.id}`}>
+                  <Image
+                    src={node.main_picture?.medium ?? "/placeholder.png"}
+                    alt={node.title}
+                    width={225}
+                    height={320}
+                    className="w-full h-auto object-cover rounded-md"
+                  />
+                </Link>
+                <h2 className="text-sm font-semibold mt-2">{node.title}</h2>
+                {num_recommendations > 0 && (
+                  <p className="text-xs text-zinc-400">
+                    {num_recommendations} recommendation
+                    {num_recommendations > 1 ? "s" : ""}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

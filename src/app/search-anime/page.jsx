@@ -30,7 +30,7 @@ function SearchAnimeContent() {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const response = await fetch(
-          `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}`,
+          `/api/anime-search?q=${encodeURIComponent(query)}`,
           { signal },
         );
 
@@ -150,25 +150,20 @@ function SearchAnimeContent() {
         {searchState.data
           .filter(
             (anime, index, self) =>
-              index === self.findIndex((a) => a.mal_id === anime.mal_id),
+              index ===
+              self.findIndex((item) => item.node?.id === anime.node?.id),
           )
           .map((anime) => (
             <div key={nanoid(10)}>
               <AnimeBox
-                animeId={anime.mal_id}
-                animeImage={
-                  anime.images?.jpg?.large_image_url
-                    ? anime.images.jpg.large_image_url
-                    : anime.images?.jpg?.image_url
-                }
-                animeName={
-                  anime.title_english ? anime.title_english : anime.title
-                }
-                year={anime.year ?? 0}
-                season={anime.season ?? "Unknown"}
+                animeId={anime.node?.id}
+                animeImage={anime.node?.main_picture?.large}
+                animeName={anime.node?.title}
+                year={anime.node.start_season?.year ?? 0}
+                season={anime.node.start_season?.season ?? "Unknown"}
                 genres={
-                  Array.isArray(anime.genres) && anime.genres.length > 0
-                    ? anime.genres.map((g) =>
+                  Array.isArray(anime.node.genres) && anime.node.genres.length > 0
+                    ? anime.node.genres.map((g) =>
                         typeof g === "object" && g !== null ? g.name : g,
                       )
                     : []

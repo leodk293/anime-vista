@@ -160,25 +160,32 @@ export default function AnimePage({ params }) {
       {relatedAnime.error && (
         <p className="text-red-400">{relatedAnime.errorMessage}</p>
       )}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-        {relatedAnime.data.recommendations.slice(0, 5).map(({ node }) => (
-          <div
-            key={node.id}
-            className="bg-zinc-900/10 backdrop-blur-sm border border-white/10 rounded-lg p-2"
-          >
-            <Link href={`/anime/${node.id}`}>
-              <Image
-                src={node.main_picture?.medium ?? "/placeholder.png"}
-                alt={node.title}
-                width={225}
-                height={320}
-                className="w-full h-auto object-cover rounded-md"
-              />
-            </Link>
-            <h2 className="text-sm font-semibold mt-2">{node.title}</h2>
-          </div>
-        ))}
-      </div>
+      {!relatedAnime.loading &&
+        !relatedAnime.error &&
+        relatedAnime.data.recommendations.length === 0 && (
+          <p className="text-zinc-400">No recommendations yet.</p>
+        )}
+      {relatedAnime.data.recommendations.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          {relatedAnime.data.recommendations.slice(0, 5).map(({ node }) => (
+            <div
+              key={node.id}
+              className="bg-zinc-900/10 backdrop-blur-sm border border-white/10 rounded-lg p-2"
+            >
+              <Link href={`/anime/${node.id}`}>
+                <Image
+                  src={node.main_picture?.medium ?? "/placeholder.png"}
+                  alt={node.title}
+                  width={225}
+                  height={320}
+                  className="w-full h-auto object-cover rounded-md"
+                />
+              </Link>
+              <h2 className="text-sm font-semibold mt-2">{node.title}</h2>
+            </div>
+          ))}
+        </div>
+      )}
 
       <h1 className="text-2xl font-bold mt-10 mb-4">Related</h1>
       {relatedAnime.error && (
